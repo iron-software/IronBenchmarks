@@ -1,10 +1,46 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UserSecretsId>2b9a2db2-1dbc-4ecd-a706-4ee608efc81e</UserSecretsId>
+		<Company>Iron Software</Company>
+		<AssemblyVersion>0.0.1</AssemblyVersion>
+		<FileVersion>0.0.1</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BarCode" Version="2022.8.8024" />
+		<PackageReference Include="IronXL.Excel" Version="2022.8.8357" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="IronBarCodeOld">
+	    <HintPath>..\packages\IronBarCodeOld.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="appsettings.Development.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="appsettings.Production.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

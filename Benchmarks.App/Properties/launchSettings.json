@@ -1,0 +1,17 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Benchmarks (dev)": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Benchmarks (prod)": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}
