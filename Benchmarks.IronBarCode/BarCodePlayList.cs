@@ -1,18 +1,17 @@
-﻿using Benchmarks.Configuration;
-using Benchmarks.IronBarCode;
+﻿using System;
+using System.Collections.Generic;
+using Benchmarks.Runner;
 
-namespace Benchmarks.App.PlayLists
+namespace Benchmarks.IronBarCode
 {
-    internal class BarCodePlayList : GenericPlayList
+    public class BarCodePlayList : GenericPlayList
     {
-        public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList(IAppConfig appConfig)
+        public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList(string resultsFolder)
         {
-            var resultsFolder = appConfig.ResultsFolderName;
-
             var curBarcodeRunner = new CurrentBarCodeBenchmarkRunner(resultsFolder);
             var prevBarcodeRunner = new PreviousBarCodeBenchmarkRunner(resultsFolder);
 
-            return new()
+            return new Dictionary<string, Dictionary<string, TimeSpan>>()
             {
                 { curBarcodeRunner.NameAndVersion, curBarcodeRunner.RunBenchmarks() },
                 { prevBarcodeRunner.NameAndVersion, prevBarcodeRunner.RunBenchmarks() },
