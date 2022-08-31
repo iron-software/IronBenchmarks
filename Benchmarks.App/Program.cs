@@ -1,4 +1,6 @@
-﻿using Benchmarks.Configuration;
+﻿using Benchmarks.App.PlayLists;
+using Benchmarks.Configuration;
+using Benchmarks.IronBarCode;
 using Benchmarks.Reporting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,4 +33,6 @@ IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 IronBarCode.License.LicenseKey = appConfig.LicenseKeyIronBarCode;
 
 var reportGenerator = new ReportGenerator(appConfig);
-reportGenerator.GenerateReport();
+
+var timeTableData = new BarCodePlayList().RunPlayList(appConfig);
+reportGenerator.GenerateReport(timeTableData);
