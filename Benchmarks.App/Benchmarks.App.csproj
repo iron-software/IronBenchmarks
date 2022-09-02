@@ -34,10 +34,14 @@
 		<None Update="appsettings.Production.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="LoadingTestFiles\LoadingTest.xlsx">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Benchmarks.IronBarCode\Benchmarks.IronBarCode.csproj" />
+	  <ProjectReference Include="..\Benchmarks.IronXL\Benchmarks.IronXL.csproj" />
 	</ItemGroup>
 
 </Project>

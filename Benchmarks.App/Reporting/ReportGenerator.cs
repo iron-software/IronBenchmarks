@@ -48,12 +48,12 @@ public class ReportGenerator
         _appConfig = appConfig;
     }
 
-    public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData)
+    public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData, string reportTag)
     {
         CreateReportsFolder();
 
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var reportName = Path.Combine(path ?? "", $"{_appConfig.ReportsFolder}\\Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
+        var reportName = Path.Combine(path ?? "", $"{_appConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
         var report = LoadTemplate();
 
         FillReport(report, timeTableData);
@@ -105,7 +105,7 @@ public class ReportGenerator
 
         FormatTimeTable(sheet, 1, 10);
 
-        return template.SaveAs("template.xlsx"); ;
+        return template.SaveAs("template.xlsx");
     }
 
     private WorkBook LoadTemplate()

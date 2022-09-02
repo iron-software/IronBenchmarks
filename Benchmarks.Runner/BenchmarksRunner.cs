@@ -11,6 +11,10 @@ namespace Benchmarks.Runner
         protected static string resultsFolderName = "Results";
         protected Dictionary<string, string> benchmarkMethods;
 
+        protected abstract string BenchmarkRunnerName { get; }
+        public abstract string NameAndVersion { get; }
+
+
         public BenchmarksRunner(string resultsFolder)
         {
             resultsFolderName = resultsFolder;
@@ -66,9 +70,6 @@ namespace Benchmarks.Runner
             stopwatch.Stop();
             return stopwatch.Elapsed;
         }
-
-        protected abstract string BenchmarkRunnerName { get; }
-        public abstract string NameAndVersion { get; }
 
         protected static TimeSpan GetTimeSpan()
         {
