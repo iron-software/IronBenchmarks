@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Reflection;
+using Benchmarks.IronPdfBench;
 
 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -31,11 +32,15 @@ var host = Host.CreateDefaultBuilder()
 var appConfig = ActivatorUtilities.GetServiceOrCreateInstance<IAppConfig>(host.Services);
 IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 IronBarCode.License.LicenseKey = appConfig.LicenseKeyIronBarCode;
+IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 
 var reportGenerator = new ReportGenerator(appConfig);
 
-var timeTableData = new BarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "BarCode");
+var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
+reportGenerator.GenerateReport(timeTableData, "IronPdf");
 
-timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "IronXL");
+//timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "IronXL");
+
+//timeTableData = new BarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "BarCode");

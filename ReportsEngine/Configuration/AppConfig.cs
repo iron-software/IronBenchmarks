@@ -4,6 +4,7 @@
     {
         public string Environment { get; set; }
         public string LicenseKeyIronXl { get; set; }
+        public string LicenseKeyIronPdf { get; set; }
         public string LicenseKeyIronBarCode { get; set; }
         public string ReportsFolder { get; set; } = "Reports";
         public int ChartWidth { get; set; } = 11;

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IronPdf" Version="2022.8.8138" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Benchmarks.Runner\Benchmarks.Runner.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IronPdfOld">
+      <HintPath>..\packages\IronPdfOld.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
