@@ -1,7 +1,7 @@
-﻿using Benchmarks.Configuration;
+﻿using Benchmarks.ReportsEngine.Configuration;
 using Benchmarks.IronBarCode;
 using Benchmarks.IronXL;
-using Benchmarks.Reporting;
+using Benchmarks.ReportsEngine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
