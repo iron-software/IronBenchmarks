@@ -1,4 +1,4 @@
-# Benchmarks
+# IronBenchmarks
 A simple framework to measure performance of pretty much anything. After measurements it creates a report Excel file with a timetable and a chart.
 
 ### How to use the repository
