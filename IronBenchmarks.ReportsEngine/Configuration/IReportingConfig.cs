@@ -1,4 +1,4 @@
-﻿namespace IronBenchmarks.ReportsEngine.Configuration
+﻿namespace IronBenchmarks.Reporting.Configuration
 {
     public interface IReportingConfig
     {

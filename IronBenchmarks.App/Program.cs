@@ -1,14 +1,14 @@
 ﻿using IronBenchmarks.IronBarCode;
 using IronBenchmarks.IronPdf;
 using IronBenchmarks.IronXL;
-using IronBenchmarks.ReportsEngine;
+using IronBenchmarks.Reporting;
 using IronBenchmarks.App.Configuration;
-using IronBenchmarks.ReportsEngine.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Reflection;
+using IronBenchmarks.Reporting.Configuration;
 
 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
