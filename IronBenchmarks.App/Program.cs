@@ -39,8 +39,8 @@ var reportGenerator = new ReportGenerator(appConfig);
 var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
 reportGenerator.GenerateReport(timeTableData, "IronPdf");
 
-timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "IronXL");
+//var timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "IronXL");
 
-timeTableData = new IronBarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "IronBarCode");
+//var timeTableData = new IronBarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "IronBarCode");

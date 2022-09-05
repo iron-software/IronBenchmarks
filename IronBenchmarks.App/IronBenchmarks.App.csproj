@@ -39,10 +39,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Benchmarks.IronBarCode\Benchmarks.IronBarCode.csproj" />
-	  <ProjectReference Include="..\Benchmarks.IronPdf\Benchmarks.IronPdf.csproj" />
-	  <ProjectReference Include="..\Benchmarks.IronXL\Benchmarks.IronXL.csproj" />
-	  <ProjectReference Include="..\Benchmarks.ReportsEngine\Benchmarks.ReportsEngine.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.IronBarCode\IronBenchmarks.IronBarCode.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.IronPdf\IronBenchmarks.IronPdf.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.IronXL\IronBenchmarks.IronXL.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.ReportsEngine\IronBenchmarks.ReportsEngine.csproj" />
 	</ItemGroup>
 
 </Project>
