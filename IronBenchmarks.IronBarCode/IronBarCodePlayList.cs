@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Benchmarks.Runner;
+using IronBenchmarks.Core;
 
-namespace Benchmarks.IronBarCode
+namespace IronBenchmarks.IronBarCode
 {
     public class IronBarCodePlayList : GenericPlayList
     {

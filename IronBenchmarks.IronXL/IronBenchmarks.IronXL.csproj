@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\IronBenchmarks.Runner\IronBenchmarks.Runner.csproj" />
+		<ProjectReference Include="..\IronBenchmarks.Runner\IronBenchmarks.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

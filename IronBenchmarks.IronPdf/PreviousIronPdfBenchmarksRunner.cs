@@ -1,6 +1,6 @@
 ﻿using IronPdfOld;
 
-namespace Benchmarks.IronPdfBench
+namespace IronBenchmarks.IronPdf
 {
     internal class PreviousIronPdfBenchmarksRunner : BaseBenchmarksRunner
     {
@@ -16,7 +16,7 @@ namespace Benchmarks.IronPdfBench
         {
             var renderer = new ChromePdfRenderer();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 _ = renderer.RenderHtmlAsPdf(" <h1> ~Hello World~ </h1> Made with IronPDF!");
             }
@@ -26,7 +26,7 @@ namespace Benchmarks.IronPdfBench
         {
             var renderer = new ChromePdfRenderer();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var pdf = renderer.RenderHtmlAsPdf(" <h1> ~Hello World~ </h1> Made with IronPDF!");
                 pdf.SaveAs($"{ResultsFolderName}\\PreviousIronPdf{i}.pdf");

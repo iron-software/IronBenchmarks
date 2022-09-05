@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using System;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
     internal class ClosedXmlBenchmarksRunner : BaseBenchmarksRunner<IXLWorksheet>
     {
@@ -30,7 +30,7 @@ namespace Benchmarks.IronXL
         protected override void CreateRandomCells(IXLWorksheet worksheet)
         {
             var rand = new Random();
-            for (int i = 1; i <= RandomCellsRowNumber; i++)
+            for (var i = 1; i <= RandomCellsRowNumber; i++)
             {
                 worksheet.Cell("A" + i).Value = $"=\"{Guid.NewGuid()}\"";
                 worksheet.Cell("B" + i).Value = $"=\"{Guid.NewGuid()}\"";
@@ -52,7 +52,7 @@ namespace Benchmarks.IronXL
         }
         protected override void CreateDateCells(IXLWorksheet worksheet)
         {
-            for (int i = 1; i < DateCellsNumber; i++)
+            for (var i = 1; i < DateCellsNumber; i++)
             {
                 worksheet.Cell("A" + i).Value = DateTime.Now;
             }
@@ -72,19 +72,19 @@ namespace Benchmarks.IronXL
         {
             var rnd = new Random();
 
-            for (int i = 1; i <= GenerateFormulasRowNumber; i++)
+            for (var i = 1; i <= GenerateFormulasRowNumber; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
-                    string cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
-                    string cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
                     worksheet.Cell($"{_letters[j]}{i}").FormulaA1 = $"={cellA}/{cellB}";
                 }
             }
 
-            for (int i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
+            for (var i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
                     worksheet.Cell($"{_letters[j]}{i}").Value = GetRandomRandInt(rnd);
                 }

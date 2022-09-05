@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Benchmarks.Runner;
+using IronBenchmarks.Core;
 
-namespace Benchmarks.IronPdfBench
+namespace IronBenchmarks.IronPdf
 {
     public class IronPdfPlayList : GenericPlayList
     {

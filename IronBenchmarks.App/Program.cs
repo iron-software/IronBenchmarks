@@ -1,9 +1,9 @@
-﻿using Benchmarks.App.Configuration;
-using Benchmarks.IronBarCode;
-using Benchmarks.IronPdfBench;
-using Benchmarks.IronXL;
-using Benchmarks.ReportsEngine;
-using Benchmarks.ReportsEngine.Configuration;
+﻿using IronBenchmarks.IronBarCode;
+using IronBenchmarks.IronPdf;
+using IronBenchmarks.IronXL;
+using IronBenchmarks.ReportsEngine;
+using IronBenchmarks.App.Configuration;
+using IronBenchmarks.ReportsEngine.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

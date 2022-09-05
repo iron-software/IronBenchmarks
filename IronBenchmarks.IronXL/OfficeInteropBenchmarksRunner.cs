@@ -4,11 +4,11 @@ using System.IO;
 using System.Reflection;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
-    internal class OfficeInteropBenchmarksRunner : BaseBenchmarksRunner<Excel.Range>
+    internal class OfficeInteropBenchmarksRunner : BaseBenchmarksRunner<Range>
     {
-        private readonly Excel.Application _excelApp = new Excel.Application();
+        private readonly Application _excelApp = new Application();
 
         public OfficeInteropBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
@@ -19,9 +19,9 @@ namespace Benchmarks.IronXL
             _excelApp.Quit();
         }
 
-        public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Excel.Range))}";
+        public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Range))}";
         protected override string BenchmarkRunnerName => typeof(OfficeInteropBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "Office Interop";
-        protected override void PerformBenchmarkWork(Action<Excel.Range> benchmarkWork, string fileName, bool savingResultingFile)
+        protected override void PerformBenchmarkWork(Action<Range> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = _excelApp.Workbooks.Add();
             var cells = ((Worksheet)workbook.ActiveSheet).Cells;
@@ -47,14 +47,14 @@ namespace Benchmarks.IronXL
 
             workbook.Close(false);
         }
-        protected override void LoadingBigFile(Excel.Range cells)
+        protected override void LoadingBigFile(Range cells)
         {
             _ = _excelApp.Workbooks.Open(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + _largeFileName);
         }
-        protected override void CreateRandomCells(Excel.Range cells)
+        protected override void CreateRandomCells(Range cells)
         {
             var rand = new Random();
-            for (int i = 1; i <= RandomCellsRowNumber; i++)
+            for (var i = 1; i <= RandomCellsRowNumber; i++)
             {
                 cells[i, 1] = $"=\"{Guid.NewGuid()}\"";
                 cells[i, 2] = $"=\"{Guid.NewGuid()}\"";
@@ -74,17 +74,17 @@ namespace Benchmarks.IronXL
                 cells[i, 16] = GetRandomDecimal(rand);
             }
         }
-        protected override void CreateDateCells(Excel.Range cells)
+        protected override void CreateDateCells(Range cells)
         {
-            for (int i = 1; i < DateCellsNumber; i++)
+            for (var i = 1; i < DateCellsNumber; i++)
             {
-                var cell = (Excel.Range)cells[i, 1];
+                var cell = (Range)cells[i, 1];
                 cell.Value = DateTime.Now;
             }
 
             cells.NumberFormat = "DD/MM/YYYY";
         }
-        protected override void MakeStyleChanges(Excel.Range cells)
+        protected override void MakeStyleChanges(Range cells)
         {
             var range = cells.Range["A1", $"O{StyleChangeRowNumber}"];
             range.Value = _cellValue;
@@ -93,23 +93,23 @@ namespace Benchmarks.IronXL
             range.VerticalAlignment = XlVAlign.xlVAlignTop;
             range.HorizontalAlignment = XlHAlign.xlHAlignRight;
         }
-        protected override void GenerateFormulas(Excel.Range cells)
+        protected override void GenerateFormulas(Range cells)
         {
             var rnd = new Random();
 
-            for (int i = 1; i <= GenerateFormulasRowNumber; i++)
+            for (var i = 1; i <= GenerateFormulasRowNumber; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
-                    string cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
-                    string cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
                     cells[i, j] = $"={cellA}/{cellB}";
                 }
             }
 
-            for (int i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
+            for (var i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
                     cells[i, j] = GetRandomRandInt(rnd);
                 }

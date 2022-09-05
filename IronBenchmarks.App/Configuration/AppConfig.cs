@@ -1,4 +1,4 @@
-﻿namespace Benchmarks.App.Configuration
+﻿namespace IronBenchmarks.App.Configuration
 {
     public class AppConfig : IAppConfig
     {

@@ -1,9 +1,9 @@
-﻿using Benchmarks.Runner;
+﻿using IronBenchmarks.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
     public abstract class BaseBenchmarksRunner<T> : BenchmarksRunner
     {
@@ -128,15 +128,15 @@ namespace Benchmarks.IronXL
 
         protected static string GetRandomDate(Random gen)
         {
-            DateTime start = new DateTime(1995, 1, 1);
-            int range = (DateTime.Today - start).Days;
+            var start = new DateTime(1995, 1, 1);
+            var range = (DateTime.Today - start).Days;
             return start.AddDays(gen.Next(range)).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
         protected static decimal GetRandomDecimal(Random rng)
         {
-            byte scale = (byte)rng.Next(29);
-            bool sign = rng.Next(2) == 1;
+            var scale = (byte)rng.Next(29);
+            var sign = rng.Next(2) == 1;
             return new decimal(GetRandomRandInt(rng),
                 GetRandomRandInt(rng),
                 GetRandomRandInt(rng),
@@ -146,8 +146,8 @@ namespace Benchmarks.IronXL
 
         protected static int GetRandomRandInt(Random rng)
         {
-            int firstBits = rng.Next(0, 1 << 4) << 28;
-            int lastBits = rng.Next(0, 1 << 28);
+            var firstBits = rng.Next(0, 1 << 4) << 28;
+            var lastBits = rng.Next(0, 1 << 28);
             return firstBits | lastBits;
         }
 

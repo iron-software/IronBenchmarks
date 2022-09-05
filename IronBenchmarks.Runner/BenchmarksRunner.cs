@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace Benchmarks.Runner
+namespace IronBenchmarks.Core
 {
     public abstract class BenchmarksRunner
     {

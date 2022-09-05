@@ -1,4 +1,4 @@
-﻿using Benchmarks.ReportsEngine.Configuration;
+﻿using IronBenchmarks.ReportsEngine.Configuration;
 using IronXL;
 using IronXL.Drawing.Charts;
 using IronXL.Formatting;
@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Benchmarks.ReportsEngine
+namespace IronBenchmarks.ReportsEngine
 {
     public class ReportGenerator
     {

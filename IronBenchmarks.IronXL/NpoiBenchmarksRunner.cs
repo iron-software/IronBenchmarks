@@ -3,7 +3,7 @@ using NPOI.XSSF.UserModel;
 using System;
 using System.IO;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
     internal class NpoiBenchmarksRunner : BaseBenchmarksRunner<ISheet>
     {
@@ -32,7 +32,7 @@ namespace Benchmarks.IronXL
         protected override void CreateRandomCells(ISheet worksheet)
         {
             var rand = new Random();
-            for (int i = 0; i <= RandomCellsRowNumber; i++)
+            for (var i = 0; i <= RandomCellsRowNumber; i++)
             {
                 var row = worksheet.CreateRow(i);
                 row.CreateCell(0).SetCellValue($"=\"{Guid.NewGuid()}\"");
@@ -58,7 +58,7 @@ namespace Benchmarks.IronXL
             var style = worksheet.Workbook.CreateCellStyle();
             style.DataFormat = worksheet.Workbook.CreateDataFormat().GetFormat("dd/MM/yyyy");
 
-            for (int i = 0; i < DateCellsNumber; i++)
+            for (var i = 0; i < DateCellsNumber; i++)
             {
                 var cell = worksheet.CreateRow(i).CreateCell(0);
                 cell.SetCellValue(DateTime.Now);
@@ -75,10 +75,10 @@ namespace Benchmarks.IronXL
             style.VerticalAlignment = VerticalAlignment.Top;
             style.Alignment = HorizontalAlignment.Right;
 
-            for (int i = 0; i < StyleChangeRowNumber; i++)
+            for (var i = 0; i < StyleChangeRowNumber; i++)
             {
                 var row = worksheet.CreateRow(i);
-                for (int j = 0; j < 15; j++)
+                for (var j = 0; j < 15; j++)
                 {
                     var cell = row.CreateCell(j);
                     cell.SetCellValue(_cellValue);
@@ -90,21 +90,21 @@ namespace Benchmarks.IronXL
         {
             var rnd = new Random();
 
-            for (int i = 0; i < GenerateFormulasRowNumber; i++)
+            for (var i = 0; i < GenerateFormulasRowNumber; i++)
             {
                 var row = worksheet.CreateRow(i);
-                for (int j = 0; j < 10; j++)
+                for (var j = 0; j < 10; j++)
                 {
-                    string cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
-                    string cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
                     row.CreateCell(j).SetCellFormula($"{cellA}/{cellB}");
                 }
             }
 
-            for (int i = GenerateFormulasRowNumber; i < GenerateFormulasRowNumber * 2; i++)
+            for (var i = GenerateFormulasRowNumber; i < GenerateFormulasRowNumber * 2; i++)
             {
                 var row = worksheet.CreateRow(i);
-                for (int j = 0; j < 10; j++)
+                for (var j = 0; j < 10; j++)
                 {
                     row.CreateCell(j).SetCellValue(GetRandomRandInt(rnd));
                 }

@@ -1,7 +1,7 @@
-﻿using Benchmarks.Runner;
+﻿using IronBenchmarks.Core;
 using System.Collections.Generic;
 
-namespace Benchmarks.IronBarCode
+namespace IronBenchmarks.IronBarCode
 {
     public abstract class BaseBenchmarksRunner : BenchmarksRunner
     {

@@ -1,7 +1,7 @@
-﻿using Benchmarks.Runner;
+﻿using IronBenchmarks.Core;
 using System.Collections.Generic;
 
-namespace Benchmarks.IronPdfBench
+namespace IronBenchmarks.IronPdf
 {
     public abstract class BaseBenchmarksRunner : BenchmarksRunner
     {

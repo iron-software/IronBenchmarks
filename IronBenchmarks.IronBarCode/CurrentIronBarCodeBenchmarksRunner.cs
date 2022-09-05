@@ -1,7 +1,7 @@
 ﻿using IronBarCodeOld;
 using System;
 
-namespace Benchmarks.IronBarCode
+namespace IronBenchmarks.IronBarCode
 {
     public class CurrentIronBarCodeBenchmarksRunner : BaseBenchmarksRunner
     {

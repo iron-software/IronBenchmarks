@@ -1,7 +1,7 @@
 ﻿using Aspose.Cells;
 using System;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
     internal class AsposeCellsBenchmarksRunner : BaseBenchmarksRunner<Cells>
     {
@@ -30,7 +30,7 @@ namespace Benchmarks.IronXL
         protected override void CreateRandomCells(Cells cells)
         {
             var rand = new Random();
-            for (int i = 1; i <= RandomCellsRowNumber; i++)
+            for (var i = 1; i <= RandomCellsRowNumber; i++)
             {
                 cells["A" + i].Value = $"=\"{Guid.NewGuid()}\"";
                 cells["B" + i].Value = $"=\"{Guid.NewGuid()}\"";
@@ -55,7 +55,7 @@ namespace Benchmarks.IronXL
             var style = new CellsFactory().CreateStyle();
             style.Number = 15;
 
-            for (int i = 1; i < DateCellsNumber; i++)
+            for (var i = 1; i < DateCellsNumber; i++)
             {
                 var cell = cells["A" + i];
                 cell.PutValue(DateTime.Now);
@@ -80,19 +80,19 @@ namespace Benchmarks.IronXL
         {
             var rnd = new Random();
 
-            for (int i = 1; i <= GenerateFormulasRowNumber; i++)
+            for (var i = 1; i <= GenerateFormulasRowNumber; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
-                    string cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
-                    string cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellA = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
+                    var cellB = $"{_letters[rnd.Next(1, 10)]}{rnd.Next(GenerateFormulasRowNumber + 1, GenerateFormulasRowNumber * 2)}";
                     cells[$"{_letters[j]}{i}"].Formula = $"={cellA}/{cellB}";
                 }
             }
 
-            for (int i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
+            for (var i = GenerateFormulasRowNumber + 1; i <= GenerateFormulasRowNumber * 2; i++)
             {
-                for (int j = 1; j <= 10; j++)
+                for (var j = 1; j <= 10; j++)
                 {
                     cells[$"{_letters[j]}{i}"].Value = GetRandomRandInt(rnd);
                 }

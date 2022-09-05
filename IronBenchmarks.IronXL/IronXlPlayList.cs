@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Benchmarks.Runner;
+using IronBenchmarks.Core;
 
-namespace Benchmarks.IronXL
+namespace IronBenchmarks.IronXL
 {
     public class IronXlPlayList : GenericPlayList
     {

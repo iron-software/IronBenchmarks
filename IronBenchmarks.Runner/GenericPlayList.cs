@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Benchmarks.Runner
+namespace IronBenchmarks.Core
 {
     public abstract class GenericPlayList
     {
