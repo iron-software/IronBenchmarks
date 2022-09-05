@@ -71,57 +71,47 @@ namespace Benchmarks.IronXL
 
         public void RandomCellsBenchmark()
         {
-            var randomCellsFileName = string.Format(CultureInfo.InvariantCulture, _randomCellsFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
-
-            PerformBenchmarkWork(CreateRandomCells, randomCellsFileName, false);
+            PerformBenchmarkWork(CreateRandomCells);
         }
         public void RandomCellsBenchmarkSaveFile()
         {
-            var randomCellsFileName = string.Format(CultureInfo.InvariantCulture, _randomCellsFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
+            var randomCellsFileName = GetResultFileName(_randomCellsFileNameTemplate);
 
-            PerformBenchmarkWork(CreateRandomCells, randomCellsFileName, false);
+            PerformBenchmarkWork(CreateRandomCells, randomCellsFileName, true);
         }
         public void DateCellsBenchmark()
         {
-            var dateCellsFileName = string.Format(CultureInfo.InvariantCulture, _dateCellsFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
-
-            PerformBenchmarkWork(CreateDateCells, dateCellsFileName, false);
+            PerformBenchmarkWork(CreateDateCells);
         }
         public void DateCellsBenchmarkSaveFile()
         {
-            var dateCellsFileName = string.Format(CultureInfo.InvariantCulture, _dateCellsFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
+            var dateCellsFileName = GetResultFileName(_dateCellsFileNameTemplate);
 
-            PerformBenchmarkWork(CreateDateCells, dateCellsFileName, false);
+            PerformBenchmarkWork(CreateDateCells, dateCellsFileName, true);
         }
         public void StyleChangesBenchmark()
         {
-            var styleChangeFileName = string.Format(CultureInfo.InvariantCulture, _styleChangeFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
-
-            PerformBenchmarkWork(MakeStyleChanges, styleChangeFileName, false);
+            PerformBenchmarkWork(MakeStyleChanges);
         }
         public void StyleChangesBenchmarkSaveFile()
         {
-            var styleChangeFileName = string.Format(CultureInfo.InvariantCulture, _styleChangeFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
+            var styleChangeFileName = GetResultFileName(_styleChangeFileNameTemplate);
 
-            PerformBenchmarkWork(MakeStyleChanges, styleChangeFileName, false);
+            PerformBenchmarkWork(MakeStyleChanges, styleChangeFileName, true);
         }
         public void LoadingBigFileBenchmark()
         {
-            var loadingBigFileFileName = string.Format(CultureInfo.InvariantCulture, _loadingLargeFileFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
-
-            PerformBenchmarkWork(LoadingBigFile, loadingBigFileFileName, false);
+            PerformBenchmarkWork(LoadingBigFile);
         }
         public void GenerateFormulasBenchmark()
         {
-            var genrateFormulasFileName = string.Format(CultureInfo.InvariantCulture, _generateFormulasFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
-
-            PerformBenchmarkWork(GenerateFormulas, genrateFormulasFileName, false);
+            PerformBenchmarkWork(GenerateFormulas);
         }
         public void GenerateFormulasBenchmarkSaveFile()
         {
-            var genrateFormulasFileName = string.Format(CultureInfo.InvariantCulture, _generateFormulasFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
+            var genrateFormulasFileName = GetResultFileName(_generateFormulasFileNameTemplate);
 
-            PerformBenchmarkWork(GenerateFormulas, genrateFormulasFileName, false);
+            PerformBenchmarkWork(GenerateFormulas, genrateFormulasFileName, true);
         }
 
         protected abstract void PerformBenchmarkWork(Action<T> benchmarkWork, string fileName, bool savingResultingFile);
@@ -130,6 +120,11 @@ namespace Benchmarks.IronXL
         protected abstract void CreateDateCells(T worksheet);
         protected abstract void MakeStyleChanges(T worksheet);
         protected abstract void GenerateFormulas(T worksheet);
+
+        private void PerformBenchmarkWork(Action<T> benchmarkWork)
+        {
+            PerformBenchmarkWork(benchmarkWork, "", false);
+        }
 
         protected static string GetRandomDate(Random gen)
         {
@@ -154,6 +149,11 @@ namespace Benchmarks.IronXL
             int firstBits = rng.Next(0, 1 << 4) << 28;
             int lastBits = rng.Next(0, 1 << 28);
             return firstBits | lastBits;
+        }
+
+        private string GetResultFileName(string template)
+        {
+            return string.Format(CultureInfo.InvariantCulture, template, resultsFolderName, BenchmarkRunnerName);
         }
     }
 }
