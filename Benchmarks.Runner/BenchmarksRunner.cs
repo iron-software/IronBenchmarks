@@ -8,16 +8,14 @@ namespace Benchmarks.Runner
 {
     public abstract class BenchmarksRunner
     {
-        protected static string resultsFolderName = "Results";
-        protected Dictionary<string, string> benchmarkMethods;
-
-        protected abstract string BenchmarkRunnerName { get; }
         public abstract string NameAndVersion { get; }
-
+        protected static string ResultsFolderName { get; set; } = "Results";
+        protected Dictionary<string, string> BenchmarkMethods { get; set; }
+        protected abstract string BenchmarkRunnerName { get; }
 
         public BenchmarksRunner(string resultsFolder)
         {
-            resultsFolderName = resultsFolder;
+            ResultsFolderName = resultsFolder;
         }
 
         public Dictionary<string, TimeSpan> RunBenchmarks()
@@ -37,7 +35,7 @@ namespace Benchmarks.Runner
             {
                 var i = 0;
 
-                foreach (var benchmark in benchmarkMethods)
+                foreach (var benchmark in BenchmarkMethods)
                 {
                     var benchmarkAction = GetAction(benchmark.Key);
                     timeTable.Add(benchmark.Value, RunBenchmark(benchmarkAction));
@@ -87,9 +85,9 @@ namespace Benchmarks.Runner
 
         private static void CreateResultsFolder()
         {
-            if (!Directory.Exists(resultsFolderName))
+            if (!Directory.Exists(ResultsFolderName))
             {
-                Directory.CreateDirectory(resultsFolderName);
+                Directory.CreateDirectory(ResultsFolderName);
             }
         }
     }

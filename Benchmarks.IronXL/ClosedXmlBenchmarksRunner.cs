@@ -3,7 +3,7 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class ClosedXmlBenchmarksRunner : IronXlBenchmarksRunner<IXLWorksheet>
+    internal class ClosedXmlBenchmarksRunner : BaseBenchmarksRunner<IXLWorksheet>
     {
         public ClosedXmlBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {

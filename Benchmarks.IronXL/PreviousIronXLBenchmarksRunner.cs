@@ -4,7 +4,7 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class PreviousIronXLBenchmarksRunner : IronXlBenchmarksRunner<WorkSheet>
+    internal class PreviousIronXLBenchmarksRunner : BaseBenchmarksRunner<WorkSheet>
     {
         public PreviousIronXLBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {

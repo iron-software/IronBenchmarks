@@ -2,7 +2,7 @@
 
 namespace Benchmarks.IronPdfBench
 {
-    internal class CurrentIronPdfBenchmarksRunner : IronPdfBenchmarksRunner
+    internal class CurrentIronPdfBenchmarksRunner : BaseBenchmarksRunner
     {
         public CurrentIronPdfBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
@@ -29,7 +29,7 @@ namespace Benchmarks.IronPdfBench
             for (int i = 0; i < 10; i++)
             {
                 var pdf = renderer.RenderHtmlAsPdf(" <h1> ~Hello World~ </h1> Made with IronPDF!");
-                pdf.SaveAs($"{resultsFolderName}\\CurrentIronPdf{i}.pdf");
+                pdf.SaveAs($"{ResultsFolderName}\\CurrentIronPdf{i}.pdf");
             }
         }
     }

@@ -3,7 +3,7 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class AsposeCellsBenchmarksRunner : IronXlBenchmarksRunner<Cells>
+    internal class AsposeCellsBenchmarksRunner : BaseBenchmarksRunner<Cells>
     {
         public AsposeCellsBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {

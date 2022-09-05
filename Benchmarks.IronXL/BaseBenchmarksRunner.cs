@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Benchmarks.IronXL
 {
-    public abstract class IronXlBenchmarksRunner<T> : BenchmarksRunner
+    public abstract class BaseBenchmarksRunner<T> : BenchmarksRunner
     {
         public int DateCellsNumber = 80000;
         public int RandomCellsRowNumber = 20000;
@@ -51,11 +51,11 @@ namespace Benchmarks.IronXL
         };
 
 
-        protected string LoadingLargeFileName => string.Format(CultureInfo.InvariantCulture, _loadingLargeFileFileNameTemplate, resultsFolderName, BenchmarkRunnerName);
+        protected string LoadingLargeFileName => string.Format(CultureInfo.InvariantCulture, _loadingLargeFileFileNameTemplate, ResultsFolderName, BenchmarkRunnerName);
 
-        public IronXlBenchmarksRunner(string resultsFolder) : base(resultsFolder)
+        public BaseBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
-            benchmarkMethods = new Dictionary<string, string>()
+            BenchmarkMethods = new Dictionary<string, string>()
             {
                 { "RandomCellsBenchmark", "Create 320K cells\nwith random data" },
                 { "RandomCellsBenchmarkSaveFile", "Create 320K cells\nwith random data (save file)" },
@@ -153,7 +153,7 @@ namespace Benchmarks.IronXL
 
         private string GetResultFileName(string template)
         {
-            return string.Format(CultureInfo.InvariantCulture, template, resultsFolderName, BenchmarkRunnerName);
+            return string.Format(CultureInfo.InvariantCulture, template, ResultsFolderName, BenchmarkRunnerName);
         }
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace Benchmarks.IronBarCode
 {
-    public class PreviousIronBarCodeBenchmarksRunner : IronBarCodeBenchmarksRunner
+    public class PreviousIronBarCodeBenchmarksRunner : BaseBenchmarksRunner
     {
         public PreviousIronBarCodeBenchmarksRunner(string resultFolder) : base(resultFolder) { }
 
@@ -25,7 +25,7 @@ namespace Benchmarks.IronBarCode
             {
                 var qr = QRCodeWriter.CreateQrCode(Guid.NewGuid().ToString(), 500, QRCodeWriter.QrErrorCorrectionLevel.Medium);
 
-                qr.SaveAsPng($"{resultsFolderName}\\{BenchmarkRunnerName}QR{i}.png");
+                qr.SaveAsPng($"{ResultsFolderName}\\{BenchmarkRunnerName}QR{i}.png");
             }
         }
     }

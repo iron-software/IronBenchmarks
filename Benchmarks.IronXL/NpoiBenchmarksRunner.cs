@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Benchmarks.IronXL
 {
-    internal class NpoiBenchmarksRunner : IronXlBenchmarksRunner<ISheet>
+    internal class NpoiBenchmarksRunner : BaseBenchmarksRunner<ISheet>
     {
         public NpoiBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {

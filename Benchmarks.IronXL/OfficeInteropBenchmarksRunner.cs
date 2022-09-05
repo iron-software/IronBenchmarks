@@ -6,7 +6,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Benchmarks.IronXL
 {
-    internal class OfficeInteropBenchmarksRunner : IronXlBenchmarksRunner<Excel.Range>
+    internal class OfficeInteropBenchmarksRunner : BaseBenchmarksRunner<Excel.Range>
     {
         private readonly Excel.Application _excelApp = new Excel.Application();
 
