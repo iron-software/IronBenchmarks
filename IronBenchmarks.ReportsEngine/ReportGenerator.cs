@@ -12,7 +12,7 @@ namespace Benchmarks.ReportsEngine
 {
     public class ReportGenerator
     {
-        private readonly IAppConfig _appConfig;
+        private readonly IReportingConfig _reportConfig;
         private string _headerRowAddress = "B27:K27";
         private int _numberOfConteders = 0;
         private int _numberOfBenchmarks = 0;
@@ -46,9 +46,9 @@ namespace Benchmarks.ReportsEngine
         {26, "Z"}
     };
 
-        public ReportGenerator(IAppConfig appConfig)
+        public ReportGenerator(IReportingConfig reportConfig)
         {
-            _appConfig = appConfig;
+            _reportConfig = reportConfig;
         }
 
         public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData, string reportTag)
@@ -56,7 +56,7 @@ namespace Benchmarks.ReportsEngine
             CreateReportsFolder();
 
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportName = Path.Combine(path ?? "", $"{_appConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
+            var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
             var report = LoadTemplate();
 
             FillReport(report, timeTableData);
@@ -72,7 +72,7 @@ namespace Benchmarks.ReportsEngine
 
             _numberOfConteders = timeTableData.Count;
             _numberOfBenchmarks = timeTableData.FirstOrDefault().Value.Values.Count;
-            _headerRowAddress = $"B{_appConfig.TimeTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_appConfig.TimeTableStartingRow}";
+            _headerRowAddress = $"B{_reportConfig.TimeTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.TimeTableStartingRow}";
 
             ClearTemplateMockData(sheet);
 
@@ -124,7 +124,7 @@ namespace Benchmarks.ReportsEngine
         private void CreateReportsFolder()
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", _appConfig.ReportsFolder);
+            var reportsFolder = Path.Combine(path ?? "", _reportConfig.ReportsFolder);
 
             if (!Directory.Exists(reportsFolder))
             {
@@ -148,7 +148,7 @@ namespace Benchmarks.ReportsEngine
 
         private void FillRow(WorkSheet sheet, int i, KeyValuePair<string, Dictionary<string, TimeSpan>>? contender)
         {
-            var seriesRowNumber = _appConfig.TimeTableStartingRow + i;
+            var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
             var times = contender?.Value.Values.ToArray();
 
@@ -159,7 +159,7 @@ namespace Benchmarks.ReportsEngine
 
         private void ClearSeriesRow(WorkSheet sheet, int i)
         {
-            var seriesRowNumber = _appConfig.TimeTableStartingRow + i;
+            var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
 
             foreach (var cell in sheet[seriesRowAddress])
@@ -174,7 +174,7 @@ namespace Benchmarks.ReportsEngine
         {
             for (var i = 1; i <= numberOfRowsToFormat; i++)
             {
-                var seriesRowNumber = _appConfig.TimeTableStartingRow + i;
+                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
                 var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber}";
 
                 FormatRow(sheet, seriesRowAddress);
@@ -183,7 +183,7 @@ namespace Benchmarks.ReportsEngine
 
         private void PutInMockData(WorkSheet sheet)
         {
-            PutInMockHeaderData(sheet, $"B{_appConfig.TimeTableStartingRow}:K{_appConfig.TimeTableStartingRow}");
+            PutInMockHeaderData(sheet, $"B{_reportConfig.TimeTableStartingRow}:K{_reportConfig.TimeTableStartingRow}");
 
             PutInMockTimeTableData(sheet);
         }
@@ -192,7 +192,7 @@ namespace Benchmarks.ReportsEngine
         {
             for (var i = 1; i <= 1; i++)
             {
-                var seriesRowNumber = _appConfig.TimeTableStartingRow + i;
+                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
                 var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
 
                 PutInMockSeriesData(sheet, seriesRowAddress);
@@ -252,11 +252,11 @@ namespace Benchmarks.ReportsEngine
 
         private void AddChart(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfCellsInSeries)
         {
-            var chart = sheet.CreateChart(ChartType.Bar, 0, 0, _appConfig.ChartHeight, _appConfig.ChartWidth);
+            var chart = sheet.CreateChart(ChartType.Bar, 0, 0, _reportConfig.ChartHeight, _reportConfig.ChartWidth);
 
             for (var i = 1; i <= numberOfSeriesToAdd; i++)
             {
-                var seriesRowNumber = _appConfig.TimeTableStartingRow + i;
+                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
                 var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfCellsInSeries + 1]}{seriesRowNumber}";
 
                 var range = sheet[seriesRowAddress];
@@ -266,7 +266,7 @@ namespace Benchmarks.ReportsEngine
                 series.Title = sheet[$"A{seriesRowNumber}"].StringValue;
             }
 
-            chart.SetTitle(_appConfig.ChartTitle);
+            chart.SetTitle(_reportConfig.ChartTitle);
             chart.SetLegendPosition(LegendPosition.Bottom);
             chart.Plot();
         }

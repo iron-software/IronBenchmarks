@@ -1,4 +1,5 @@
-﻿using Benchmarks.IronBarCode;
+﻿using Benchmarks.App.Configuration;
+using Benchmarks.IronBarCode;
 using Benchmarks.IronPdfBench;
 using Benchmarks.IronXL;
 using Benchmarks.ReportsEngine;
@@ -25,6 +26,8 @@ var host = Host.CreateDefaultBuilder()
     {
         services.AddSingleton<IAppConfig, AppConfig>(
             _ => configurationRoot.GetSection(nameof(AppConfig)).Get<AppConfig>());
+        services.AddSingleton<IReportingConfig, ReportingConfig>(
+            _ => configurationRoot.GetSection(nameof(ReportingConfig)).Get<ReportingConfig>());
     })
     .UseSerilog()
     .Build();
@@ -34,7 +37,8 @@ IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 IronBarCode.License.LicenseKey = appConfig.LicenseKeyIronBarCode;
 IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 
-var reportGenerator = new ReportGenerator(appConfig);
+var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
+var reportGenerator = new ReportGenerator(reportConfig);
 
 var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
 reportGenerator.GenerateReport(timeTableData, "IronPdf");
