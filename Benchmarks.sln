@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.Runner", "Benchm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks.IronXL", "Benchmarks.IronXL\Benchmarks.IronXL.csproj", "{CB8D5F9B-A172-46CD-B9EA-DDF4079147E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.ReportsEngine", "ReportsEngine\Benchmarks.ReportsEngine.csproj", "{7E07E299-F455-4A18-BA01-07458B3CC968}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.ReportsEngine", "Benchmarks.ReportsEngine\Benchmarks.ReportsEngine.csproj", "{7E07E299-F455-4A18-BA01-07458B3CC968}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.IronPdf", "Benchmarks.IronPdf\Benchmarks.IronPdf.csproj", "{6B6F6E26-85FA-41E2-AFC7-75ADBF293B3A}"
 EndProject
