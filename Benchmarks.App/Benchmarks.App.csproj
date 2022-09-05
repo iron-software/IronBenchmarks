@@ -42,7 +42,7 @@
 	  <ProjectReference Include="..\Benchmarks.IronBarCode\Benchmarks.IronBarCode.csproj" />
 	  <ProjectReference Include="..\Benchmarks.IronPdf\Benchmarks.IronPdf.csproj" />
 	  <ProjectReference Include="..\Benchmarks.IronXL\Benchmarks.IronXL.csproj" />
-	  <ProjectReference Include="..\ReportsEngine\Benchmarks.ReportsEngine.csproj" />
+	  <ProjectReference Include="..\Benchmarks.ReportsEngine\Benchmarks.ReportsEngine.csproj" />
 	</ItemGroup>
 
 </Project>
