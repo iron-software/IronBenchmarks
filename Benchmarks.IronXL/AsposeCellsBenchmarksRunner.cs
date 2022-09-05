@@ -3,13 +3,13 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class AsposeBenchmarkRunner : IronXlBenchmarksRunner<Cells>
+    internal class AsposeCellsBenchmarksRunner : IronXlBenchmarksRunner<Cells>
     {
-        public AsposeBenchmarkRunner(string resultsFolder) : base(resultsFolder)
+        public AsposeCellsBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
         }
 
-        protected override string BenchmarkRunnerName => typeof(AsposeBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "Aspose";
+        protected override string BenchmarkRunnerName => typeof(AsposeCellsBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "Aspose Cells";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Cell))}";
         protected override void PerformBenchmarkWork(Action<Cells> benchmarkWork, string fileName, bool savingResultingFile)
         {

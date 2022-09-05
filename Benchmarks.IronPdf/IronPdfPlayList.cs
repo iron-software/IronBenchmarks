@@ -8,8 +8,8 @@ namespace Benchmarks.IronPdfBench
     {
         public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList(string resultsFolder)
         {
-            var curPdfRunner = new CurrentPdfBenchmarksRunner(resultsFolder);
-            var prevPdfRunner = new PreviousPdfBenchmarksRunner(resultsFolder);
+            var curPdfRunner = new CurrentIronPdfBenchmarksRunner(resultsFolder);
+            var prevPdfRunner = new PreviousIronPdfBenchmarksRunner(resultsFolder);
 
             return new Dictionary<string, Dictionary<string, TimeSpan>>()
             {

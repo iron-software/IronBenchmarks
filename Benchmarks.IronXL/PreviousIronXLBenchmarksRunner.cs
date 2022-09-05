@@ -4,13 +4,13 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class PreviousIronXLBenchmarkRunner : IronXlBenchmarksRunner<WorkSheet>
+    internal class PreviousIronXLBenchmarksRunner : IronXlBenchmarksRunner<WorkSheet>
     {
-        public PreviousIronXLBenchmarkRunner(string resultsFolder) : base(resultsFolder)
+        public PreviousIronXLBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
         }
 
-        protected override string BenchmarkRunnerName => typeof(PreviousIronXLBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "CurrentIronXL";
+        protected override string BenchmarkRunnerName => typeof(PreviousIronXLBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "IronXL";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Cell))}";
         protected override void PerformBenchmarkWork(Action<WorkSheet> benchmarkWork, string fileName, bool savingResultingFile)
         {

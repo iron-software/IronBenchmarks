@@ -6,11 +6,11 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Benchmarks.IronXL
 {
-    internal class OfficeInteropBenchmarkRunner : IronXlBenchmarksRunner<Excel.Range>
+    internal class OfficeInteropBenchmarksRunner : IronXlBenchmarksRunner<Excel.Range>
     {
         private readonly Excel.Application _excelApp = new Excel.Application();
 
-        public OfficeInteropBenchmarkRunner(string resultsFolder) : base(resultsFolder)
+        public OfficeInteropBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Benchmarks.IronXL
         }
 
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Excel.Range))}";
-        protected override string BenchmarkRunnerName => typeof(OfficeInteropBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "OfficeInterop";
+        protected override string BenchmarkRunnerName => typeof(OfficeInteropBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "Office Interop";
         protected override void PerformBenchmarkWork(Action<Excel.Range> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = _excelApp.Workbooks.Add();

@@ -3,13 +3,13 @@ using System;
 
 namespace Benchmarks.IronXL
 {
-    internal class ClosedXmlBenchmarkRunner : IronXlBenchmarksRunner<IXLWorksheet>
+    internal class ClosedXmlBenchmarksRunner : IronXlBenchmarksRunner<IXLWorksheet>
     {
-        public ClosedXmlBenchmarkRunner(string resultsFolder) : base(resultsFolder)
+        public ClosedXmlBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
         }
 
-        protected override string BenchmarkRunnerName => typeof(ClosedXmlBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "ClosedXml";
+        protected override string BenchmarkRunnerName => typeof(ClosedXmlBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "ClosedXml";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(IXLCell))}";
         protected override void PerformBenchmarkWork(Action<IXLWorksheet> benchmarkWork, string fileName, bool savingResultingFile)
         {

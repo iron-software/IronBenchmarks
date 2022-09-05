@@ -8,18 +8,18 @@ namespace Benchmarks.IronXL
     {
         public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList(string resultsFolder)
         {
-            var curIronXlRunner = new CurrentIronXLBenchmarkRunner(resultsFolder);
-            var prevIronXlRunner = new PreviousIronXLBenchmarkRunner(resultsFolder);
-            var asposeRunner = new AsposeBenchmarkRunner(resultsFolder);
-            var npoiRunner = new NpoiBenchmarkRunner(resultsFolder);
-            var closedXmlRunner = new ClosedXmlBenchmarkRunner(resultsFolder);
+            var curIronXlRunner = new CurrentIronXLBenchmarksRunner(resultsFolder);
+            var prevIronXlRunner = new PreviousIronXLBenchmarksRunner(resultsFolder);
+            var asposeRunner = new AsposeCellsBenchmarksRunner(resultsFolder);
+            var npoiRunner = new NpoiBenchmarksRunner(resultsFolder);
+            var closedXmlRunner = new ClosedXmlBenchmarksRunner(resultsFolder);
             //var officeRunner = new OfficeInteropBenchmarkRunner(resultsFolder);
 
             var result = new Dictionary<string, Dictionary<string, TimeSpan>>()
             {
+                { asposeRunner.NameAndVersion, asposeRunner.RunBenchmarks() },
                 { curIronXlRunner.NameAndVersion, curIronXlRunner.RunBenchmarks() },
                 { prevIronXlRunner.NameAndVersion, prevIronXlRunner.RunBenchmarks() },
-                { asposeRunner.NameAndVersion, asposeRunner.RunBenchmarks() },
                 { npoiRunner.NameAndVersion, npoiRunner.RunBenchmarks() },
                 { closedXmlRunner.NameAndVersion, closedXmlRunner.RunBenchmarks() },
                 //{ officeRunner.NameAndVersion, officeRunner.RunBenchmarks() },

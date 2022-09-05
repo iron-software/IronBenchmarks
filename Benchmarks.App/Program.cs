@@ -36,11 +36,11 @@ IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 
 var reportGenerator = new ReportGenerator(appConfig);
 
-var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "IronPdf");
+//var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "IronPdf");
 
-//timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
-//reportGenerator.GenerateReport(timeTableData, "IronXL");
+var timeTableData = new IronXlPlayList().RunPlayList(appConfig.ResultsFolderName);
+reportGenerator.GenerateReport(timeTableData, "IronXL");
 
-//timeTableData = new BarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
+//timeTableData = new IronBarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
 //reportGenerator.GenerateReport(timeTableData, "BarCode");

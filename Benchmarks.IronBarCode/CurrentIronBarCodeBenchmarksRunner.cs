@@ -3,13 +3,13 @@ using System;
 
 namespace Benchmarks.IronBarCode
 {
-    public class PreviousBarCodeBenchmarkRunner : BarcodeBenchmarksRunner
+    public class CurrentIronBarCodeBenchmarksRunner : IronBarCodeBenchmarksRunner
     {
-        public PreviousBarCodeBenchmarkRunner(string resultFolder) : base(resultFolder) { }
+        public CurrentIronBarCodeBenchmarksRunner(string resultFolder) : base(resultFolder) { }
 
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(BarcodeEncoding))}";
 
-        protected override string BenchmarkRunnerName => typeof(PreviousBarCodeBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "Previous Barcode";
+        protected override string BenchmarkRunnerName => typeof(CurrentIronBarCodeBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "IronBarCode";
 
         public override void Generate500QrCodes()
         {

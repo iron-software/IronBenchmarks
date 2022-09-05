@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Benchmarks.IronBarCode
 {
-    public abstract class BarcodeBenchmarksRunner : BenchmarksRunner
+    public abstract class IronBarCodeBenchmarksRunner : BenchmarksRunner
     {
-        public BarcodeBenchmarksRunner(string resultsFolder) : base(resultsFolder)
+        public IronBarCodeBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
             benchmarkMethods = new Dictionary<string, string>()
             {

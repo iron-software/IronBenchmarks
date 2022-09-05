@@ -5,13 +5,13 @@ using System.IO;
 
 namespace Benchmarks.IronXL
 {
-    internal class NpoiBenchmarkRunner : IronXlBenchmarksRunner<ISheet>
+    internal class NpoiBenchmarksRunner : IronXlBenchmarksRunner<ISheet>
     {
-        public NpoiBenchmarkRunner(string resultsFolder) : base(resultsFolder)
+        public NpoiBenchmarksRunner(string resultsFolder) : base(resultsFolder)
         {
         }
 
-        protected override string BenchmarkRunnerName => typeof(NpoiBenchmarkRunner).Name.Replace("BenchmarkRunner", "") ?? "NPOI";
+        protected override string BenchmarkRunnerName => typeof(NpoiBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "NPOI";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(ICell))}";
         protected override void PerformBenchmarkWork(Action<ISheet> benchmarkWork, string fileName, bool savingResultingFile)
         {
