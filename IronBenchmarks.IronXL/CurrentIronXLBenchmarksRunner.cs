@@ -95,5 +95,10 @@ namespace IronBenchmarks.IronXL
                 }
             }
         }
+
+        protected override void SortRange(WorkSheet worksheet)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

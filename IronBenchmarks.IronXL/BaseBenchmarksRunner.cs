@@ -17,8 +17,10 @@ namespace IronBenchmarks.IronXL
         protected static string _styleChangeFileNameTemplate = "{0}\\{1}_StyleChange.xlsx";
         protected static string _loadingLargeFileFileNameTemplate = "{0}\\{1}_LoadingBigFile.xlsx";
         protected static string _generateFormulasFileNameTemplate = "{0}\\{1}_GenerateFormulas.xlsx";
+        protected static string _sortRangeFileNameTemplate = "{0}\\{1}_SortRange.xlsx";
         protected static string _cellValue = "Cell";
         protected static string _largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
+        protected static string _sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
 
         protected static readonly Dictionary<int, string> _letters = new Dictionary<int, string>()
         {
@@ -57,15 +59,16 @@ namespace IronBenchmarks.IronXL
         {
             BenchmarkMethods = new Dictionary<string, string>()
             {
-                { "RandomCellsBenchmark", "Create 320K cells\nwith random data" },
-                { "RandomCellsBenchmarkSaveFile", "Create 320K cells\nwith random data (save file)" },
-                { "DateCellsBenchmark", "Create 80K cells\nwith Date data" },
-                { "DateCellsBenchmarkSaveFile", "Create 80K cells\nwith Date data (save file)" },
-                { "StyleChangesBenchmark", "Create 90K cells\nand change the styles" },
-                { "StyleChangesBenchmarkSaveFile", "Create 90K cells and\nchange the styles (save file)" },
-                { "LoadingBigFileBenchmark", "Loading a file with\n640K unique cells" },
-                { "GenerateFormulasBenchmark", "Generating 100K cells with formulas\nthat depend on other cells" },
-                { "GenerateFormulasBenchmarkSaveFile", "Generating 100K cells with formulas\nthat depend on other cells (save file)" },
+                //{ "RandomCellsBenchmark", "Create 320K cells\nwith random data" },
+                //{ "RandomCellsBenchmarkSaveFile", "Create 320K cells\nwith random data (save file)" },
+                //{ "DateCellsBenchmark", "Create 80K cells\nwith Date data" },
+                //{ "DateCellsBenchmarkSaveFile", "Create 80K cells\nwith Date data (save file)" },
+                //{ "StyleChangesBenchmark", "Create 90K cells\nand change the styles" },
+                //{ "StyleChangesBenchmarkSaveFile", "Create 90K cells and\nchange the styles (save file)" },
+                //{ "LoadingBigFileBenchmark", "Loading a file with\n640K unique cells" },
+                //{ "GenerateFormulasBenchmark", "Generating 100K cells with formulas\nthat depend on other cells" },
+                //{ "GenerateFormulasBenchmarkSaveFile", "Generating 100K cells with formulas\nthat depend on other cells (save file)" },
+                { "SortRangeBenchmark", "Sort a range of 100x1000 cells by 1 column" },
             };
         }
 
@@ -113,6 +116,12 @@ namespace IronBenchmarks.IronXL
 
             PerformBenchmarkWork(GenerateFormulas, genrateFormulasFileName, true);
         }
+        public void SortRangeBenchmark()
+        {
+            var sortRangeFileName = GetResultFileName(_sortRangeFileNameTemplate);
+
+            PerformBenchmarkWork(SortRange, sortRangeFileName, false);
+        }
 
         protected abstract void PerformBenchmarkWork(Action<T> benchmarkWork, string fileName, bool savingResultingFile);
         protected abstract void LoadingBigFile(T worksheet);
@@ -120,6 +129,7 @@ namespace IronBenchmarks.IronXL
         protected abstract void CreateDateCells(T worksheet);
         protected abstract void MakeStyleChanges(T worksheet);
         protected abstract void GenerateFormulas(T worksheet);
+        protected abstract void SortRange(T worksheet);
 
         private void PerformBenchmarkWork(Action<T> benchmarkWork)
         {
