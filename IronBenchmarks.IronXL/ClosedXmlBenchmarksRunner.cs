@@ -11,6 +11,8 @@ namespace IronBenchmarks.IronXL
 
         protected override string BenchmarkRunnerName => typeof(ClosedXmlBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "ClosedXml";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(IXLCell))}";
+        public override string LicenseKey { set => throw new NotImplementedException(); }
+
         protected override void PerformBenchmarkWork(Action<IXLWorksheet> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = new XLWorkbook();

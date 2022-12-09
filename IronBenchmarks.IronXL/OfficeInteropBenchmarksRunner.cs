@@ -21,6 +21,8 @@ namespace IronBenchmarks.IronXL
 
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Range))}";
         protected override string BenchmarkRunnerName => typeof(OfficeInteropBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "Office Interop";
+        public override string LicenseKey { set => throw new NotImplementedException(); }
+
         protected override void PerformBenchmarkWork(Action<Range> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = _excelApp.Workbooks.Add();

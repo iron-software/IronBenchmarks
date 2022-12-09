@@ -13,6 +13,8 @@ namespace IronBenchmarks.IronXL
 
         protected override string BenchmarkRunnerName => typeof(NpoiBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "NPOI";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(ICell))}";
+        public override string LicenseKey { set => throw new NotImplementedException(); }
+
         protected override void PerformBenchmarkWork(Action<ISheet> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = new XSSFWorkbook();

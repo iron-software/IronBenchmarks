@@ -11,6 +11,8 @@ namespace IronBenchmarks.IronXL
 
         protected override string BenchmarkRunnerName => typeof(AsposeCellsBenchmarksRunner).Name.Replace("BenchmarksRunner", "") ?? "Aspose Cells";
         public override string NameAndVersion => $"{BenchmarkRunnerName} v.{GetAssemblyVersion(typeof(Cell))}";
+        public override string LicenseKey { set => throw new NotImplementedException(); }
+
         protected override void PerformBenchmarkWork(Action<Cells> benchmarkWork, string fileName, bool savingResultingFile)
         {
             var workbook = new Workbook();

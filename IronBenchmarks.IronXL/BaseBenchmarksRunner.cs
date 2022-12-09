@@ -11,6 +11,7 @@ namespace IronBenchmarks.IronXL
         public int RandomCellsRowNumber = 20000;
         public int StyleChangeRowNumber = 6000;
         public int GenerateFormulasRowNumber = 1000;
+        public abstract string LicenseKey { set; }
 
         protected static string _randomCellsFileNameTemplate = "{0}\\{1}_RandomCells.xlsx";
         protected static string _dateCellsFileNameTemplate = "{0}\\{1}_DateCells.xlsx";
@@ -59,16 +60,16 @@ namespace IronBenchmarks.IronXL
         {
             BenchmarkMethods = new Dictionary<string, string>()
             {
-                //{ "RandomCellsBenchmark", "Create 320K cells\nwith random data" },
-                //{ "RandomCellsBenchmarkSaveFile", "Create 320K cells\nwith random data (save file)" },
-                //{ "DateCellsBenchmark", "Create 80K cells\nwith Date data" },
-                //{ "DateCellsBenchmarkSaveFile", "Create 80K cells\nwith Date data (save file)" },
-                //{ "StyleChangesBenchmark", "Create 90K cells\nand change the styles" },
-                //{ "StyleChangesBenchmarkSaveFile", "Create 90K cells and\nchange the styles (save file)" },
-                //{ "LoadingBigFileBenchmark", "Loading a file with\n640K unique cells" },
-                //{ "GenerateFormulasBenchmark", "Generating 100K cells with formulas\nthat depend on other cells" },
-                //{ "GenerateFormulasBenchmarkSaveFile", "Generating 100K cells with formulas\nthat depend on other cells (save file)" },
-                { "SortRangeBenchmark", "Sort a range of 100x1000 cells by 1 column" },
+                { "RandomCellsBenchmark", "Create 320K cells\nwith random data" },
+                { "RandomCellsBenchmarkSaveFile", "Create 320K cells\nwith random data (save file)" },
+                { "DateCellsBenchmark", "Create 80K cells\nwith Date data" },
+                { "DateCellsBenchmarkSaveFile", "Create 80K cells\nwith Date data (save file)" },
+                { "StyleChangesBenchmark", "Create 90K cells\nand change the styles" },
+                { "StyleChangesBenchmarkSaveFile", "Create 90K cells and\nchange the styles (save file)" },
+                { "LoadingBigFileBenchmark", "Loading a file with\n640K unique cells" },
+                { "GenerateFormulasBenchmark", "Generating 100K cells with formulas\nthat depend on other cells" },
+                { "GenerateFormulasBenchmarkSaveFile", "Generating 100K cells with formulas\nthat depend on other cells (save file)" },
+                //{ "SortRangeBenchmark", "Sort a range of 100x1000 cells by 1 column" },
             };
         }
 

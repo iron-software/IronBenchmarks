@@ -6,10 +6,17 @@ namespace IronBenchmarks.IronXL
 {
     public class IronXlPlayList : GenericPlayList
     {
+        private readonly string ixlLicenseKey;
+
+        public IronXlPlayList(Dictionary<string, string> args)
+        {
+            ixlLicenseKey = args["IronXL"];
+        }
+
         public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList(string resultsFolder)
         {
-            var curIronXlRunner = new CurrentIronXLBenchmarksRunner(resultsFolder);
-            var prevIronXlRunner = new PreviousIronXLBenchmarksRunner(resultsFolder);
+            var curIronXlRunner = new CurrentIronXLBenchmarksRunner(resultsFolder) { LicenseKey = ixlLicenseKey };
+            var prevIronXlRunner = new PreviousIronXLBenchmarksRunner(resultsFolder) { LicenseKey = ixlLicenseKey };
             var asposeRunner = new AsposeCellsBenchmarksRunner(resultsFolder);
             var npoiRunner = new NpoiBenchmarksRunner(resultsFolder);
             var closedXmlRunner = new ClosedXmlBenchmarksRunner(resultsFolder);
