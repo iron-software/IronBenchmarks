@@ -12,15 +12,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
-		<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,6 +46,12 @@
 	  <ProjectReference Include="..\IronBenchmarks.IronPdf\IronBenchmarks.IronPdf.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.IronXL\IronBenchmarks.IronXL.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.ReportsEngine\IronBenchmarks.Reporting.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="IronXLOld">
+	    <HintPath>..\packages\IronXLOld.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

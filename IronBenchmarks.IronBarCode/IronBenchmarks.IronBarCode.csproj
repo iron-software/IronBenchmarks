@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BarCode" Version="2022.8.8024" />
+    <PackageReference Include="BarCode" Version="2022.11.10702" />
   </ItemGroup>
 
   <ItemGroup>
