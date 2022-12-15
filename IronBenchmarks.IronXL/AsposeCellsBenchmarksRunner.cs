@@ -107,15 +107,17 @@ namespace IronBenchmarks.IronXL
             var sorter = wb.DataSorter;
             sorter.Order1 = SortOrder.Ascending;
             sorter.Key1 = 0;
-            CellArea ca = new CellArea();
-            ca.StartRow = 0;
-            ca.StartColumn = 0;
-            ca.EndRow = 999;
-            ca.EndColumn = 100;
+            CellArea ca = new CellArea
+            {
+                StartRow = 0,
+                StartColumn = 0,
+                EndRow = 999,
+                EndColumn = 100
+            };
 
-            sorter.Sort(wb.Worksheets[0].Cells, ca);
+            sorter.Sort(cells, ca);
 
-            wb.Save($"Results\\SortRange.xlsx");
+            wb.Save($"Results\\{BenchmarkRunnerName}SortRange.xlsx");
         }
     }
 }

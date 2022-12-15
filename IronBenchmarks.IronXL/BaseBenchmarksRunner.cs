@@ -69,7 +69,7 @@ namespace IronBenchmarks.IronXL
                 { "LoadingBigFileBenchmark", "Loading a file with\n640K unique cells" },
                 { "GenerateFormulasBenchmark", "Generating 100K cells with formulas\nthat depend on other cells" },
                 { "GenerateFormulasBenchmarkSaveFile", "Generating 100K cells with formulas\nthat depend on other cells (save file)" },
-                //{ "SortRangeBenchmark", "Sort a range of 100x1000 cells by 1 column" },
+                { "SortRangeBenchmark", "Sort a range of 100x1000 cells by 1 column" },
             };
         }
 

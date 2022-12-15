@@ -100,7 +100,12 @@ namespace IronBenchmarks.IronXL
 
         protected override void SortRange(WorkSheet worksheet)
         {
-            throw new NotImplementedException();
+            var wb = new WorkBook(_sortRangeFileName);
+            var sheet = wb.WorkSheets[0];
+
+            sheet.SortByColumn(0, SortOrder.Ascending);
+
+            wb.SaveAs($"Results\\{BenchmarkRunnerName}_SortRange.xlsx");
         }
     }
 }
