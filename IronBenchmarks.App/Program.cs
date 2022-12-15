@@ -1,14 +1,13 @@
-﻿using IronBenchmarks.IronBarCode;
-using IronBenchmarks.IronPdf;
-using IronBenchmarks.IronXL;
-using IronBenchmarks.Reporting;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Running;
 using IronBenchmarks.App.Configuration;
+using IronBenchmarks.ExcelLibs.Benchmarks;
+using IronBenchmarks.Reporting;
+using IronBenchmarks.Reporting.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 using System.Reflection;
-using IronBenchmarks.Reporting.Configuration;
 
 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -29,7 +28,6 @@ var host = Host.CreateDefaultBuilder()
         services.AddSingleton<IReportingConfig, ReportingConfig>(
             _ => configurationRoot.GetSection(nameof(ReportingConfig)).Get<ReportingConfig>());
     })
-    .UseSerilog()
     .Build();
 
 var appConfig = ActivatorUtilities.GetServiceOrCreateInstance<IAppConfig>(host.Services);
@@ -40,11 +38,28 @@ IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
 var reportGenerator = new ReportGenerator(reportConfig);
 
+var benchmarkArgs = new string[]
+{
+    appConfig.LicenseKeyIronXl
+};
+
+//var summuryRandomCells = BenchmarkRunner.Run<RandomCellsBenchmark>(args: benchmarkArgs);
+
+var summuryDateCell = BenchmarkRunner.Run<DateCellBenchmark>(new Config(), benchmarkArgs);
+
 //var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
 //reportGenerator.GenerateReport(timeTableData, "IronPdf");
 
-var timeTableData = new IronXlPlayList(new Dictionary<string, string>() { { "IronXL", appConfig.LicenseKeyIronXl } }).RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "IronXL");
+//var timeTableData = new IronXlPlayList(new Dictionary<string, string>() { { "IronXL", appConfig.LicenseKeyIronXl } }).RunPlayList(appConfig.ResultsFolderName);
+//reportGenerator.GenerateReport(timeTableData, "IronXL");
 
 //var timeTableData = new IronBarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
 //reportGenerator.GenerateReport(timeTableData, "IronBarCode");
+
+public class Config : ManualConfig
+{
+    public Config()
+    {
+        WithOptions(ConfigOptions.JoinSummary).WithOptions(ConfigOptions.DisableLogFile);
+    }
+}

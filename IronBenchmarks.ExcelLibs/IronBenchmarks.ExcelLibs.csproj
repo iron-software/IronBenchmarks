@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspose.Cells" Version="22.12.0" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+		<PackageReference Include="ClosedXML" Version="0.97.0" />
+		<PackageReference Include="EPPlus" Version="6.1.1" />
+		<PackageReference Include="IronXL.Excel" Version="2022.12.10926" />
+		<PackageReference Include="NPOI" Version="2.6.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="IronXLOld">
+			<HintPath>..\packages\IronXLOld.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+</Project>
