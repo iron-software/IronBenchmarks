@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.ExcelLibs.Benchmarks;
@@ -38,28 +39,10 @@ IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
 var reportGenerator = new ReportGenerator(reportConfig);
 
-var benchmarkArgs = new string[]
+var summaries = new List<Summary>
 {
-    appConfig.LicenseKeyIronXl
+    BenchmarkRunner.Run<RandomCellsBenchmark>(),
+    BenchmarkRunner.Run<DateCellBenchmark>()
 };
 
-//var summuryRandomCells = BenchmarkRunner.Run<RandomCellsBenchmark>(args: benchmarkArgs);
-
-var summuryDateCell = BenchmarkRunner.Run<DateCellBenchmark>(new Config(), benchmarkArgs);
-
-//var timeTableData = new IronPdfPlayList().RunPlayList(appConfig.ResultsFolderName);
-//reportGenerator.GenerateReport(timeTableData, "IronPdf");
-
-//var timeTableData = new IronXlPlayList(new Dictionary<string, string>() { { "IronXL", appConfig.LicenseKeyIronXl } }).RunPlayList(appConfig.ResultsFolderName);
-//reportGenerator.GenerateReport(timeTableData, "IronXL");
-
-//var timeTableData = new IronBarCodePlayList().RunPlayList(appConfig.ResultsFolderName);
-//reportGenerator.GenerateReport(timeTableData, "IronBarCode");
-
-public class Config : ManualConfig
-{
-    public Config()
-    {
-        WithOptions(ConfigOptions.JoinSummary).WithOptions(ConfigOptions.DisableLogFile);
-    }
-}
+reportGenerator.GenerateReport(summaries, "IronXL");
