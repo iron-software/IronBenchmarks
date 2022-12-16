@@ -1,25 +1,13 @@
-﻿using Aspose.Cells;
-using BenchmarkDotNet.Attributes;
-using ClosedXML.Excel;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using OfficeOpenXml;
+﻿using BenchmarkDotNet.Attributes;
 using System;
 using System.Globalization;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
-    //[ShortRunJob]
+    [ShortRunJob]
     [MemoryDiagnoser]
-    public class RandomCellsBenchmark
+    public class RandomCellsBenchmark : BenchmarkBase
     {
-        private readonly IronXL.WorkSheet ixlSheet;
-        private readonly IronXLOld.WorkSheet ixlOldSheet;
-        private readonly Cells asposeCells;
-        private readonly ISheet npoiSheet;
-        private readonly IXLWorksheet closedXmlSheet;
-        private readonly ExcelPackage epplusExcelPackage;
-        private readonly ExcelWorksheet epplusSheet;
         private readonly Random rand = new Random();
         private readonly string guidAsFormula = $"=\"{Guid.NewGuid()}\"";
         private readonly string guid = Guid.NewGuid().ToString();
@@ -28,75 +16,59 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         private readonly int rnd32;
         private readonly int rnd13;
 
-        public RandomCellsBenchmark(string ironXlKey)
+        public RandomCellsBenchmark() : base()
         {
-            IronXL.License.LicenseKey = ironXlKey;
-            IronXLOld.License.LicenseKey = ironXlKey;
-
             date = GetRandomDate(rand);
             deci = GetRandomDecimal(rand);
             rnd32 = rand.Next(32);
             rnd13 = rand.Next(13);
-
-            ixlSheet = new IronXL.WorkBook().DefaultWorkSheet;
-
-            ixlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
-
-            asposeCells = new Workbook().Worksheets[0].Cells;
-
-            npoiSheet = new XSSFWorkbook().CreateSheet();
-
-            closedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
-
-            epplusExcelPackage = new ExcelPackage();
-            epplusSheet = epplusExcelPackage.Workbook.Worksheets.Add("Sheet1");
         }
 
         [Benchmark]
-        public void IronXlRandomCells()
+        public override void IronXl()
         {
             var rowNum = rand.Next(1, 1000000);
 
-            ixlSheet[$"A{rowNum}"].Value = guidAsFormula;
-            ixlSheet[$"B{rowNum}"].Value = guid;
-            ixlSheet[$"C{rowNum}"].Value = rnd32;
-            ixlSheet[$"D{rowNum}"].Value = rnd13;
-            ixlSheet[$"E{rowNum}"].Value = date;
-            ixlSheet[$"F{rowNum}"].Value = deci;
+            IxlSheet[$"A{rowNum}"].Value = guidAsFormula;
+            IxlSheet[$"B{rowNum}"].Value = guid;
+            IxlSheet[$"C{rowNum}"].Value = rnd32;
+            IxlSheet[$"D{rowNum}"].Value = rnd13;
+            IxlSheet[$"E{rowNum}"].Value = date;
+            IxlSheet[$"F{rowNum}"].Value = deci;
         }
 
         [Benchmark]
-        public void IronXlOldRandomCells()
+        public override void IronXlOld()
         {
             var rowNum = rand.Next(1, 1000000);
 
-            ixlOldSheet[$"A{rowNum}"].Value = guidAsFormula;
-            ixlOldSheet[$"B{rowNum}"].Value = guid;
-            ixlOldSheet[$"C{rowNum}"].Value = rnd32;
-            ixlOldSheet[$"D{rowNum}"].Value = rnd13;
-            ixlOldSheet[$"E{rowNum}"].Value = date;
-            ixlOldSheet[$"F{rowNum}"].Value = deci;
+            IxlOldSheet[$"A{rowNum}"].Value = guidAsFormula;
+            IxlOldSheet[$"B{rowNum}"].Value = guid;
+            IxlOldSheet[$"C{rowNum}"].Value = rnd32;
+            IxlOldSheet[$"D{rowNum}"].Value = rnd13;
+            IxlOldSheet[$"E{rowNum}"].Value = date;
+            IxlOldSheet[$"F{rowNum}"].Value = deci;
         }
 
         [Benchmark(Baseline = true)]
-        public void AsposeRandomCells()
+        public override void Aspose()
         {
             var rowNum = rand.Next(1, 1000000);
 
-            asposeCells[$"A{rowNum}"].Value = guidAsFormula;
-            asposeCells[$"B{rowNum}"].Value = guid;
-            asposeCells[$"C{rowNum}"].Value = rnd32;
-            asposeCells[$"D{rowNum}"].Value = rnd13;
-            asposeCells[$"E{rowNum}"].Value = date;
-            asposeCells[$"F{rowNum}"].Value = deci;
+            AsposeCells[$"A{rowNum}"].Value = guidAsFormula;
+            AsposeCells[$"B{rowNum}"].Value = guid;
+            AsposeCells[$"C{rowNum}"].Value = rnd32;
+            AsposeCells[$"D{rowNum}"].Value = rnd13;
+            AsposeCells[$"E{rowNum}"].Value = date;
+            AsposeCells[$"F{rowNum}"].Value = deci;
         }
 
         [Benchmark]
-        public void NpoiRandomCells()
+        public override void Npoi()
         {
             var rowNum = rand.Next(0, 1000000);
 
-            var row = npoiSheet.CreateRow(rowNum);
+            var row = NpoiSheet.CreateRow(rowNum);
 
             row.CreateCell(0).SetCellValue(guidAsFormula);
             row.CreateCell(0).SetCellValue(guid);
@@ -107,40 +79,29 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public void CloseXmlRandomCells()
+        public override void CloseXml()
         {
             var rowNum = rand.Next(1, 1000000);
 
-            closedXmlSheet.Cell($"A{rowNum}").Value = guidAsFormula;
-            closedXmlSheet.Cell($"B{rowNum}").Value = guid;
-            closedXmlSheet.Cell($"C{rowNum}").Value = rnd32;
-            closedXmlSheet.Cell($"D{rowNum}").Value = rnd13;
-            closedXmlSheet.Cell($"E{rowNum}").Value = date;
-            closedXmlSheet.Cell($"F{rowNum}").Value = deci;
+            ClosedXmlSheet.Cell($"A{rowNum}").Value = guidAsFormula;
+            ClosedXmlSheet.Cell($"B{rowNum}").Value = guid;
+            ClosedXmlSheet.Cell($"C{rowNum}").Value = rnd32;
+            ClosedXmlSheet.Cell($"D{rowNum}").Value = rnd13;
+            ClosedXmlSheet.Cell($"E{rowNum}").Value = date;
+            ClosedXmlSheet.Cell($"F{rowNum}").Value = deci;
         }
 
         [Benchmark]
-        public void EpplusRandomCells()
+        public override void Epplus()
         {
             var rowNum = rand.Next(1, 1000000);
 
-            epplusSheet.Cells[$"A{rowNum}"].Value = guidAsFormula;
-            epplusSheet.Cells[$"B{rowNum}"].Value = guid;
-            epplusSheet.Cells[$"C{rowNum}"].Value = rnd32;
-            epplusSheet.Cells[$"D{rowNum}"].Value = rnd13;
-            epplusSheet.Cells[$"E{rowNum}"].Value = date;
-            epplusSheet.Cells[$"F{rowNum}"].Value = deci;
-        }
-
-        [GlobalCleanup]
-        public void GlobalCleanup()
-        {
-            ixlSheet.WorkBook.Close();
-            ixlOldSheet.WorkBook.Close();
-            asposeCells.Dispose();
-            npoiSheet.Workbook.Close();
-            closedXmlSheet.Workbook.Dispose();
-            epplusExcelPackage.Dispose();
+            EpplusSheet.Cells[$"A{rowNum}"].Value = guidAsFormula;
+            EpplusSheet.Cells[$"B{rowNum}"].Value = guid;
+            EpplusSheet.Cells[$"C{rowNum}"].Value = rnd32;
+            EpplusSheet.Cells[$"D{rowNum}"].Value = rnd13;
+            EpplusSheet.Cells[$"E{rowNum}"].Value = date;
+            EpplusSheet.Cells[$"F{rowNum}"].Value = deci;
         }
 
         private static string GetRandomDate(Random gen)
