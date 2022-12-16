@@ -1,4 +1,5 @@
-﻿using IronBenchmarks.Reporting.Configuration;
+﻿using BenchmarkDotNet.Reports;
+using IronBenchmarks.Reporting.Configuration;
 using IronXL;
 using IronXL.Drawing.Charts;
 using IronXL.Formatting;
@@ -49,6 +50,13 @@ namespace IronBenchmarks.Reporting
         public ReportGenerator(IReportingConfig reportConfig)
         {
             _reportConfig = reportConfig;
+        }
+
+        public void GenerateReport(List<Summary> summaries, string reportTag)
+        {
+            var timeTable = GetTimeTableFormSummary(summaries);
+
+            GenerateReport(timeTable, reportTag);
         }
 
         public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData, string reportTag)
@@ -230,7 +238,7 @@ namespace IronBenchmarks.Reporting
 
         private static void FormatRow(WorkSheet sheet, string rowAddress)
         {
-            sheet[rowAddress].FormatString = BuiltinFormats.Duration3;
+            sheet[rowAddress].FormatString = BuiltinFormats.Number0;
         }
 
         private static void AutoSizeIimeTable(WorkSheet sheet, string headerAddress)
@@ -290,6 +298,30 @@ namespace IronBenchmarks.Reporting
             FormatTimeTable(sheet, _numberOfConteders, _numberOfBenchmarks);
 
             AutoSizeIimeTable(sheet, _headerRowAddress);
+        }
+
+        private Dictionary<string, Dictionary<string, TimeSpan>> GetTimeTableFormSummary(List<Summary> summaries)
+        {
+            var timeTable = new Dictionary<string, Dictionary<string, TimeSpan>>();
+
+            foreach (var summary in summaries)
+            {
+                foreach (var report in summary.Reports)
+                {
+                    var methodName = report.BenchmarkCase.Descriptor.WorkloadMethod.Name;
+
+                    if (!timeTable.ContainsKey(methodName))
+                    {
+                        timeTable.Add(methodName, new Dictionary<string, TimeSpan>());
+                    }
+
+                    var times = timeTable[methodName];
+
+                    times.Add(summary.Title, new TimeSpan((long)report.ResultStatistics.Mean / 100));
+                }
+            }
+
+            return timeTable;
         }
     }
 }
