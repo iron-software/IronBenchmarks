@@ -5,9 +5,11 @@ using IronXL.Drawing.Charts;
 using IronXL.Formatting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using static BenchmarkDotNet.Reports.SummaryTable;
 
 namespace IronBenchmarks.Reporting
 {
@@ -54,12 +56,16 @@ namespace IronBenchmarks.Reporting
 
         public void GenerateReport(List<Summary> summaries, string reportTag)
         {
-            var timeTable = GetTimeTableFormSummary(summaries);
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            GenerateReport(timeTable, reportTag);
+            var timeTable = GetDataFromSummary(summaries, ReportDataType.MeanTime);
+            var memoryTable = GetDataFromSummary(summaries, ReportDataType.MemoryAlloc);
+
+            GenerateReport(timeTable, $"{reportTag} performance");
+            GenerateReport(memoryTable, $"{reportTag} memory");
         }
 
-        public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData, string reportTag)
+        public string GenerateReport(Dictionary<string, Dictionary<string, double>> timeTableData, string reportTag)
         {
             CreateReportsFolder();
 
@@ -74,7 +80,7 @@ namespace IronBenchmarks.Reporting
             return reportName;
         }
 
-        private void FillReport(WorkBook report, Dictionary<string, Dictionary<string, TimeSpan>> timeTableData)
+        private void FillReport(WorkBook report, Dictionary<string, Dictionary<string, double>> timeTableData)
         {
             var sheet = report.DefaultWorkSheet;
 
@@ -84,13 +90,15 @@ namespace IronBenchmarks.Reporting
 
             ClearTemplateMockData(sheet);
 
-            FillHeader(sheet, _headerRowAddress, timeTableData.Values.FirstOrDefault()?.Keys.ToArray());
+            var benchmarkTitles = timeTableData.Values.FirstOrDefault()?.Keys.ToArray();
+
+            FillHeader(sheet, _headerRowAddress, benchmarkTitles);
 
             var i = 1;
 
             foreach (var contender in timeTableData)
             {
-                FillRow(sheet, i, contender);
+                FillRow(sheet, i, contender, benchmarkTitles);
 
                 i++;
             }
@@ -154,11 +162,16 @@ namespace IronBenchmarks.Reporting
             }
         }
 
-        private void FillRow(WorkSheet sheet, int i, KeyValuePair<string, Dictionary<string, TimeSpan>>? contender)
+        private void FillRow(WorkSheet sheet, int i, KeyValuePair<string, Dictionary<string, double>>? contender, string[] benchmarkTitles)
         {
             var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
-            var times = contender?.Value.Values.ToArray();
+            var times = new double[benchmarkTitles.Length];
+
+            for (var j = 0; j < benchmarkTitles.Length; j++)
+            {
+                times[j] = (double)(contender?.Value[benchmarkTitles[j]]);
+            }
 
             PutInSeriesData(sheet, seriesRowAddress, times);
 
@@ -212,25 +225,23 @@ namespace IronBenchmarks.Reporting
         private static void PutInMockSeriesData(WorkSheet sheet, string seriesRowAddress)
         {
             var rnd = new Random();
-            var times = new TimeSpan[10];
+            var times = new double[10];
 
             for (var i = 0; i < times.Length; i++)
             {
-                times[i] = TimeSpan.FromSeconds(rnd.Next(25, 100));
+                times[i] = rnd.Next(25, 100);
             }
 
             PutInSeriesData(sheet, seriesRowAddress, times);
         }
 
-        private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, TimeSpan[] times)
+        private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, double[] times)
         {
-            var secondsInADay = 60 * 60 * 24;
-
             var i = 0;
 
             foreach (var cell in sheet[seriesRowAddress])
             {
-                cell.Value = i >= times.Length ? 0 : times[i].TotalSeconds / secondsInADay;
+                cell.Value = i >= times.Length ? 0 : times[i];
 
                 i++;
             }
@@ -300,28 +311,55 @@ namespace IronBenchmarks.Reporting
             AutoSizeIimeTable(sheet, _headerRowAddress);
         }
 
-        private Dictionary<string, Dictionary<string, TimeSpan>> GetTimeTableFormSummary(List<Summary> summaries)
+        private Dictionary<string, Dictionary<string, double>> GetDataFromSummary(List<Summary> summaries, ReportDataType dataType)
         {
-            var timeTable = new Dictionary<string, Dictionary<string, TimeSpan>>();
+            var timeTable = new Dictionary<string, Dictionary<string, double>>();
 
             foreach (var summary in summaries)
             {
-                foreach (var report in summary.Reports)
+                SummaryTableColumn resultsColumn;
+
+                switch (dataType)
                 {
-                    var methodName = report.BenchmarkCase.Descriptor.WorkloadMethod.Name;
+                    case ReportDataType.MemoryAlloc:
+                        resultsColumn = summary.Table.Columns.FirstOrDefault(c => c.Header == "Allocated");
+                        break;
+                    case ReportDataType.MeanTime:
+                        resultsColumn = summary.Table.Columns.FirstOrDefault(c => c.Header == "Mean");
+                        break;
+                    default:
+                        return timeTable;
+                }
+
+                var i = 0;
+
+                foreach (var benchmarkCase in summary.BenchmarksCases)
+                {
+                    var valueString = resultsColumn.Content[i];
+                    valueString = valueString.Substring(0, valueString.IndexOf(" "));
+
+                    var value = double.Parse(valueString);
+                    var methodName = benchmarkCase.Descriptor.WorkloadMethod.Name;
 
                     if (!timeTable.ContainsKey(methodName))
                     {
-                        timeTable.Add(methodName, new Dictionary<string, TimeSpan>());
+                        timeTable.Add(methodName, new Dictionary<string, double>());
                     }
 
                     var times = timeTable[methodName];
+                    times.Add(summary.Title, value);
 
-                    times.Add(summary.Title, new TimeSpan((long)report.ResultStatistics.Mean / 100));
+                    i++;
                 }
             }
 
             return timeTable;
         }
+    }
+
+    internal enum ReportDataType
+    {
+        MeanTime,
+        MemoryAlloc
     }
 }
