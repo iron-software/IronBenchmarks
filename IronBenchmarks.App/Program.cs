@@ -1,5 +1,4 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Reports;
+﻿using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.ExcelLibs.Benchmarks;
@@ -46,3 +45,5 @@ var summaries = new List<Summary>
 };
 
 reportGenerator.GenerateReport(summaries, "IronXL");
+
+Console.ReadKey();
