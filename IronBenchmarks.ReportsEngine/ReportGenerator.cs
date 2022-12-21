@@ -5,11 +5,10 @@ using IronXL.Drawing.Charts;
 using IronXL.Formatting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using static BenchmarkDotNet.Reports.SummaryTable;
 
 namespace IronBenchmarks.Reporting
 {
@@ -54,88 +53,68 @@ namespace IronBenchmarks.Reporting
             _reportConfig = reportConfig;
         }
 
-        public void GenerateReport(List<Summary> summaries, string reportTag)
+        public string GenerateReport(List<Summary> summaries, string reportTag)
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            var timeTable = GetDataFromSummary(summaries, ReportDataType.MeanTime);
-            var memoryTable = GetDataFromSummary(summaries, ReportDataType.MemoryAlloc);
+            var benchmarksData = new List<BenchmarkData>()
+            {
+                new BenchmarkData(summaries, ReportDataType.MeanTime),
+                new BenchmarkData(summaries, ReportDataType.MemoryAlloc)
+            };
 
-            GenerateReport(timeTable, $"{reportTag}$Performance");
-            GenerateReport(memoryTable, $"{reportTag}$Memory Allocation");
+            return GenerateReport(benchmarksData, reportTag);
         }
 
-        public string GenerateReport(Dictionary<string, Dictionary<string, double>> chartsData, string reportTag)
+        public string GenerateReport(List<BenchmarkData> chartsData, string reportTag)
         {
             EnsureReportsFolderExists();
 
-            var report = LoadTemplate();
+            var report = WorkBook.Create();
 
-            FillReport(report, chartsData, reportTag.Split('$')[1]);
+            FillReport(report, chartsData);
 
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag.Replace("$", " ")}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
+            var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
 
             report.SaveAs(reportName);
 
             return reportName;
         }
 
-        private void FillReport(WorkBook report, Dictionary<string, Dictionary<string, double>> timeTableData, string chartTitle)
+        private void FillReport(WorkBook report, List<BenchmarkData> tablesData)
         {
-            var sheet = report.DefaultWorkSheet;
-
-            _numberOfConteders = timeTableData.Count;
-            _numberOfBenchmarks = timeTableData.FirstOrDefault().Value.Values.Count;
-            _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
-
-            ClearTemplateMockData(sheet);
-
-            var benchmarkTitles = timeTableData.Values.FirstOrDefault()?.Keys.ToArray();
-
-            FillHeader(sheet, _headerRowAddress, benchmarkTitles);
-
-            var i = 1;
-
-            foreach (var contender in timeTableData)
+            foreach (var chartData in tablesData)
             {
-                FillRow(sheet, i, contender, benchmarkTitles);
+                var sheet = report.CreateWorkSheet($"{GetEnumDescription(chartData.DataType)}");
 
-                i++;
+                _numberOfConteders = chartData.DataEntries.Count;
+                _numberOfBenchmarks = chartData.DataEntries.Count;
+                _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
+
+                var benchmarkTitles = chartData.GetBenchmarkNames();
+
+                FillHeader(sheet, _headerRowAddress, benchmarkTitles);
+
+                var i = 1;
+
+                foreach (var contender in chartData.DataEntries)
+                {
+                    FillRow(sheet, i, contender, benchmarkTitles);
+
+                    i++;
+                }
+
+                UpdateCharts(sheet, GetEnumDescription(chartData.DataType));
             }
-
-            UpdateCharts(sheet, chartTitle);
         }
 
-        private void ClearTemplateMockData(WorkSheet sheet)
+        private static string GetEnumDescription(Enum value)
         {
-            FillHeader(sheet, "B27:K27", null);
-
-            ClearSeriesRow(sheet, 1);
-        }
-
-        private WorkBook CreateTemplate()
-        {
-            var template = WorkBook.Create(ExcelFileFormat.XLSX);
-            var sheet = template.DefaultWorkSheet;
-
-            PutInMockData(sheet);
-
-            AddChart(sheet, 1, 10, "Performance");
-
-            FormatTimeTable(sheet, 1, 10);
-
-            return template.SaveAs("template.xlsx");
-        }
-
-        private WorkBook LoadTemplate()
-        {
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\template.xlsx"))
-            {
-                return WorkBook.Load("template.xlsx");
-            }
-
-            return CreateTemplate();
+            var field = value.GetType().GetField(value.ToString());
+            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+                ? value.ToString()
+                : attribute.Description;
         }
 
         private void EnsureReportsFolderExists()
@@ -157,23 +136,30 @@ namespace IronBenchmarks.Reporting
 
             foreach (var cell in sheet[headerRowAddress])
             {
-                var benchmarkTitle = i >= benchmarkList.Length ? "" : benchmarkList[i];
+                
 
-                if (benchmarkTitle.Length > 0)
-                {
-                    int lastDotIndex = benchmarkTitle.LastIndexOf(".");
-                    int firstDashIndex = benchmarkTitle.IndexOf("-");
-
-                    benchmarkTitle = benchmarkTitle.Substring(lastDotIndex + 1, firstDashIndex - lastDotIndex - 1);
-                }
-
-                cell.Value = benchmarkTitle;
+                cell.Value = GetBenchmarkTitle(benchmarkList[i]);
 
                 i++;
             }
         }
 
-        private void FillRow(WorkSheet sheet, int i, KeyValuePair<string, Dictionary<string, double>>? contender, string[] benchmarkTitles)
+        private static string GetBenchmarkTitle(string benchmarkTitle)
+        {
+            if (benchmarkTitle.Length > 0)
+            {
+                var lastDotIndex = benchmarkTitle.LastIndexOf(".");
+                var firstDashIndex = benchmarkTitle.IndexOf("-");
+
+                benchmarkTitle = lastDotIndex < 0 || firstDashIndex < 0
+                    ? benchmarkTitle
+                    : benchmarkTitle.Substring(lastDotIndex + 1, firstDashIndex - lastDotIndex - 1);
+            }
+
+            return benchmarkTitle;
+        }
+
+        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, string[] benchmarkTitles)
         {
             var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
@@ -181,25 +167,12 @@ namespace IronBenchmarks.Reporting
 
             for (var j = 0; j < benchmarkTitles.Length; j++)
             {
-                times[j] = (double)(contender?.Value[benchmarkTitles[j]]);
+                times[j] = contender[benchmarkTitles[j]];
             }
 
             PutInSeriesData(sheet, seriesRowAddress, times);
 
-            sheet[$"A{seriesRowNumber}"].Value = contender?.Key;
-        }
-
-        private void ClearSeriesRow(WorkSheet sheet, int i)
-        {
-            var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
-            var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
-
-            foreach (var cell in sheet[seriesRowAddress])
-            {
-                cell.Value = "";
-            }
-
-            sheet[$"A{seriesRowNumber}"].Value = "";
+            sheet[$"A{seriesRowNumber}"].Value = contender.Name;
         }
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)
@@ -211,39 +184,6 @@ namespace IronBenchmarks.Reporting
 
                 FormatRow(sheet, seriesRowAddress);
             }
-        }
-
-        private void PutInMockData(WorkSheet sheet)
-        {
-            PutInMockHeaderData(sheet, $"B{_reportConfig.DataTableStartingRow}:K{_reportConfig.DataTableStartingRow}");
-
-            PutInMockTimeTableData(sheet);
-        }
-
-        private void PutInMockTimeTableData(WorkSheet sheet)
-        {
-            for (var i = 1; i <= 1; i++)
-            {
-                var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
-                var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
-
-                PutInMockSeriesData(sheet, seriesRowAddress);
-
-                sheet[$"A{seriesRowNumber}"].Value = $"Contender_{seriesRowNumber}";
-            }
-        }
-
-        private static void PutInMockSeriesData(WorkSheet sheet, string seriesRowAddress)
-        {
-            var rnd = new Random();
-            var times = new double[10];
-
-            for (var i = 0; i < times.Length; i++)
-            {
-                times[i] = rnd.Next(25, 100);
-            }
-
-            PutInSeriesData(sheet, seriesRowAddress, times);
         }
 
         private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, double[] times)
@@ -271,17 +211,9 @@ namespace IronBenchmarks.Reporting
             }
         }
 
-        private static void PutInMockHeaderData(WorkSheet sheet, string headerRowAddress)
-        {
-            foreach (var cell in sheet[headerRowAddress])
-            {
-                cell.Value = $"Mock_Benchmark_{cell.ColumnIndex}";
-            }
-        }
-
         private void AddChart(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
         {
-            for(int i = 1; i <= numberOfBenchmarks; i++)
+            for (var i = 1; i <= numberOfBenchmarks; i++)
             {
                 var chart = sheet.CreateChart(ChartType.Bar, 0, (i - 1) * _reportConfig.ChartWidth, _reportConfig.ChartHeight, i * _reportConfig.ChartWidth);
                 var headerAddress = $"{_letters[i + 1]}{_reportConfig.DataTableStartingRow}:{_letters[i + 1]}{_reportConfig.DataTableStartingRow}";
@@ -324,56 +256,5 @@ namespace IronBenchmarks.Reporting
 
             AutoSizeIimeTable(sheet, _headerRowAddress);
         }
-
-        private Dictionary<string, Dictionary<string, double>> GetDataFromSummary(List<Summary> summaries, ReportDataType dataType)
-        {
-            var timeTable = new Dictionary<string, Dictionary<string, double>>();
-
-            foreach (var summary in summaries)
-            {
-                SummaryTableColumn resultsColumn;
-
-                switch (dataType)
-                {
-                    case ReportDataType.MemoryAlloc:
-                        resultsColumn = summary.Table.Columns.FirstOrDefault(c => c.Header == "Allocated");
-                        break;
-                    case ReportDataType.MeanTime:
-                        resultsColumn = summary.Table.Columns.FirstOrDefault(c => c.Header == "Mean");
-                        break;
-                    default:
-                        return timeTable;
-                }
-
-                var i = 0;
-
-                foreach (var benchmarkCase in summary.BenchmarksCases)
-                {
-                    var valueString = resultsColumn.Content[i];
-                    valueString = valueString.Substring(0, valueString.IndexOf(" "));
-
-                    var value = double.Parse(valueString);
-                    var methodName = benchmarkCase.Descriptor.WorkloadMethod.Name;
-
-                    if (!timeTable.ContainsKey(methodName))
-                    {
-                        timeTable.Add(methodName, new Dictionary<string, double>());
-                    }
-
-                    var times = timeTable[methodName];
-                    times.Add(summary.Title, value);
-
-                    i++;
-                }
-            }
-
-            return timeTable;
-        }
-    }
-
-    internal enum ReportDataType
-    {
-        MeanTime,
-        MemoryAlloc
     }
 }
