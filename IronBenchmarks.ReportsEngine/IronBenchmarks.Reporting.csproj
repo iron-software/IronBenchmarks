@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<UserSecretsId>81b69d34-5773-4952-a81c-6b796d61bbe4</UserSecretsId>
+		<InternalsVisibleTo>IronBenchmarks.Reporting.Tests</InternalsVisibleTo>
 	</PropertyGroup>
 
 	<ItemGroup>
