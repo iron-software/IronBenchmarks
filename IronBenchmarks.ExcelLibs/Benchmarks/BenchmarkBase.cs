@@ -2,10 +2,10 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using Microsoft.Extensions.Configuration;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
+using System;
 using System.Reflection;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
@@ -46,22 +46,16 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             EpplusSheet = EpplusExcelPackage.Workbook.Worksheets.Add("Sheet1");
         }
 
-        [Benchmark]
         public abstract void IronXl();
 
-        [Benchmark]
         public abstract void IronXlOld();
 
-        [Benchmark(Baseline = true)]
         public abstract void Aspose();
 
-        [Benchmark]
         public abstract void Npoi();
 
-        [Benchmark]
         public abstract void CloseXml();
 
-        [Benchmark]
         public abstract void Epplus();
 
         [GlobalCleanup]
