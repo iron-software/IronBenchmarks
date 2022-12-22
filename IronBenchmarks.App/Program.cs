@@ -41,7 +41,14 @@ var reportGenerator = new ReportGenerator(reportConfig);
 var summaries = new List<Summary>
 {
     BenchmarkRunner.Run<RandomCellsBenchmark>(),
-    BenchmarkRunner.Run<DateCellBenchmark>()
+    BenchmarkRunner.Run<DateCellBenchmark>(),
+    BenchmarkRunner.Run<StyleChangeBenchmark>(),
+    BenchmarkRunner.Run<FormulaCellBenchmark>(),
+    BenchmarkRunner.Run<LoadLargeFileBenchmark>(),
+    BenchmarkRunner.Run<SaveLargeFileBenchmark>(),
+
+    //BenchmarkRunner.Run<EmptyBenchmark>(),
+    //BenchmarkRunner.Run<OtherEmptyBenchmark>(),
 };
 
 reportGenerator.GenerateReport(summaries, "IronXL");
