@@ -70,15 +70,27 @@ namespace IronBenchmarks.Reporting
         private static double GetValueFromColumn(SummaryTableColumn resultsColumn, int i)
         {
             var valueString = resultsColumn.Content[i];
-            valueString = valueString.Substring(0, valueString.IndexOf(" "));
+            valueString = valueString.IndexOf(" ") < 0
+                ? valueString
+                : valueString.Substring(0, valueString.IndexOf(" "));
 
-            var value = double.Parse(valueString);
+            double.TryParse(valueString, out var value);
             return value;
         }
 
         public string[] GetBenchmarkNames()
         {
             return DataEntries.FirstOrDefault().GetKeys();
+        }
+
+        public int GetNumberOfContenders()
+        {
+            return DataEntries.Count();
+        }
+
+        public int GetNumberOfBenchmarks()
+        {
+            return DataEntries.FirstOrDefault().GetKeys().Length;
         }
     }
 

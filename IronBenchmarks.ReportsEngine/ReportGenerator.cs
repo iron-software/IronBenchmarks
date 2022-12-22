@@ -88,8 +88,8 @@ namespace IronBenchmarks.Reporting
             {
                 var sheet = report.CreateWorkSheet($"{GetEnumDescription(chartData.DataType)}");
 
-                _numberOfConteders = chartData.DataEntries.Count;
-                _numberOfBenchmarks = chartData.DataEntries.Count;
+                _numberOfConteders = chartData.GetNumberOfContenders();
+                _numberOfBenchmarks = chartData.GetNumberOfBenchmarks();
                 _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
 
                 var benchmarkTitles = chartData.GetBenchmarkNames();
