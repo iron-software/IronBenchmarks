@@ -31,12 +31,6 @@
 		<None Update="appsettings.Production.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="LoadingTestFiles\LoadingTest.xlsx">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="SortRangeFiles\SortRange.xlsx">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 	<ItemGroup>
