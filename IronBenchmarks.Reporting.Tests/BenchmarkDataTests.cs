@@ -47,7 +47,7 @@ namespace IronBenchmarks.Reporting.Tests
             {
                 dataEntry.Add(name, 1.0);
             }
-            
+
             // Act
             var actualNames = benchmarkData.GetBenchmarkNames();
 
@@ -67,6 +67,58 @@ namespace IronBenchmarks.Reporting.Tests
 
             // Assert
             Assert.Equal(123.45, value);
+        }
+
+        [Fact]
+        public void GetBenchmarkNames_ShouldReturnCorrectBenchmarkNames_WhenCalled()
+        {
+            // Arrange
+            var benchmarkData = new BenchmarkData(ReportDataType.MeanTime);
+            var benchmarkDataEntry = new BenchmarkDataEntry("Contender 1");
+            benchmarkDataEntry.Add("Benchmark 1", 0);
+            benchmarkDataEntry.Add("Benchmark 2", 0);
+            benchmarkDataEntry.Add("Benchmark 3", 0);
+            benchmarkData.DataEntries.Add(benchmarkDataEntry);
+
+            // Act
+            var result = benchmarkData.GetBenchmarkNames();
+
+            // Assert
+            Assert.Equal(new[] { "Benchmark 1", "Benchmark 2", "Benchmark 3" }, result);
+        }
+
+        [Fact]
+        public void GetNumberOfContenders_ShouldReturnCorrectNumberOfContenders_WhenCalled()
+        {
+            // Arrange
+            var benchmarkData = new BenchmarkData(ReportDataType.MeanTime);
+            benchmarkData.DataEntries.Add(new BenchmarkDataEntry("Contender 1"));
+            benchmarkData.DataEntries.Add(new BenchmarkDataEntry("Contender 2"));
+            benchmarkData.DataEntries.Add(new BenchmarkDataEntry("Contender 3"));
+
+            // Act
+            var result = benchmarkData.GetNumberOfContenders();
+
+            // Assert
+            Assert.Equal(3, result);
+        }
+
+        [Fact]
+        public void GetNumberOfBenchmarks_ShouldReturnCorrectNumberOfBenchmarks_WhenCalled()
+        {
+            // Arrange
+            var benchmarkData = new BenchmarkData(ReportDataType.MeanTime);
+            var benchmarkDataEntry = new BenchmarkDataEntry("Contender 1");
+            benchmarkDataEntry.Add("Benchmark 1", 0);
+            benchmarkDataEntry.Add("Benchmark 2", 0);
+            benchmarkDataEntry.Add("Benchmark 3", 0);
+            benchmarkData.DataEntries.Add(benchmarkDataEntry);
+
+            // Act
+            var result = benchmarkData.GetNumberOfBenchmarks();
+
+            // Assert
+            Assert.Equal(3, result);
         }
     }
 }

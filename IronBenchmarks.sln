@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.IronPdf", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.ExcelLibs", "IronBenchmarks.ExcelLibs\IronBenchmarks.ExcelLibs.csproj", "{119E7913-8ADC-4723-9F8A-96CF115CB7D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronBenchmarks.Reporting.Tests", "IronBenchmarks.Reporting.Tests\IronBenchmarks.Reporting.Tests.csproj", "{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.Reporting.Tests", "IronBenchmarks.Reporting.Tests\IronBenchmarks.Reporting.Tests.csproj", "{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
