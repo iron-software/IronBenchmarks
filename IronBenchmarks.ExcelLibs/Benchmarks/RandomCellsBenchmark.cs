@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System;
-using System.Globalization;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
@@ -46,7 +45,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void CloseXml()
+        public override void ClosedXml()
         {
             var rowNum = rand.Next(1, 1000000);
 

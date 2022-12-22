@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
-using System;
 using System.Reflection;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
@@ -54,7 +53,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 
         public abstract void Npoi();
 
-        public abstract void CloseXml();
+        public abstract void ClosedXml();
 
         public abstract void Epplus();
 

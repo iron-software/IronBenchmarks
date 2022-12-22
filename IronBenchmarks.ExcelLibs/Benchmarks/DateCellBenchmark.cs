@@ -55,7 +55,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void CloseXml()
+        public override void ClosedXml()
         {
             ClosedXmlSheet.Cell($"A{rand.Next(1, 1000000)}").Value = date;
         }
