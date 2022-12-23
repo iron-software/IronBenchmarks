@@ -12,9 +12,6 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class StyleChangeBenchmark : BenchmarkBase
     {
-        private readonly Random rand = new Random();
-        private ICellStyle npoiStyle = null;
-        private IFont npoiFont = null;
         private readonly string cellValue = "Cell";
 
         [Benchmark(Baseline = true)]
@@ -25,7 +22,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             style.VerticalAlignment = TextAlignmentType.Top;
             style.HorizontalAlignment = TextAlignmentType.Right;
 
-            var cell = AsposeCells[$"A{rand.Next(1, 1000000)}"];
+            var cell = AsposeCells[$"A2"];
             cell.PutValue(cellValue);
             cell.SetStyle(style);
         }
@@ -33,7 +30,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void ClosedXml()
         {
-            var cell = ClosedXmlSheet.Cell($"A{rand.Next(1, 1000000)}");
+            var cell = ClosedXmlSheet.Cell($"A2");
             cell.Value = cellValue;
 
             var style = cell.Style;
@@ -46,18 +43,17 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Epplus()
         {
-            var cell = EpplusSheet.Cells[$"A{rand.Next(1, 1000000)}"].FirstOrDefault();
-            cell.Value = cellValue;
+            EpplusSheet.Cells[$"A2"].Value = cellValue;
 
-            cell.Style.Font.Size = 22;
-            cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
-            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+            EpplusSheet.Cells[$"A2"].Style.Font.Size = 22;
+            EpplusSheet.Cells[$"A2"].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            EpplusSheet.Cells[$"A2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
         }
 
         [Benchmark]
         public override void IronXl()
         {
-            var range = IxlSheet[$"A{rand.Next(1, 1000000)}"];
+            var range = IxlSheet[$"A2"];
             range.Value = cellValue;
 
             var style = range.Style;
@@ -70,7 +66,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXlOld()
         {
-            var range = IxlOldSheet[$"A{rand.Next(1, 1000000)}"];
+            var range = IxlOldSheet[$"A2"];
             range.Value = cellValue;
 
             var style = range.Style;
@@ -83,15 +79,15 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Npoi()
         {
-            npoiFont = npoiFont ?? NpoiSheet.Workbook.CreateFont();
+            var npoiFont = NpoiSheet.Workbook.CreateFont();
             npoiFont.FontHeightInPoints = 22;
 
-            npoiStyle = npoiStyle ?? NpoiSheet.Workbook.CreateCellStyle();
+            var npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
             npoiStyle.SetFont(npoiFont);
             npoiStyle.VerticalAlignment = VerticalAlignment.Top;
             npoiStyle.Alignment = HorizontalAlignment.Right;
 
-            var row = NpoiSheet.CreateRow(rand.Next(1, 1000000));
+            var row = NpoiSheet.CreateRow(1);
             var cell = row.CreateCell(0);
             cell.SetCellValue(cellValue);
             cell.CellStyle = npoiStyle;

@@ -10,17 +10,25 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class SaveLargeFileBenchmark : BenchmarkBase
+    public class SaveLargeFileBenchmark
     {
         private readonly string largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
-        private readonly IronXL.WorkBook ixlLargeFile;
-        private readonly IronXLOld.WorkBook ixlOldLargeFile;
-        private readonly Workbook asposeLargeFile;
-        private readonly XLWorkbook closedXmlLargeFile;
-        private readonly XSSFWorkbook npoiLargeFile;
-        private readonly ExcelPackage epplusLargeFile;
+        private IronXL.WorkBook ixlLargeFile;
+        private IronXLOld.WorkBook ixlOldLargeFile;
+        private Workbook asposeLargeFile;
+        private XLWorkbook closedXmlLargeFile;
+        private XSSFWorkbook npoiLargeFile;
+        private ExcelPackage epplusLargeFile;
 
-        public SaveLargeFileBenchmark() : base()
+        public SaveLargeFileBenchmark()
+        {
+            BenchmarkBase.SetupLicenses();
+
+            EnsureResultsFolderExists();
+        }
+
+        [GlobalSetup]
+        public void Setup()
         {
             ixlLargeFile = IronXL.WorkBook.Load(largeFileName);
             ixlOldLargeFile = IronXLOld.WorkBook.Load(largeFileName);
@@ -28,42 +36,40 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             closedXmlLargeFile = new XLWorkbook(largeFileName);
             npoiLargeFile = new XSSFWorkbook(largeFileName);
             epplusLargeFile = new ExcelPackage(largeFileName);
-
-            EnsureResultsFolderExists();
         }
 
         [Benchmark(Baseline = true)]
-        public override void Aspose()
+        public void Aspose()
         {
             asposeLargeFile.Save("Results\\Aspose_large.xlsx");
         }
 
         [Benchmark]
-        public override void ClosedXml()
+        public void ClosedXml()
         {
             closedXmlLargeFile.SaveAs("Results\\ClosedXML_large.xlsx");
         }
 
         [Benchmark]
-        public override void Epplus()
+        public void Epplus()
         {
             epplusLargeFile.SaveAs("Results\\Epplus_large.xlsx");
         }
 
         [Benchmark]
-        public override void IronXl()
+        public void IronXl()
         {
             ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public void IronXlOld()
         {
             ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
         }
 
         [Benchmark]
-        public override void Npoi()
+        public void Npoi()
         {
             npoiLargeFile.Write(File.Create("Results\\IronXLOld_large.xlsx"));
         }
