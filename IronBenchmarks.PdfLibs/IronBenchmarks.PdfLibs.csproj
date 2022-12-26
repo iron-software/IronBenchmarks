@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<UserSecretsId>a30d1013-a7e8-41ab-8733-68260e414f76</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="IronPdf" Version="2022.12.11113" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="IronPdfOld">
+			<HintPath>..\packages\IronPdfOld.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="LoadingTestFiles\largeFile.pdf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.ExcelLibs", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.Reporting.Tests", "IronBenchmarks.Reporting.Tests\IronBenchmarks.Reporting.Tests.csproj", "{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronBenchmarks.PdfLibs", "IronBenchmarks.PdfLibs\IronBenchmarks.PdfLibs.csproj", "{173A0D82-99A0-434F-ABA7-087BB67D8607}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A15867D7-CA23-4CEF-B0DE-7603AB512BF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173A0D82-99A0-434F-ABA7-087BB67D8607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173A0D82-99A0-434F-ABA7-087BB67D8607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173A0D82-99A0-434F-ABA7-087BB67D8607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173A0D82-99A0-434F-ABA7-087BB67D8607}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

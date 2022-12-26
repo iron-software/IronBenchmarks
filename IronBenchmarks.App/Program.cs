@@ -1,7 +1,12 @@
-﻿using BenchmarkDotNet.Reports;
+﻿using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Loggers;
+using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Validators;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.ExcelLibs.Benchmarks;
+using IronBenchmarks.PdfLibs.Benchmarks;
 using IronBenchmarks.Reporting;
 using IronBenchmarks.Reporting.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -32,13 +37,11 @@ var host = Host.CreateDefaultBuilder()
 
 var appConfig = ActivatorUtilities.GetServiceOrCreateInstance<IAppConfig>(host.Services);
 IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
-IronBarCode.License.LicenseKey = appConfig.LicenseKeyIronBarCode;
-IronPdf.License.LicenseKey = appConfig.LicenseKeyIronPdf;
 
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
 var reportGenerator = new ReportGenerator(reportConfig);
 
-var summaries = new List<Summary>
+/*var excelSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<RandomCellsBenchmark>(),
     BenchmarkRunner.Run<DateCellBenchmark>(),
@@ -53,6 +56,22 @@ var summaries = new List<Summary>
     //BenchmarkRunner.Run<OtherEmptyBenchmark>(),
 };
 
-reportGenerator.GenerateReport(summaries, "IronXL");
+reportGenerator.GenerateReport(excelSummaries, "IronXL");
+*/
+
+var config = new ManualConfig()
+        .WithOptions(ConfigOptions.DisableOptimizationsValidator)
+        .AddValidator(JitOptimizationsValidator.DontFailOnError)
+        .AddLogger(ConsoleLogger.Default)
+        .AddColumnProvider(DefaultColumnProviders.Instance);
+
+var pdfSummaries = new List<Summary>
+{
+    BenchmarkRunner.Run<CreateDocumentBenchmark>(config),
+    BenchmarkRunner.Run<LoadingLargeFileBenchmark>(config),
+    BenchmarkRunner.Run<SavingLargeFileBenchmark>(config),
+};
+
+reportGenerator.GenerateReport(pdfSummaries, "IronPdf");
 
 Console.ReadKey();
