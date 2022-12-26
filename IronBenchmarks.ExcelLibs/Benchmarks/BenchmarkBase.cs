@@ -7,6 +7,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
@@ -39,6 +40,17 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             IronXL.License.LicenseKey = licenseKeyIronXl;
             IronXLOld.License.LicenseKey = licenseKeyIronXl;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        }
+
+        public static void EnsureResultsFolderExists()
+        {
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var reportsFolder = Path.Combine(path ?? "", "Results");
+
+            if (!Directory.Exists(reportsFolder))
+            {
+                Directory.CreateDirectory(reportsFolder);
+            }
         }
 
         [IterationSetup]

@@ -24,7 +24,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         {
             BenchmarkBase.SetupLicenses();
 
-            EnsureResultsFolderExists();
+            BenchmarkBase.EnsureResultsFolderExists();
         }
 
         [GlobalSetup]
@@ -71,18 +71,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public void Npoi()
         {
-            npoiLargeFile.Write(File.Create("Results\\IronXLOld_large.xlsx"));
-        }
-
-        private void EnsureResultsFolderExists()
-        {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", "Results");
-
-            if (!Directory.Exists(reportsFolder))
-            {
-                Directory.CreateDirectory(reportsFolder);
-            }
+            npoiLargeFile.Write(File.Create("Results\\Npoi_large.xlsx"));
         }
     }
 }
