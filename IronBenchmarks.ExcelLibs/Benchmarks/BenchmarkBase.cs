@@ -56,32 +56,31 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [IterationSetup]
         public void IterationSetup()
         {
-            IxlSheet = new IronXL.WorkBook().DefaultWorkSheet;
-            IxlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
-            AsposeCells = new Workbook().Worksheets[0].Cells;
-            NpoiSheet = new XSSFWorkbook().CreateSheet();
-            ClosedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
-            EpplusExcelPackage = new ExcelPackage();
-            EpplusSheet = EpplusExcelPackage.Workbook.Worksheets.Add("Sheet1");
-
             var cell1Val = rand.Next();
             var cell2Val = rand.Next();
 
+            IxlSheet = new IronXL.WorkBook().DefaultWorkSheet;
             IxlSheet["A1"].Value = cell1Val;
             IxlSheet["B1"].Value = cell2Val;
 
+            IxlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
             IxlOldSheet["A1"].Value = cell1Val;
             IxlOldSheet["B1"].Value = cell2Val;
 
+            AsposeCells = new Workbook().Worksheets[0].Cells;
             AsposeCells["A1"].PutValue(cell1Val);
             AsposeCells["B1"].PutValue(cell2Val);
 
+            NpoiSheet = new XSSFWorkbook().CreateSheet();
             NpoiSheet.CreateRow(0).CreateCell(0).SetCellValue(cell1Val);
             NpoiSheet.GetRow(0).CreateCell(1).SetCellValue(cell2Val);
 
+            ClosedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
             ClosedXmlSheet.Cell("A1").Value = cell1Val;
             ClosedXmlSheet.Cell("B1").Value = cell2Val;
 
+            EpplusExcelPackage = new ExcelPackage();
+            EpplusSheet = EpplusExcelPackage.Workbook.Worksheets.Add("Sheet1");
             EpplusSheet.Cells["A1"].Value = cell1Val;
             EpplusSheet.Cells["B1"].Value = cell2Val;
         }
