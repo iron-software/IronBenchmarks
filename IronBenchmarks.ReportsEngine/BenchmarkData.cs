@@ -99,6 +99,7 @@ namespace IronBenchmarks.Reporting
         private readonly Dictionary<string, double> data = new Dictionary<string, double>();
 
         public string Name { get; }
+        public int Count => data.Count;
 
         public BenchmarkDataEntry(string name)
         {

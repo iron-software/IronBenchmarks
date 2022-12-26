@@ -6,5 +6,6 @@
         int ChartWidth { get; set; }
         int ChartHeight { get; set; }
         int DataTableStartingRow { get; set; }
+        int ChartsInRow { get; set; }
     }
 }

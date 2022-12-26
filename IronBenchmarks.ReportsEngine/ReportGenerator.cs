@@ -213,9 +213,12 @@ namespace IronBenchmarks.Reporting
 
         private void AddChart(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
         {
+            var chartRow = 0;
+            var chartsInRow = 0;
+
             for (var i = 1; i <= numberOfBenchmarks; i++)
             {
-                var chart = sheet.CreateChart(ChartType.Bar, 0, (i - 1) * _reportConfig.ChartWidth, _reportConfig.ChartHeight, i * _reportConfig.ChartWidth);
+                var chart = CreateChart(sheet, numberOfSeriesToAdd, chartRow, chartsInRow);
                 var headerAddress = $"{_letters[i + 1]}{_reportConfig.DataTableStartingRow}:{_letters[i + 1]}{_reportConfig.DataTableStartingRow}";
 
                 for (var j = 1; j <= numberOfSeriesToAdd; j++)
@@ -235,7 +238,25 @@ namespace IronBenchmarks.Reporting
                 chart.SetTitle($"{chartTitle}\n{benchmarkName}");
                 chart.SetLegendPosition(LegendPosition.Bottom);
                 chart.Plot();
+
+                chartsInRow++;
+
+                if (chartsInRow >= _reportConfig.ChartsInRow)
+                {
+                    chartRow++;
+                    chartsInRow = 0;
+                }
             }
+        }
+
+        private IChart CreateChart(WorkSheet sheet, int chartsStartingRow, int chartRow, int chartsInRow)
+        {
+            var topRow = (chartsStartingRow + 1) + (_reportConfig.ChartHeight * chartRow);
+            var bottomRow = topRow + _reportConfig.ChartHeight;
+            var firstColumn = _reportConfig.ChartWidth * chartsInRow;
+            var lastColumn = firstColumn + _reportConfig.ChartWidth;
+            var chart = sheet.CreateChart(ChartType.Bar, topRow, firstColumn, bottomRow, lastColumn);
+            return chart;
         }
 
         private static void RemoveCharts(WorkSheet sheet)

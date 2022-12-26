@@ -3,8 +3,9 @@
     public class ReportingConfig : IReportingConfig
     {
         public string ReportsFolder { get; set; } = "Reports";
-        public int ChartWidth { get; set; } = 11;
-        public int ChartHeight { get; set; } = 24;
-        public int DataTableStartingRow { get; set; } = 27;
+        public int ChartWidth { get; set; } = 6;
+        public int ChartHeight { get; set; } = 18;
+        public int DataTableStartingRow { get; set; } = 1;
+        public int ChartsInRow { get; set; } = 4;
     }
 }

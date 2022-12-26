@@ -5,39 +5,49 @@ namespace IronBenchmarks.Reporting.Tests
 {
     public class ReportGeneratorTests : TestsBase
     {
+        private static readonly Dictionary<int, string> letters = new()
+        {
+            {1, "A"},
+            {2, "B"},
+            {3, "C"},
+            {4, "D"},
+            {5, "E"},
+            {6, "F"},
+            {7, "G"},
+            {8, "H"},
+            {9, "I"},
+            {10, "J"},
+            {11, "K"},
+            {12, "L"},
+            {13, "M"},
+            {14, "N"},
+            {15, "O"},
+            {16, "P"},
+            {17, "Q"},
+            {18, "R"},
+            {19, "S"},
+            {20, "T"},
+            {21, "U"},
+            {22, "V"},
+            {23, "W"},
+            {24, "X"},
+            {25, "Y"},
+            {26, "Z"}
+        };
+
         [Fact]
         public void GenerateReport_FromBenchmarkData_ReportCreatedCorrectly()
         {
             // Arrange
-            var reportConfig = new ReportingConfig
-            {
-                ReportsFolder = "Reports",
-                ChartWidth = 6,
-                ChartHeight = 18,
-                DataTableStartingRow = 20
-            };
-            var contender1 = "IXL";
-            var contender2 = "IXLO";
-            var benchName1 = "bench1";
-            var benchName2 = "bench2";
-            var cont1bench1 = 1.0;
-            var cont1bench2 = 2.0;
-            var cont2bench1 = 3.0;
-            var cont2bench2 = 4.0;
+            var reportConfig = new ReportingConfig();
             var reportGenerator = new ReportGenerator(reportConfig);
-            var ixlDataEntry = new BenchmarkDataEntry(contender1);
-            ixlDataEntry.Add(benchName1, cont1bench1);
-            ixlDataEntry.Add(benchName2, cont1bench2);
-            var ixloDataEntry = new BenchmarkDataEntry(contender2);
-            ixloDataEntry.Add(benchName1, cont2bench1);
-            ixloDataEntry.Add(benchName2, cont2bench2);
-            var mean = new BenchmarkData(ReportDataType.MeanTime);
-            mean.DataEntries.Add(ixlDataEntry);
-            mean.DataEntries.Add(ixloDataEntry);
-            var mem = new BenchmarkData(ReportDataType.MemoryAlloc);
-            mem.DataEntries.Add(ixlDataEntry);
-            mem.DataEntries.Add(ixloDataEntry);
-            var benchmarksData = new List<BenchmarkData>() { mean, mem };
+            var contenders = new string[] { "IXL", "IXLO", "Asp", "ClXl", "Npoi", "Epp" };
+            var benchNames = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9", "bench10", };
+            var benchmarksData = new List<BenchmarkData>()
+            {
+                CreateBenchmarkData(ReportDataType.MeanTime, contenders, benchNames),
+                CreateBenchmarkData(ReportDataType.MemoryAlloc, contenders, benchNames)
+            };
 
             // Act
             var reportName = reportGenerator.GenerateReport(benchmarksData, "ExcelLibsTests");
@@ -51,15 +61,76 @@ namespace IronBenchmarks.Reporting.Tests
 
             foreach (var sheet in workbook.WorkSheets)
             {
-                Assert.Equal(benchmarksData.Count, sheet.Charts.Count);
-                Assert.Equal(contender1, sheet[$"A{reportConfig.DataTableStartingRow + 1}"].Value);
-                Assert.Equal(contender2, sheet[$"A{reportConfig.DataTableStartingRow + 2}"].Value);
-                Assert.Equal(benchName1, sheet[$"B{reportConfig.DataTableStartingRow}"].Value);
-                Assert.Equal(benchName2, sheet[$"C{reportConfig.DataTableStartingRow}"].Value);
-                Assert.Equal(cont1bench1, sheet[$"B{reportConfig.DataTableStartingRow + 1}"].Value);
-                Assert.Equal(cont1bench2, sheet[$"C{reportConfig.DataTableStartingRow + 1}"].Value);
-                Assert.Equal(cont2bench1, sheet[$"B{reportConfig.DataTableStartingRow + 2}"].Value);
-                Assert.Equal(cont2bench2, sheet[$"C{reportConfig.DataTableStartingRow + 2}"].Value);
+                Assert.Equal(benchNames.Length, sheet.Charts.Count);
+                AssertDataPlacedCorrectly(sheet, reportConfig, contenders, benchNames);
+                AssertChartsPlacedCorrectly(sheet, reportConfig, contenders.Length);
+            }
+        }
+
+        private static BenchmarkData CreateBenchmarkData(ReportDataType dataType, string[] contenders, string[] benchNames)
+        {
+            var data = new BenchmarkData(dataType);
+
+            for (var i = 0; i < contenders.Length; i++)
+            {
+                var entry = new BenchmarkDataEntry(contenders[i]);
+
+                for (var j = 0; j < benchNames.Length; j++)
+                {
+                    entry.Add(benchNames[j], j + 1);
+                }
+
+                data.DataEntries.Add(entry);
+            }
+
+            return data;
+        }
+
+        private static void AssertDataPlacedCorrectly(WorkSheet sheet, ReportingConfig reportConfig, string[] contenders, string[] benchNames)
+        {
+            for (var i = 0; i < contenders.Length; i++)
+            {
+                Assert.Equal(contenders[i], sheet[$"A{reportConfig.DataTableStartingRow + i + 1}"].Value);
+            }
+
+            for (var i = 0; i < benchNames.Length; i++)
+            {
+                Assert.Equal(benchNames[i], sheet[$"{letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
+            }
+
+            for (var i = 0; i < contenders.Length; i++)
+            {
+                for (var j = 0; j < benchNames.Length; j++)
+                {
+                    Assert.Equal(j + 1.0, sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"].Value);
+                }
+            }
+        }
+
+        private static void AssertChartsPlacedCorrectly(WorkSheet sheet, IReportingConfig reportConfig, int contendersNum)
+        {
+            var chartsInRow = 0;
+            var chartRow = 0;
+
+            foreach (var chart in sheet.Charts)
+            {
+                var topRow = contendersNum + 1 + (reportConfig.ChartHeight * chartRow);
+                var bottomRow = topRow + reportConfig.ChartHeight;
+                var firstColumn = reportConfig.ChartWidth * chartsInRow;
+                var lastColumn = firstColumn + reportConfig.ChartWidth;
+
+                Assert.Equal(topRow, chart.Position.TopRowIndex);
+                Assert.Equal(bottomRow, chart.Position.BottomRowIndex);
+                Assert.Equal(firstColumn, chart.Position.LeftColumnIndex);
+                Assert.Equal(lastColumn, chart.Position.RightColumnIndex);
+
+                chartsInRow++;
+
+                if (chartsInRow >= reportConfig.ChartsInRow)
+                {
+                    chartRow++;
+                    chartsInRow = 0;
+                }
             }
         }
     }
