@@ -47,6 +47,7 @@ var summaries = new List<Summary>
     BenchmarkRunner.Run<LoadLargeFileBenchmark>(),
     BenchmarkRunner.Run<SaveLargeFileBenchmark>(),
     BenchmarkRunner.Run<SortRangeBenchmark>(),
+    BenchmarkRunner.Run<AccessingRangePropertiesBenchmark>(),
 
     //BenchmarkRunner.Run<EmptyBenchmark>(),
     //BenchmarkRunner.Run<OtherEmptyBenchmark>(),

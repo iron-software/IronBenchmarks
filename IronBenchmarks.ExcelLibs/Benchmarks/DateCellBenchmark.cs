@@ -1,6 +1,5 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
-using NPOI.SS.UserModel;
 using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks

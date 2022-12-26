@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using Microsoft.Extensions.Configuration;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;

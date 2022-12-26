@@ -4,7 +4,6 @@ using ClosedXML.Excel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System.IO;
-using System.Reflection;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {

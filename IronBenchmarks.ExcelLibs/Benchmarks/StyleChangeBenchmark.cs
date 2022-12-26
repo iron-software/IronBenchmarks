@@ -3,8 +3,6 @@ using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml.Style;
-using System;
-using System.Linq;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {

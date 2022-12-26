@@ -79,7 +79,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             epplusSortRangeSheet = null;
             epplusSortRangeWb.Dispose();
             epplusSortRangeWb = null;
-            
+
         }
 
         [Benchmark(Baseline = true)]

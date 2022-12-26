@@ -1,47 +1,50 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using Aspose.Cells;
+using BenchmarkDotNet.Attributes;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
-    [ShortRunJob]
     [MemoryDiagnoser]
-    public class FormulaCellBenchmark : BenchmarkBase
+    public class AccessingRangePropertiesBenchmark : BenchmarkBase
     {
-        private readonly string formula = "=A1/B1";
-
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            AsposeCells[$"A2"].Formula = formula;
+            var range = AsposeCells.CreateRange("A1", "CV100");
+
+            foreach (Cell cell in range)
+            {
+                _ = cell.GetStyle().Font;
+            }
         }
 
         [Benchmark]
         public override void ClosedXml()
         {
-            ClosedXmlSheet.Cell($"A2").FormulaA1 = formula;
+            _ = ClosedXmlSheet.Range("A1:CV1000").Style.Font;
         }
 
         [Benchmark]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Formula = formula;
+            _ = EpplusSheet.Cells["A1:CV1000"].Style.Font;
         }
 
         [Benchmark]
         public override void IronXl()
         {
-            IxlSheet[$"A2"].Formula = formula;
+            _ = IxlSheet["A1:CV100"].Style.Font;
         }
 
         [Benchmark]
         public override void IronXlOld()
         {
-            IxlOldSheet[$"A2"].Formula = formula;
+            _ = IxlOldSheet["A1:CV100"].Style.Font;
         }
 
         [Benchmark]
         public override void Npoi()
         {
-            NpoiSheet.CreateRow(1).CreateCell(0).SetCellFormula(formula.Replace("=", ""));
+
         }
     }
 }
