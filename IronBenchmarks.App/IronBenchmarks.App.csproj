@@ -34,8 +34,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\IronBenchmarks.BarCodeLibs\IronBenchmarks.BarCodeLibs.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.ExcelLibs\IronBenchmarks.ExcelLibs.csproj" />
-	  <ProjectReference Include="..\IronBenchmarks.IronBarCode\IronBenchmarks.IronBarCode.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.PdfLibs\IronBenchmarks.PdfLibs.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.ReportsEngine\IronBenchmarks.Reporting.csproj" />
 	</ItemGroup>

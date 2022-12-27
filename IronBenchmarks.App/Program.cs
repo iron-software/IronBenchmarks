@@ -5,6 +5,7 @@ using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Validators;
 using IronBenchmarks.App.Configuration;
+using IronBenchmarks.BarCodeLibs.Benchmarks;
 using IronBenchmarks.ExcelLibs.Benchmarks;
 using IronBenchmarks.PdfLibs.Benchmarks;
 using IronBenchmarks.Reporting;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -41,7 +43,7 @@ IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
 var reportGenerator = new ReportGenerator(reportConfig);
 
-var excelSummaries = new List<Summary>
+/*var excelSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<RandomCellsBenchmark>(),
     BenchmarkRunner.Run<DateCellBenchmark>(),
@@ -72,5 +74,12 @@ var pdfSummaries = new List<Summary>
 };
 
 reportGenerator.GenerateReport(pdfSummaries, "IronPdf");*/
+
+var pdfSummaries = new List<Summary>
+{
+    BenchmarkRunner.Run<CreateBarcodeBenchmark>()
+};
+
+reportGenerator.GenerateReport(pdfSummaries, "IronBarCode");
 
 Console.ReadKey();
