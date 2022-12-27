@@ -14,10 +14,16 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
             _ = IronPdf.PdfDocument.FromFile(largeFileName);
         }
 
-        //[Benchmark]
-        public override void Iron_PdfOld()
+        [Benchmark]
+        public override void ITextSharp()
         {
-            _ = IronPdfOld.PdfDocument.FromFile(largeFileName);
+            _ = new iTextSharp.text.pdf.PdfReader(largeFileName);
+        }
+
+        [Benchmark]
+        public override void Pdf_Sharp()
+        {
+            _ = PdfSharp.Pdf.IO.PdfReader.Open(largeFileName);
         }
     }
 }

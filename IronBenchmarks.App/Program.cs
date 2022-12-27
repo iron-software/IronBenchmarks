@@ -29,9 +29,9 @@ var host = Host.CreateDefaultBuilder()
     .ConfigureServices((context, services) =>
     {
         services.AddSingleton<IAppConfig, AppConfig>(
-            _ => configurationRoot.GetSection(nameof(AppConfig)).Get<AppConfig>());
+            _ => configurationRoot.GetSection(nameof(AppConfig)).Get<AppConfig>() ?? new AppConfig());
         services.AddSingleton<IReportingConfig, ReportingConfig>(
-            _ => configurationRoot.GetSection(nameof(ReportingConfig)).Get<ReportingConfig>());
+            _ => configurationRoot.GetSection(nameof(ReportingConfig)).Get<ReportingConfig>() ?? new ReportingConfig());
     })
     .Build();
 
@@ -67,7 +67,7 @@ var config = new ManualConfig()
 
 var pdfSummaries = new List<Summary>
 {
-    BenchmarkRunner.Run<CreateDocumentBenchmark>(config),
+    BenchmarkRunner.Run<RenderHtmlToPdfBenchmark>(config),
     BenchmarkRunner.Run<LoadingLargeFileBenchmark>(config),
     BenchmarkRunner.Run<SavingLargeFileBenchmark>(config),
 };

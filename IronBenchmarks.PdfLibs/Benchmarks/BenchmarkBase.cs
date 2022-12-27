@@ -1,5 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Reflection;
 
@@ -7,12 +6,10 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
 {
     public abstract class BenchmarkBase
     {
-        public IronPdf.ChromePdfRenderer IronPdfRenderer;
-        public IronPdfOld.ChromePdfRenderer IronPdfOldRenderer;
-
         public BenchmarkBase()
         {
             SetupLicenses();
+            EnsureResultsFolderExists();
         }
 
         public static void SetupLicenses()
@@ -21,10 +18,9 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
                 .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
             var configuration = builder.Build();
             var appConfig = configuration.GetSection("AppConfig");
-            var LicenseKeyIronPdf = appConfig["LicenseKeyIronXl"];
+            var LicenseKeyIronPdf = appConfig["LicenseKeyIronPdf"];
 
             IronPdf.License.LicenseKey = LicenseKeyIronPdf;
-            IronPdfOld.License.LicenseKey = LicenseKeyIronPdf;
         }
 
         public static void EnsureResultsFolderExists()
@@ -38,22 +34,10 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
             }
         }
 
-        [IterationSetup]
-        public void IterationSetup()
-        {
-            IronPdfRenderer = new IronPdf.ChromePdfRenderer();
-            //IronPdfOldRenderer = new IronPdfOld.ChromePdfRenderer();
-        }
-
         public abstract void Iron_Pdf();
 
-        public abstract void Iron_PdfOld();
+        public abstract void Pdf_Sharp();
 
-        [IterationCleanup]
-        public void IterationCleanup()
-        {
-            IronPdfRenderer = null;
-            IronPdfOldRenderer = null;
-        }
+        public abstract void ITextSharp();
     }
 }
