@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System.IO;
@@ -9,7 +10,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class SaveLargeFileBenchmark
+    public class SaveLargeFileBenchmark : BenchmarkBase
     {
         private readonly string largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
         private IronXL.WorkBook ixlLargeFile;
@@ -18,13 +19,6 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         private XLWorkbook closedXmlLargeFile;
         private XSSFWorkbook npoiLargeFile;
         private ExcelPackage epplusLargeFile;
-
-        public SaveLargeFileBenchmark()
-        {
-            BenchmarkBase.SetupLicenses();
-
-            BenchmarkBase.EnsureResultsFolderExists();
-        }
 
         [GlobalSetup]
         public void Setup()
@@ -38,37 +32,37 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public void Aspose()
+        public override void Aspose()
         {
             asposeLargeFile.Save("Results\\Aspose_large.xlsx");
         }
 
         [Benchmark]
-        public void ClosedXml()
+        public override void ClosedXml()
         {
             closedXmlLargeFile.SaveAs("Results\\ClosedXML_large.xlsx");
         }
 
         [Benchmark]
-        public void Epplus()
+        public override void Epplus()
         {
             epplusLargeFile.SaveAs("Results\\Epplus_large.xlsx");
         }
 
         [Benchmark]
-        public void IronXl()
+        public override void IronXl()
         {
             ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
         }
 
         [Benchmark]
-        public void IronXlOld()
+        public override void IronXlOld()
         {
             ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
         }
 
         [Benchmark]
-        public void Npoi()
+        public override void Npoi()
         {
             npoiLargeFile.Write(File.Create("Results\\Npoi_large.xlsx"));
         }

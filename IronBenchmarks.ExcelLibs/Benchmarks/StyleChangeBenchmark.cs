@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.SS.UserModel;
 using OfficeOpenXml.Style;
 
@@ -8,7 +9,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class StyleChangeBenchmark : BenchmarkBase
+    public class StyleChangeBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly string cellValue = "Cell";
 

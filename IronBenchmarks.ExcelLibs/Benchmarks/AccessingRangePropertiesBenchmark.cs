@@ -1,10 +1,11 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [MemoryDiagnoser]
-    public class AccessingRangePropertiesBenchmark : BenchmarkBase
+    public class AccessingRangePropertiesBenchmark : SheetOperationsBenchmarkBase
     {
         [Benchmark(Baseline = true)]
         public override void Aspose()

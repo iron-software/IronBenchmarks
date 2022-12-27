@@ -1,12 +1,13 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class DateCellBenchmark : BenchmarkBase
+    public class DateCellBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly DateTime date = DateTime.Now;
 

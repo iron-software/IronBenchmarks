@@ -1,11 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class RandomCellsBenchmark : BenchmarkBase
+    public class RandomCellsBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly string guid = Guid.NewGuid().ToString();
 

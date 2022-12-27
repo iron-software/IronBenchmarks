@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 
@@ -8,47 +9,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class LoadLargeFileBenchmark
+    public class LoadLargeFileBenchmark : BenchmarkBase
     {
         private readonly string largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
 
-        public LoadLargeFileBenchmark()
-        {
-            BenchmarkBase.SetupLicenses();
-        }
-
         [Benchmark(Baseline = true)]
-        public void Aspose()
+        public override void Aspose()
         {
             _ = new Workbook(largeFileName);
         }
 
         [Benchmark]
-        public void ClosedXml()
+        public override void ClosedXml()
         {
             _ = new XLWorkbook(largeFileName);
         }
 
         [Benchmark]
-        public void Epplus()
+        public override void Epplus()
         {
             _ = new ExcelPackage(largeFileName);
         }
 
         [Benchmark]
-        public void IronXl()
+        public override void IronXl()
         {
             _ = IronXL.WorkBook.Load(largeFileName);
         }
 
         [Benchmark]
-        public void IronXlOld()
+        public override void IronXlOld()
         {
             _ = IronXLOld.WorkBook.Load(largeFileName);
         }
 
         [Benchmark]
-        public void Npoi()
+        public override void Npoi()
         {
             _ = new XSSFWorkbook(largeFileName);
         }

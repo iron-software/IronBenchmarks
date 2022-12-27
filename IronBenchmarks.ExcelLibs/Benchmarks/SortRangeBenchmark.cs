@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 
@@ -8,7 +9,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class SortRangeBenchmark
+    public class SortRangeBenchmark : BenchmarkBase
     {
         private readonly string sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
         private IronXL.WorkSheet ixlSortRange;
@@ -28,12 +29,6 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         private ExcelPackage epplusSortRangeWb;
         private ExcelWorksheet epplusSortRangeSheet;
         private ExcelRange epplusSortRange;
-
-        public SortRangeBenchmark()
-        {
-            BenchmarkBase.SetupLicenses();
-            BenchmarkBase.EnsureResultsFolderExists();
-        }
 
         [IterationSetup]
         public void IterationSetup()
@@ -83,37 +78,37 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public void Aspose()
+        public override void Aspose()
         {
             asposeSorter.Sort(asposeCells, asposeCellArea);
         }
 
         [Benchmark]
-        public void ClosedXml()
+        public override void ClosedXml()
         {
             closedXmlSortRange.Sort(1);
         }
 
         [Benchmark]
-        public void Epplus()
+        public override void Epplus()
         {
             epplusSortRange.Sort(x => x.SortBy.Column(0));
         }
 
         [Benchmark]
-        public void IronXl()
+        public override void IronXl()
         {
             ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
         }
 
         [Benchmark]
-        public void IronXlOld()
+        public override void IronXlOld()
         {
             ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
         }
 
         [Benchmark]
-        public void Npoi()
+        public override void Npoi()
         {
 
         }

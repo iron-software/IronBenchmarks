@@ -1,10 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class FormulaCellBenchmark : BenchmarkBase
+    public class FormulaCellBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly string formula = "=A1/B1";
 

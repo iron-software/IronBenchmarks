@@ -1,17 +1,14 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
-using Microsoft.Extensions.Configuration;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
-using System.IO;
-using System.Reflection;
 
-namespace IronBenchmarks.ExcelLibs.Benchmarks
+namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 {
-    public abstract class BenchmarkBase
+    public abstract class SheetOperationsBenchmarkBase : BenchmarkBase
     {
         private readonly Random rand = new Random();
 
@@ -22,35 +19,6 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         public IronXLOld.WorkSheet IxlOldSheet;
         public IronXL.WorkSheet IxlSheet;
         public ISheet NpoiSheet;
-
-        public BenchmarkBase()
-        {
-            SetupLicenses();
-        }
-
-        public static void SetupLicenses()
-        {
-            var builder = new ConfigurationBuilder()
-                .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-            var configuration = builder.Build();
-            var appConfig = configuration.GetSection("AppConfig");
-            var licenseKeyIronXl = appConfig["LicenseKeyIronXl"];
-
-            IronXL.License.LicenseKey = licenseKeyIronXl;
-            IronXLOld.License.LicenseKey = licenseKeyIronXl;
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        }
-
-        public static void EnsureResultsFolderExists()
-        {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", "Results");
-
-            if (!Directory.Exists(reportsFolder))
-            {
-                Directory.CreateDirectory(reportsFolder);
-            }
-        }
 
         [IterationSetup]
         public void IterationSetup()
@@ -83,18 +51,6 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             EpplusSheet.Cells["A1"].Value = cell1Val;
             EpplusSheet.Cells["B1"].Value = cell2Val;
         }
-
-        public abstract void IronXl();
-
-        public abstract void IronXlOld();
-
-        public abstract void Aspose();
-
-        public abstract void Npoi();
-
-        public abstract void ClosedXml();
-
-        public abstract void Epplus();
 
         [IterationCleanup]
         public void IterationCleanup()
