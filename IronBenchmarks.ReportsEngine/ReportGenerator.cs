@@ -136,7 +136,7 @@ namespace IronBenchmarks.Reporting
 
             foreach (var cell in sheet[headerRowAddress])
             {
-                
+
 
                 cell.Value = GetBenchmarkTitle(benchmarkList[i]);
 
@@ -203,15 +203,15 @@ namespace IronBenchmarks.Reporting
             sheet[rowAddress].FormatString = BuiltinFormats.Number0;
         }
 
-        private static void AutoSizeIimeTable(WorkSheet sheet, string headerAddress)
+        private static void FormatHeader(WorkSheet sheet, string headerAddress)
         {
             foreach (var cell in sheet[headerAddress])
             {
-                sheet.AutoSizeColumn(cell.ColumnIndex);
+                cell.Style.WrapText = true;
             }
         }
 
-        private void AddChart(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
+        private void AddCharts(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
         {
             var chartRow = 0;
             var chartsInRow = 0;
@@ -251,7 +251,7 @@ namespace IronBenchmarks.Reporting
 
         private IChart CreateChart(WorkSheet sheet, int chartsStartingRow, int chartRow, int chartsInRow)
         {
-            var topRow = (chartsStartingRow + 1) + (_reportConfig.ChartHeight * chartRow);
+            var topRow = chartsStartingRow + 1 + (_reportConfig.ChartHeight * chartRow);
             var bottomRow = topRow + _reportConfig.ChartHeight;
             var firstColumn = _reportConfig.ChartWidth * chartsInRow;
             var lastColumn = firstColumn + _reportConfig.ChartWidth;
@@ -271,11 +271,11 @@ namespace IronBenchmarks.Reporting
         {
             RemoveCharts(sheet);
 
-            AddChart(sheet, _numberOfConteders, _numberOfBenchmarks, chartTitle);
+            AddCharts(sheet, _numberOfConteders, _numberOfBenchmarks, chartTitle);
 
             FormatTimeTable(sheet, _numberOfConteders, _numberOfBenchmarks);
 
-            AutoSizeIimeTable(sheet, _headerRowAddress);
+            FormatHeader(sheet, _headerRowAddress);
         }
     }
 }
