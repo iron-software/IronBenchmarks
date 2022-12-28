@@ -43,7 +43,7 @@ IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
 var reportGenerator = new ReportGenerator(reportConfig);
 
-/*var excelSummaries = new List<Summary>
+var excelSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<RandomCellsBenchmark>(),
     BenchmarkRunner.Run<DateCellBenchmark>(),
@@ -73,13 +73,13 @@ var pdfSummaries = new List<Summary>
     BenchmarkRunner.Run<SavingLargeFileBenchmark>(config),
 };
 
-reportGenerator.GenerateReport(pdfSummaries, "IronPdf");*/
+reportGenerator.GenerateReport(pdfSummaries, "IronPdf");
 
 var pdfSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<CreateBarcodeBenchmark>()
 };
 
-reportGenerator.GenerateReport(pdfSummaries, "IronBarCode");
+reportGenerator.GenerateReport(pdfSummaries, "IronBarCode");*/
 
 Console.ReadKey();

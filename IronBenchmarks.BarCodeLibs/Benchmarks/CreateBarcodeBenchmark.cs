@@ -3,7 +3,7 @@ using System;
 
 namespace IronBenchmarks.BarCodeLibs.Benchmarks
 {
-    //[ShortRunJob]
+    [ShortRunJob]
     [MemoryDiagnoser]
     public class CreateBarcodeBenchmark : BenchmarkBase
     {

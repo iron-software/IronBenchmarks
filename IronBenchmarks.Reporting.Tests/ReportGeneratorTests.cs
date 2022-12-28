@@ -1,6 +1,7 @@
 ﻿using IronBenchmarks.Reporting.Configuration;
 using IronBenchmarks.Reporting.ReportData;
 using IronXL;
+using IronXL.Formatting;
 
 namespace IronBenchmarks.Reporting.Tests
 {
@@ -63,7 +64,7 @@ namespace IronBenchmarks.Reporting.Tests
             foreach (var sheet in workbook.WorkSheets)
             {
                 Assert.Equal(benchNames.Length, sheet.Charts.Count);
-                AssertDataPlacedCorrectly(sheet, reportConfig, contenders, benchNames);
+                AssertDataPlacedFormattedCorrectly(sheet, reportConfig, contenders, benchNames);
                 AssertChartsPlacedCorrectly(sheet, reportConfig, contenders.Length);
             }
         }
@@ -78,7 +79,7 @@ namespace IronBenchmarks.Reporting.Tests
 
                 for (var j = 0; j < benchNames.Length; j++)
                 {
-                    entry.Add(benchNames[j], j + 1);
+                    entry.Add(benchNames[j], dataType == ReportDataType.MeanTime ? Units.us : Units.KB, j + 1);
                 }
 
                 data.DataEntries.Add(entry);
@@ -87,7 +88,7 @@ namespace IronBenchmarks.Reporting.Tests
             return data;
         }
 
-        private static void AssertDataPlacedCorrectly(WorkSheet sheet, ReportingConfig reportConfig, string[] contenders, string[] benchNames)
+        private static void AssertDataPlacedFormattedCorrectly(WorkSheet sheet, ReportingConfig reportConfig, string[] contenders, string[] benchNames)
         {
             for (var i = 0; i < contenders.Length; i++)
             {
@@ -96,14 +97,21 @@ namespace IronBenchmarks.Reporting.Tests
 
             for (var i = 0; i < benchNames.Length; i++)
             {
-                Assert.Equal(benchNames[i], sheet[$"{letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
+                var name = sheet.Name == "Performance"
+                    ? $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.us)}"
+                    : $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.KB)}";
+
+                Assert.Equal(name, sheet[$"{letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
             }
 
             for (var i = 0; i < contenders.Length; i++)
             {
                 for (var j = 0; j < benchNames.Length; j++)
                 {
-                    Assert.Equal(j + 1.0, sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"].Value);
+                    var cell = sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
+
+                    Assert.Equal(j + 1.0, cell.Value);
+                    Assert.Equal(BuiltinFormats.Thousands2, cell.FormatString);
                 }
             }
         }

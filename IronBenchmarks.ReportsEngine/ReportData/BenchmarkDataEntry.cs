@@ -5,7 +5,7 @@ namespace IronBenchmarks.Reporting.ReportData
 {
     public class BenchmarkDataEntry
     {
-        private readonly Dictionary<string, double> data = new Dictionary<string, double>();
+        private readonly List<BenchmarkDataPoint> data = new List<BenchmarkDataPoint>();
 
         public string Name { get; }
         public int Count => data.Count;
@@ -15,21 +15,28 @@ namespace IronBenchmarks.Reporting.ReportData
             Name = name;
         }
 
-        public void Add(string title, double value)
+        public void Add(string title, Units units, double value)
         {
-            data.Add(title, value);
+            data.Add(new BenchmarkDataPoint(title, units, value));
         }
 
-        public string[] GetKeys()
+        public Dictionary<string, Units> GetBenchmarkNames()
         {
-            return data.Keys.ToArray();
+            var names = new Dictionary<string, Units>();
+
+            foreach (var point in data)
+            {
+                names.Add(point.Name, point.UnitType);
+            }
+
+            return names;
         }
 
-        public double this[string key]
+        public BenchmarkDataPoint this[string key]
         {
             get
             {
-                return data[key];
+                return data.FirstOrDefault(d => d.Name == key);
             }
         }
     }

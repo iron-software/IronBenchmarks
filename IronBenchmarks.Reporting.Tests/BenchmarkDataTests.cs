@@ -46,14 +46,14 @@ namespace IronBenchmarks.Reporting.Tests
             // Add some data entries with the expected names
             foreach (var name in expectedNames)
             {
-                dataEntry.Add(name, 1.0);
+                dataEntry.Add(name, Units.s, 1.0);
             }
 
             // Act
             var actualNames = benchmarkData.GetBenchmarkNames();
 
             // Assert
-            Assert.Equal(expectedNames, actualNames);
+            Assert.Equal(expectedNames, actualNames.Keys.ToArray());
         }
 
         [Fact]
@@ -61,13 +61,13 @@ namespace IronBenchmarks.Reporting.Tests
         {
             // Arrange
             var dataEntry = new BenchmarkDataEntry("Test");
-            dataEntry.Add("Test1", 123.45);
+            dataEntry.Add("Test1", Units.s, 123.45);
 
             // Act
             var value = dataEntry["Test1"];
 
             // Assert
-            Assert.Equal(123.45, value);
+            Assert.Equal(123.45, value.Value);
         }
 
         [Fact]
@@ -76,16 +76,16 @@ namespace IronBenchmarks.Reporting.Tests
             // Arrange
             var benchmarkData = new BenchmarkData(ReportDataType.MeanTime);
             var benchmarkDataEntry = new BenchmarkDataEntry("Contender 1");
-            benchmarkDataEntry.Add("Benchmark 1", 0);
-            benchmarkDataEntry.Add("Benchmark 2", 0);
-            benchmarkDataEntry.Add("Benchmark 3", 0);
+            benchmarkDataEntry.Add("Benchmark 1", Units.s, 0);
+            benchmarkDataEntry.Add("Benchmark 2", Units.us, 0);
+            benchmarkDataEntry.Add("Benchmark 3", Units.ms, 0);
             benchmarkData.DataEntries.Add(benchmarkDataEntry);
 
             // Act
             var result = benchmarkData.GetBenchmarkNames();
 
             // Assert
-            Assert.Equal(new[] { "Benchmark 1", "Benchmark 2", "Benchmark 3" }, result);
+            Assert.Equal(new Dictionary<string, Units> { { "Benchmark 1", Units.s }, { "Benchmark 2", Units.us }, { "Benchmark 3", Units.ms } }, result);
         }
 
         [Fact]
@@ -110,9 +110,9 @@ namespace IronBenchmarks.Reporting.Tests
             // Arrange
             var benchmarkData = new BenchmarkData(ReportDataType.MeanTime);
             var benchmarkDataEntry = new BenchmarkDataEntry("Contender 1");
-            benchmarkDataEntry.Add("Benchmark 1", 0);
-            benchmarkDataEntry.Add("Benchmark 2", 0);
-            benchmarkDataEntry.Add("Benchmark 3", 0);
+            benchmarkDataEntry.Add("Benchmark 1", Units.s, 0);
+            benchmarkDataEntry.Add("Benchmark 2", Units.us, 0);
+            benchmarkDataEntry.Add("Benchmark 3", Units.ms, 0);
             benchmarkData.DataEntries.Add(benchmarkDataEntry);
 
             // Act

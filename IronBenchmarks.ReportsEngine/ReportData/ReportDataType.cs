@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace IronBenchmarks.Reporting.ReportData
 {
@@ -8,5 +9,19 @@ namespace IronBenchmarks.Reporting.ReportData
         MeanTime,
         [Description("Memory Allocation")]
         MemoryAlloc
+    }
+}
+
+namespace IronBenchmarks
+{
+    public static class EnumHelper
+    {
+        public static string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+                ? value.ToString()
+                : attribute.Description;
+        }
     }
 }

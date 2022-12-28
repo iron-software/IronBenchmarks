@@ -6,9 +6,9 @@ using IronXL.Drawing.Charts;
 using IronXL.Formatting;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace IronBenchmarks.Reporting
@@ -87,7 +87,7 @@ namespace IronBenchmarks.Reporting
         {
             foreach (var chartData in tablesData)
             {
-                var sheet = report.CreateWorkSheet($"{GetEnumDescription(chartData.DataType)}");
+                var sheet = report.CreateWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}");
 
                 _numberOfConteders = chartData.GetNumberOfContenders();
                 _numberOfBenchmarks = chartData.GetNumberOfBenchmarks();
@@ -106,16 +106,8 @@ namespace IronBenchmarks.Reporting
                     i++;
                 }
 
-                UpdateCharts(sheet, GetEnumDescription(chartData.DataType));
+                UpdateCharts(sheet, EnumHelper.GetEnumDescription(chartData.DataType));
             }
-        }
-
-        private static string GetEnumDescription(Enum value)
-        {
-            var field = value.GetType().GetField(value.ToString());
-            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-                ? value.ToString()
-                : attribute.Description;
         }
 
         private void EnsureReportsFolderExists()
@@ -129,17 +121,16 @@ namespace IronBenchmarks.Reporting
             }
         }
 
-        private static void FillHeader(WorkSheet sheet, string headerRowAddress, string[] benchmarkList)
+        private static void FillHeader(WorkSheet sheet, string headerRowAddress, Dictionary<string, Units> benchmarkList)
         {
-            benchmarkList = benchmarkList ?? new string[] { "" };
+            benchmarkList = benchmarkList ?? new Dictionary<string, Units>();
 
             var i = 0;
+            var cells = sheet[headerRowAddress].ToArray();
 
-            foreach (var cell in sheet[headerRowAddress])
+            foreach (var benchmark in benchmarkList)
             {
-
-
-                cell.Value = GetBenchmarkTitle(benchmarkList[i]);
+                cells[i].Value = $"{GetBenchmarkTitle(benchmark.Key)}, {EnumHelper.GetEnumDescription(benchmark.Value)}";
 
                 i++;
             }
@@ -160,15 +151,18 @@ namespace IronBenchmarks.Reporting
             return benchmarkTitle;
         }
 
-        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, string[] benchmarkTitles)
+        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, Dictionary<string, Units> benchmarkTitles)
         {
             var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
-            var times = new double[benchmarkTitles.Length];
+            var times = new double[benchmarkTitles.Count];
+            var j = 0;
 
-            for (var j = 0; j < benchmarkTitles.Length; j++)
+            foreach (var benchmark in benchmarkTitles)
             {
-                times[j] = contender[benchmarkTitles[j]];
+                times[j] = contender[benchmark.Key].Value;
+
+                j++;
             }
 
             PutInSeriesData(sheet, seriesRowAddress, times);
@@ -178,13 +172,9 @@ namespace IronBenchmarks.Reporting
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)
         {
-            for (var i = 1; i <= numberOfRowsToFormat; i++)
-            {
-                var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
-                var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber}";
-
-                FormatRow(sheet, seriesRowAddress);
-            }
+            var seriesRowNumber = _reportConfig.DataTableStartingRow + 1;
+            var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber + numberOfRowsToFormat}";
+            sheet[seriesRowAddress].FormatString = BuiltinFormats.Thousands2;
         }
 
         private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, double[] times)
@@ -197,11 +187,6 @@ namespace IronBenchmarks.Reporting
 
                 i++;
             }
-        }
-
-        private static void FormatRow(WorkSheet sheet, string rowAddress)
-        {
-            sheet[rowAddress].FormatString = BuiltinFormats.Number0;
         }
 
         private static void FormatHeader(WorkSheet sheet, string headerAddress)
