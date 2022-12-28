@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Reports;
+using IronBenchmarks.Reporting.ReportData;
 
 namespace IronBenchmarks.Reporting.Tests
 {

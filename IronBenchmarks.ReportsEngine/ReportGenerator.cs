@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Reports;
 using IronBenchmarks.Reporting.Configuration;
+using IronBenchmarks.Reporting.ReportData;
 using IronXL;
 using IronXL.Drawing.Charts;
 using IronXL.Formatting;
