@@ -7,5 +7,6 @@
         int ChartHeight { get; set; }
         int DataTableStartingRow { get; set; }
         int ChartsInRow { get; set; }
+        bool AppendToLastReport { get; set; }
     }
 }

@@ -44,28 +44,51 @@ namespace IronBenchmarks.Reporting.Tests
             var reportConfig = new ReportingConfig();
             var reportGenerator = new ReportGenerator(reportConfig);
             var contenders = new string[] { "IXL", "IXLO", "Asp", "ClXl", "Npoi", "Epp" };
+            var contendersToAppend = new string[] { "Interop" };
+            var finalListOfContenders = contenders.Concat(contendersToAppend).ToArray();
             var benchNames = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9", "bench10", };
+            var benchNamesToAppend = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9" };
             var benchmarksData = new List<BenchmarkData>()
             {
                 CreateBenchmarkData(ReportDataType.MeanTime, contenders, benchNames),
                 CreateBenchmarkData(ReportDataType.MemoryAlloc, contenders, benchNames)
             };
+            var benchmarksDataToAppend = new List<BenchmarkData>()
+            {
+                CreateBenchmarkData(ReportDataType.MeanTime, contendersToAppend, benchNamesToAppend),
+                CreateBenchmarkData(ReportDataType.MemoryAlloc, contendersToAppend, benchNamesToAppend)
+            };
 
             // Act
             var reportName = reportGenerator.GenerateReport(benchmarksData, "ExcelLibsTests");
+            reportConfig.AppendToLastReport = true;
+            var appendedReportName = reportGenerator.GenerateReport(benchmarksDataToAppend, "ExcelLibsTests");
 
             // Assert
-            var workbook = WorkBook.Load(reportName);
+            var report = WorkBook.Load(reportName);
+            var appendedReport = WorkBook.Load(appendedReportName);
 
-            Assert.Equal(benchmarksData.Count, workbook.WorkSheets.Count);
-            Assert.Equal("Performance", workbook.WorkSheets[0].Name);
-            Assert.Equal("Memory Allocation", workbook.WorkSheets[1].Name);
+            Assert.Equal(benchmarksData.Count, report.WorkSheets.Count);
+            Assert.Equal("Performance", report.WorkSheets[0].Name);
+            Assert.Equal("Memory Allocation", report.WorkSheets[1].Name);
+            Assert.Equal(benchmarksData.Count, appendedReport.WorkSheets.Count);
+            Assert.Equal("Performance", appendedReport.WorkSheets[0].Name);
+            Assert.Equal("Memory Allocation", appendedReport.WorkSheets[1].Name);
 
-            foreach (var sheet in workbook.WorkSheets)
+            reportConfig.AppendToLastReport = false;
+            foreach (var sheet in report.WorkSheets)
             {
                 Assert.Equal(benchNames.Length, sheet.Charts.Count);
                 AssertDataPlacedFormattedCorrectly(sheet, reportConfig, contenders, benchNames);
                 AssertChartsPlacedCorrectly(sheet, reportConfig, contenders.Length);
+            }
+
+            reportConfig.AppendToLastReport = true;
+            foreach (var sheet in appendedReport.WorkSheets)
+            {
+                Assert.Equal(benchNames.Length, sheet.Charts.Count);
+                AssertDataPlacedFormattedCorrectly(sheet, reportConfig, finalListOfContenders, benchNames);
+                AssertChartsPlacedCorrectly(sheet, reportConfig, finalListOfContenders.Length);
             }
         }
 
@@ -110,7 +133,15 @@ namespace IronBenchmarks.Reporting.Tests
                 {
                     var cell = sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
 
-                    Assert.Equal(j + 1.0, cell.Value);
+                    if (reportConfig.AppendToLastReport && i == contenders.Length - 1 && j == benchNames.Length - 1)
+                    {
+                        Assert.Equal(0.0, cell.Value);
+                    } 
+                    else
+                    {
+                        Assert.Equal(j + 1.0, cell.Value);
+                    }
+                    
                     Assert.Equal(BuiltinFormats.Thousands2, cell.FormatString);
                 }
             }

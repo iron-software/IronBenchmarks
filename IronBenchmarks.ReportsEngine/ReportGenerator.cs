@@ -71,7 +71,7 @@ namespace IronBenchmarks.Reporting
         {
             EnsureReportsFolderExists();
 
-            var report = WorkBook.Create();
+            var report = _reportConfig.AppendToLastReport ? GetLastReport() : WorkBook.Create();
 
             FillReport(report, chartsData);
 
@@ -83,21 +83,47 @@ namespace IronBenchmarks.Reporting
             return reportName;
         }
 
+        private WorkBook GetLastReport()
+        {
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var reportsFolder = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}");
+            var files = Directory.GetFiles(reportsFolder);
+            var sortedFiles = files.OrderByDescending(f => File.GetLastWriteTime(f));
+            var mostRecentFile = sortedFiles.First();
+
+            return WorkBook.Load(mostRecentFile);
+        }
+
         private void FillReport(WorkBook report, List<BenchmarkData> tablesData)
         {
             foreach (var chartData in tablesData)
             {
-                var sheet = report.CreateWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}");
+                var sheet = _reportConfig.AppendToLastReport
+                    ? report.GetWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}")
+                    : report.CreateWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}");
 
-                _numberOfConteders = chartData.GetNumberOfContenders();
-                _numberOfBenchmarks = chartData.GetNumberOfBenchmarks();
+                if (_reportConfig.AppendToLastReport)
+                {
+                    _numberOfBenchmarks = chartData.GetNumberOfBenchmarks() < GetLastColumnInReport(sheet)
+                        ? GetLastColumnInReport(sheet)
+                        : chartData.GetNumberOfBenchmarks();
+                }
+                else
+                {
+                    _numberOfBenchmarks = chartData.GetNumberOfBenchmarks();
+                }
+
+                _numberOfConteders = chartData.GetNumberOfContenders() + (_reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) - 1 : 0);
                 _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
 
                 var benchmarkTitles = chartData.GetBenchmarkNames();
 
-                FillHeader(sheet, _headerRowAddress, benchmarkTitles);
+                if (!_reportConfig.AppendToLastReport)
+                {
+                    FillHeader(sheet, _headerRowAddress, benchmarkTitles);
+                }
 
-                var i = 1;
+                var i = _reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) : 1;
 
                 foreach (var contender in chartData.DataEntries)
                 {
@@ -108,6 +134,22 @@ namespace IronBenchmarks.Reporting
 
                 UpdateCharts(sheet, EnumHelper.GetEnumDescription(chartData.DataType));
             }
+        }
+
+        private int GetLastColumnInReport(WorkSheet sheet)
+        {
+            var allColums = sheet.AllColumnsInRange;
+            var lastColumn = allColums[allColums.Length - 1];
+
+            return lastColumn.RangeAddress.LastColumn;
+        }
+
+        private int GetLastRowInReport(WorkSheet sheet)
+        {
+            var allRows = sheet.AllRowsInRange;
+            var lastRow = allRows[allRows.Length - 1];
+
+            return lastRow.RangeAddress.LastRow;
         }
 
         private void EnsureReportsFolderExists()
@@ -212,8 +254,10 @@ namespace IronBenchmarks.Reporting
                     var seriesRowNumber = _reportConfig.DataTableStartingRow + j;
                     var seriesRowAddress = $"{_letters[i + 1]}{seriesRowNumber}:{_letters[i + 1]}{seriesRowNumber}";
 
-                    var range = sheet[seriesRowAddress];
-                    range.FormatString = BuiltinFormats.Number0;
+                    if (!sheet[seriesRowAddress].First().IsNumeric)
+                    {
+                        continue;
+                    }
 
                     var series = chart.AddSeries(seriesRowAddress, headerAddress);
                     series.Title = sheet[$"A{seriesRowNumber}"].StringValue;
