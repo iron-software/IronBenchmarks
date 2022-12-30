@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<UserSecretsId>785ea464-4061-421e-a1ad-b04f7dc6bf6b</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspose.Cells" Version="22.12.0" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
+		<PackageReference Include="ClosedXML" Version="0.97.0" />
+		<PackageReference Include="EPPlus" Version="6.1.1" />
+		<PackageReference Include="IronXL.Excel" Version="2022.12.11262" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageReference Include="NPOI" Version="2.6.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="IronXLOld">
+			<HintPath>..\packages\IronXLOld.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="LoadingTestFiles\LoadingTest.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="SortRangeFiles\SortRange.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -1,9 +1,12 @@
-﻿using IronBenchmarks.Reporting.Configuration;
+﻿using BenchmarkDotNet.Reports;
+using IronBenchmarks.Reporting.Configuration;
+using IronBenchmarks.Reporting.ReportData;
 using IronXL;
 using IronXL.Drawing.Charts;
 using IronXL.Formatting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,111 +20,141 @@ namespace IronBenchmarks.Reporting
         private int _numberOfConteders = 0;
         private int _numberOfBenchmarks = 0;
         private static readonly Dictionary<int, string> _letters = new Dictionary<int, string>()
-    {
-        {1, "A"},
-        {2, "B"},
-        {3, "C"},
-        {4, "D"},
-        {5, "E"},
-        {6, "F"},
-        {7, "G"},
-        {8, "H"},
-        {9, "I"},
-        {10, "J"},
-        {11, "K"},
-        {12, "L"},
-        {13, "M"},
-        {14, "N"},
-        {15, "O"},
-        {16, "P"},
-        {17, "Q"},
-        {18, "R"},
-        {19, "S"},
-        {20, "T"},
-        {21, "U"},
-        {22, "V"},
-        {23, "W"},
-        {24, "X"},
-        {25, "Y"},
-        {26, "Z"}
-    };
+        {
+            {1, "A"},
+            {2, "B"},
+            {3, "C"},
+            {4, "D"},
+            {5, "E"},
+            {6, "F"},
+            {7, "G"},
+            {8, "H"},
+            {9, "I"},
+            {10, "J"},
+            {11, "K"},
+            {12, "L"},
+            {13, "M"},
+            {14, "N"},
+            {15, "O"},
+            {16, "P"},
+            {17, "Q"},
+            {18, "R"},
+            {19, "S"},
+            {20, "T"},
+            {21, "U"},
+            {22, "V"},
+            {23, "W"},
+            {24, "X"},
+            {25, "Y"},
+            {26, "Z"}
+        };
 
         public ReportGenerator(IReportingConfig reportConfig)
         {
             _reportConfig = reportConfig;
         }
 
-        public string GenerateReport(Dictionary<string, Dictionary<string, TimeSpan>> timeTableData, string reportTag)
+        public string GenerateReport(List<Summary> summaries, string reportTag, Dictionary<string, string> contedersNamesAndVersions = null)
         {
-            CreateReportsFolder();
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+            var benchmarksData = new List<BenchmarkData>()
+            {
+                new BenchmarkData(summaries, ReportDataType.MeanTime),
+                new BenchmarkData(summaries, ReportDataType.MemoryAlloc)
+            };
+
+            return GenerateReport(benchmarksData, reportTag, contedersNamesAndVersions);
+        }
+
+        public string GenerateReport(List<BenchmarkData> chartsData, string reportTag, Dictionary<string, string> contedersNamesAndVersions = null)
+        {
+            contedersNamesAndVersions = contedersNamesAndVersions ?? new Dictionary<string, string>();
+
+            EnsureReportsFolderExists();
+
+            var report = _reportConfig.AppendToLastReport ? GetLastReport() : WorkBook.Create();
+
+            FillReport(report, chartsData, contedersNamesAndVersions);
 
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
-            var report = LoadTemplate();
-
-            FillReport(report, timeTableData);
 
             report.SaveAs(reportName);
 
             return reportName;
         }
 
-        private void FillReport(WorkBook report, Dictionary<string, Dictionary<string, TimeSpan>> timeTableData)
+        private WorkBook GetLastReport()
         {
-            var sheet = report.DefaultWorkSheet;
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var reportsFolder = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}");
+            var files = Directory.GetFiles(reportsFolder);
+            var sortedFiles = files.OrderByDescending(f => File.GetLastWriteTime(f));
+            var mostRecentFile = sortedFiles.First();
 
-            _numberOfConteders = timeTableData.Count;
-            _numberOfBenchmarks = timeTableData.FirstOrDefault().Value.Values.Count;
-            _headerRowAddress = $"B{_reportConfig.TimeTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.TimeTableStartingRow}";
+            return WorkBook.Load(mostRecentFile);
+        }
 
-            ClearTemplateMockData(sheet);
-
-            FillHeader(sheet, _headerRowAddress, timeTableData.Values.FirstOrDefault()?.Keys.ToArray());
-
-            var i = 1;
-
-            foreach (var contender in timeTableData)
+        private void FillReport(WorkBook report, List<BenchmarkData> tablesData, Dictionary<string, string> contedersNamesAndVersions)
+        {
+            foreach (var chartData in tablesData)
             {
-                FillRow(sheet, i, contender);
+                var sheet = _reportConfig.AppendToLastReport
+                    ? report.GetWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}")
+                    : report.CreateWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}");
 
-                i++;
+                if (_reportConfig.AppendToLastReport)
+                {
+                    _numberOfBenchmarks = chartData.GetNumberOfBenchmarks() < GetLastColumnInReport(sheet)
+                        ? GetLastColumnInReport(sheet)
+                        : chartData.GetNumberOfBenchmarks();
+                }
+                else
+                {
+                    _numberOfBenchmarks = chartData.GetNumberOfBenchmarks();
+                }
+
+                _numberOfConteders = chartData.GetNumberOfContenders() + (_reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) - 1 : 0);
+                _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
+
+                var benchmarkTitles = chartData.GetBenchmarkNames();
+
+                if (!_reportConfig.AppendToLastReport)
+                {
+                    FillHeader(sheet, _headerRowAddress, benchmarkTitles);
+                }
+
+                var i = _reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) : 1;
+
+                foreach (var contender in chartData.DataEntries)
+                {
+                    FillRow(sheet, i, contender, benchmarkTitles, contedersNamesAndVersions);
+
+                    i++;
+                }
+
+                UpdateCharts(sheet, EnumHelper.GetEnumDescription(chartData.DataType));
             }
-
-            UpdateChart(sheet);
         }
 
-        private void ClearTemplateMockData(WorkSheet sheet)
+        private int GetLastColumnInReport(WorkSheet sheet)
         {
-            FillHeader(sheet, "B27:K27", null);
+            var allColums = sheet.AllColumnsInRange;
+            var lastColumn = allColums[allColums.Length - 1];
 
-            ClearSeriesRow(sheet, 1);
+            return lastColumn.RangeAddress.LastColumn;
         }
 
-        private WorkBook CreateTemplate()
+        private int GetLastRowInReport(WorkSheet sheet)
         {
-            var template = WorkBook.Create(ExcelFileFormat.XLSX);
-            var sheet = template.DefaultWorkSheet;
+            var allRows = sheet.AllRowsInRange;
+            var lastRow = allRows[allRows.Length - 1];
 
-            PutInMockData(sheet);
-
-            AddChart(sheet, 1, 10);
-
-            FormatTimeTable(sheet, 1, 10);
-
-            return template.SaveAs("template.xlsx");
+            return lastRow.RangeAddress.LastRow;
         }
 
-        private WorkBook LoadTemplate()
-        {
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\template.xlsx"))
-            {
-                return WorkBook.Load("template.xlsx");
-            }
-
-            return CreateTemplate();
-        }
-
-        private void CreateReportsFolder()
+        private void EnsureReportsFolderExists()
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var reportsFolder = Path.Combine(path ?? "", _reportConfig.ReportsFolder);
@@ -132,164 +165,161 @@ namespace IronBenchmarks.Reporting
             }
         }
 
-        private static void FillHeader(WorkSheet sheet, string headerRowAddress, string[] benchmarkList)
+        private static void FillHeader(WorkSheet sheet, string headerRowAddress, Dictionary<string, Units> benchmarkList)
         {
-            benchmarkList = benchmarkList ?? new string[] { "" };
+            benchmarkList = benchmarkList ?? new Dictionary<string, Units>();
 
             var i = 0;
+            var cells = sheet[headerRowAddress].ToArray();
 
-            foreach (var cell in sheet[headerRowAddress])
+            foreach (var benchmark in benchmarkList)
             {
-                cell.Value = i >= benchmarkList.Length ? "" : benchmarkList[i];
+                cells[i].Value = $"{GetBenchmarkTitle(benchmark.Key)}, {EnumHelper.GetEnumDescription(benchmark.Value)}";
 
                 i++;
             }
         }
 
-        private void FillRow(WorkSheet sheet, int i, KeyValuePair<string, Dictionary<string, TimeSpan>>? contender)
+        private static string GetBenchmarkTitle(string benchmarkTitle)
         {
-            var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
+            if (benchmarkTitle.Length > 0)
+            {
+                var lastDotIndex = benchmarkTitle.LastIndexOf(".");
+                var firstDashIndex = benchmarkTitle.IndexOf("-");
+
+                benchmarkTitle = lastDotIndex < 0 || firstDashIndex < 0
+                    ? benchmarkTitle
+                    : benchmarkTitle.Substring(lastDotIndex + 1, firstDashIndex - lastDotIndex - 1);
+            }
+
+            return benchmarkTitle;
+        }
+
+        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, Dictionary<string, Units> benchmarkTitles, Dictionary<string, string> contedersNamesAndVersions)
+        {
+            var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
-            var times = contender?.Value.Values.ToArray();
+            var times = new double[benchmarkTitles.Count];
+            var j = 0;
+
+            foreach (var benchmark in benchmarkTitles)
+            {
+                times[j] = contender[benchmark.Key].Value;
+
+                j++;
+            }
 
             PutInSeriesData(sheet, seriesRowAddress, times);
 
-            sheet[$"A{seriesRowNumber}"].Value = contender?.Key;
+            var contederTitle = GetContenderTitle(contender, contedersNamesAndVersions);
+
+            sheet[$"A{seriesRowNumber}"].Value = contederTitle;
         }
 
-        private void ClearSeriesRow(WorkSheet sheet, int i)
+        private string GetContenderTitle(BenchmarkDataEntry contender, Dictionary<string, string> contedersNamesAndVersions)
         {
-            var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
-            var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
-
-            foreach (var cell in sheet[seriesRowAddress])
+            if (contedersNamesAndVersions == null || !contedersNamesAndVersions.ContainsKey(contender.Name))
             {
-                cell.Value = "";
+                return contender.Name;
             }
 
-            sheet[$"A{seriesRowNumber}"].Value = "";
+            return $"{contender.Name}, v.{contedersNamesAndVersions[contender.Name]}";
         }
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)
         {
-            for (var i = 1; i <= numberOfRowsToFormat; i++)
-            {
-                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
-                var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber}";
-
-                FormatRow(sheet, seriesRowAddress);
-            }
+            var seriesRowNumber = _reportConfig.DataTableStartingRow + 1;
+            var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber + numberOfRowsToFormat}";
+            sheet[seriesRowAddress].FormatString = BuiltinFormats.Thousands2;
         }
 
-        private void PutInMockData(WorkSheet sheet)
+        private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, double[] times)
         {
-            PutInMockHeaderData(sheet, $"B{_reportConfig.TimeTableStartingRow}:K{_reportConfig.TimeTableStartingRow}");
-
-            PutInMockTimeTableData(sheet);
-        }
-
-        private void PutInMockTimeTableData(WorkSheet sheet)
-        {
-            for (var i = 1; i <= 1; i++)
-            {
-                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
-                var seriesRowAddress = $"B{seriesRowNumber}:K{seriesRowNumber}";
-
-                PutInMockSeriesData(sheet, seriesRowAddress);
-
-                sheet[$"A{seriesRowNumber}"].Value = $"Contender_{seriesRowNumber}";
-            }
-        }
-
-        private static void PutInMockSeriesData(WorkSheet sheet, string seriesRowAddress)
-        {
-            var rnd = new Random();
-            var times = new TimeSpan[10];
-
-            for (var i = 0; i < times.Length; i++)
-            {
-                times[i] = TimeSpan.FromSeconds(rnd.Next(25, 100));
-            }
-
-            PutInSeriesData(sheet, seriesRowAddress, times);
-        }
-
-        private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, TimeSpan[] times)
-        {
-            var secondsInADay = 60 * 60 * 24;
-
             var i = 0;
 
             foreach (var cell in sheet[seriesRowAddress])
             {
-                cell.Value = i >= times.Length ? 0 : times[i].TotalSeconds / secondsInADay;
+                cell.Value = i >= times.Length ? 0 : times[i];
 
                 i++;
             }
         }
 
-        private static void FormatRow(WorkSheet sheet, string rowAddress)
-        {
-            sheet[rowAddress].FormatString = BuiltinFormats.Duration3;
-        }
-
-        private static void AutoSizeIimeTable(WorkSheet sheet, string headerAddress)
+        private static void FormatHeader(WorkSheet sheet, string headerAddress)
         {
             foreach (var cell in sheet[headerAddress])
             {
                 cell.Style.WrapText = true;
-                sheet.AutoSizeColumn(cell.ColumnIndex);
             }
         }
 
-        private static void PutInMockHeaderData(WorkSheet sheet, string headerRowAddress)
+        private void AddCharts(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
         {
-            foreach (var cell in sheet[headerRowAddress])
+            var chartRow = 0;
+            var chartsInRow = 0;
+
+            for (var i = 1; i <= numberOfBenchmarks; i++)
             {
-                cell.Value = $"Mock_Benchmark_{cell.ColumnIndex}";
+                var chart = CreateChart(sheet, numberOfSeriesToAdd, chartRow, chartsInRow);
+                var headerAddress = $"{_letters[i + 1]}{_reportConfig.DataTableStartingRow}:{_letters[i + 1]}{_reportConfig.DataTableStartingRow}";
+
+                for (var j = 1; j <= numberOfSeriesToAdd; j++)
+                {
+                    var seriesRowNumber = _reportConfig.DataTableStartingRow + j;
+                    var seriesRowAddress = $"{_letters[i + 1]}{seriesRowNumber}:{_letters[i + 1]}{seriesRowNumber}";
+
+                    if (!sheet[seriesRowAddress].First().IsNumeric)
+                    {
+                        continue;
+                    }
+
+                    var series = chart.AddSeries(seriesRowAddress, headerAddress);
+                    series.Title = sheet[$"A{seriesRowNumber}"].StringValue;
+                }
+
+                var benchmarkName = sheet[headerAddress].StringValue;
+
+                chart.SetTitle($"{chartTitle}\n{benchmarkName}");
+                chart.SetLegendPosition(LegendPosition.Bottom);
+                chart.Plot();
+
+                chartsInRow++;
+
+                if (chartsInRow >= _reportConfig.ChartsInRow)
+                {
+                    chartRow++;
+                    chartsInRow = 0;
+                }
             }
         }
 
-        private void AddChart(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfCellsInSeries)
+        private IChart CreateChart(WorkSheet sheet, int chartsStartingRow, int chartRow, int chartsInRow)
         {
-            var chart = sheet.CreateChart(ChartType.Bar, 0, 0, _reportConfig.ChartHeight, _reportConfig.ChartWidth);
-
-            for (var i = 1; i <= numberOfSeriesToAdd; i++)
-            {
-                var seriesRowNumber = _reportConfig.TimeTableStartingRow + i;
-                var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfCellsInSeries + 1]}{seriesRowNumber}";
-
-                var range = sheet[seriesRowAddress];
-                range.FormatString = BuiltinFormats.Number0;
-
-                var series = chart.AddSeries(seriesRowAddress, _headerRowAddress);
-                series.Title = sheet[$"A{seriesRowNumber}"].StringValue;
-            }
-
-            chart.SetTitle(_reportConfig.ChartTitle);
-            chart.SetLegendPosition(LegendPosition.Bottom);
-            chart.Plot();
+            var topRow = chartsStartingRow + 1 + (_reportConfig.ChartHeight * chartRow);
+            var bottomRow = topRow + _reportConfig.ChartHeight;
+            var firstColumn = _reportConfig.ChartWidth * chartsInRow;
+            var lastColumn = firstColumn + _reportConfig.ChartWidth;
+            var chart = sheet.CreateChart(ChartType.Bar, topRow, firstColumn, bottomRow, lastColumn);
+            return chart;
         }
 
-        private static void RemoveChart(WorkSheet sheet)
+        private static void RemoveCharts(WorkSheet sheet)
         {
-            var chart = sheet.Charts.FirstOrDefault();
-
-            if (chart != null)
+            foreach (var chart in sheet.Charts.ToArray())
             {
                 sheet.RemoveChart(chart);
             }
         }
 
-        private void UpdateChart(WorkSheet sheet)
+        private void UpdateCharts(WorkSheet sheet, string chartTitle)
         {
-            RemoveChart(sheet);
+            RemoveCharts(sheet);
 
-            AddChart(sheet, _numberOfConteders, _numberOfBenchmarks);
+            AddCharts(sheet, _numberOfConteders, _numberOfBenchmarks, chartTitle);
 
             FormatTimeTable(sheet, _numberOfConteders, _numberOfBenchmarks);
 
-            AutoSizeIimeTable(sheet, _headerRowAddress);
+            FormatHeader(sheet, _headerRowAddress);
         }
     }
 }

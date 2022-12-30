@@ -1,71 +1,66 @@
 # IronBenchmarks
-A simple framework to measure performance of pretty much anything. After measurements it creates a report Excel file with a timetable and a chart.
+A tool to measure performance of pretty much anything. After measurements it creates an Excel file report with a data on performance and memory allocation presented in charts.
 
 ### How to use the repository
  1. Clone the repository to your machine.
- 2. Add your license key to *..\IronBenchmarks\IronBenchmarks.App\appsettings.json* file under the *LicenseKeyIronXl* property, removing "PLACE YOUR KEY HERE" placeholder.
- 3. Add your license key to *..\IronBenchmarks\IronBenchmarks.App\appsettings.json* file under the *LicenseKeyIronBarCode* property, removing "PLACE YOUR KEY HERE" placeholder.
- 4. Add your license key to *..\IronBenchmarks\IronBenchmarks.App\appsettings.json* file under the *LicenseKeyIronPdf* property, removing "PLACE YOUR KEY HERE" placeholder.
- 5. Add your license key to *..\IronBenchmarks\IronBenchmarks.App\appsettings.json* file under the *LicenseKeyIronOcr* property, removing "PLACE YOUR KEY HERE" placeholder.
- 6. Check versions of Nuget packages used in the repository that are going to be benchmarked, update or downgrade to your taste/needs.
- 7. Run the app.
- 8. Look for a complete report under *..\IronBenchmarks\IronBenchmarks.App\bin\Debug\net6.0\Reports* (path is controlled with *ReportsFolder* property in *appsettings.json*). Every app-run will create a new report.
- 9. Look for saved results of benchmark work under *..\IronBenchmarks\IronBenchmarks.App\bin\Debug\net6.0\Results* (path is controlled with *ResultsFolderName* property in *appsettings.json*). Files will be re-written on each app run.
+ 2. This application uses IronXL to create reports based on the data collected from benchmarking various actions. For IronXL to be operational you need to provide it with a License key. To do so add your license key to **..\IronBenchmarks\IronBenchmarks.App\appsettings.json** file under the **LicenseKeyIronXl** property, removing "PLACE YOUR KEY HERE" placeholder.
+ 3. To use pre-defined project for benchmarking BarCode, PDF or Excel libraries provide license keys for IronBarCode, IronPdf or IronXL. To do so in Visual Studio right-click respective project, then click "Manage User Secrets". In the file secrets.json add one of the following snippets:
+ ```json
+ {
+   "AppConfig": {
+     "LicenseKeyIronBarCode": "YOUR_KEY_HERE"
+   }
+ }
+ ```
+ ```json
+ {
+   "AppConfig": {
+     "LicenseKeyIronPdf": "YOUR_KEY_HERE"
+   }
+ }
+ ```
+ ```json
+ {
+   "AppConfig": {
+     "LicenseKeyIronXl": "YOUR_KEY_HERE"
+   }
+ }
+ ```
+ 4. Check versions of NuGet packages used in the repository that are going to be benchmarked, update or downgrade to your taste/needs.
+ 5. Select "Release" configuration.
+ 6. Build the solution.
+ 7. Run the app from command line under **..\IronBenchmarks\IronBenchmarks.App\bin\Debug\net6.0\** folder.
+  - To run Excel benchmarks use "-xl" command-line argument
+  - To run PDF benchmarks use "-pdf" command-line argument
+  - To run BarCode benchmarks use "-bc" command-line argument
+ 8. Look for a complete report under **..\IronBenchmarks\IronBenchmarks.App\bin\Debug\net6.0\Reports** (path is controlled with **ReportsFolder** property in **appsettings.json**). Every app-run will create a new report.
+ 9. Look for saved results of benchmark work under **..\IronBenchmarks\IronBenchmarks.App\bin\Debug\net6.0\Results** (path is controlled with **ResultsFolderName** property in **appsettings.json**). Files will be re-written on each app run.
 
-### How to create a new benchmarks play list
- 1. Create a new class library project called **MyBenchmarks** in the solution.
- 2. Add **IronBenchmarks.Core** project as a reference to **MyBenchmarks** project.
- 3. Add refrences to Nuget packages/assemblys/projects that you plan to run benchmarks on
- 4. Create a heir to IronBenchmarks.Core.**BenchmarksRunner** abstract class and call it **BaseBenchmarksRunner**. NOTE: Heir itself should be abstract, as benchmarks runners for each Nuget package/assembly/project you are comparing are going to be inheriting from it.
- 5. In your **BaseBenchmarksRunner** add public abstract methods, which - when implemented in heir classes - will contain operations that you are willing to measure the performance of. Each of these methods will be a column in the timetable of the resulting report.
- 6. In the constructor for your **BaseBenchmarksRunner** you need to initialize the *BenchmarkMethods* *<string, string>* dictionary with a dictionary that contains names of the methods from **step 5** above as *keys* and their descriptions (which will be used as timetable column headers in the resulting report) as *values*. An example of a very basic **BaseBenchmarksRunner**: 
+### How to create new benchmarks
+IronBenchmarks uses [BenchmarkDotNet](https://benchmarkdotnet.org/) for measurements. To learn more about designing benchmarks with it checkout the [Articles section](https://benchmarkdotnet.org/articles/overview.html) on their website.
+Things to keep in mind:
+ 1. Reporting engine of IronBenchmarks is designed in such a way, that any class with a set of benchmarks is a class that measures one particular action by different libraries. For example, **IronBenchmarks.ExcelLibs.Benchmarks.DateCellBenchmark** class will measure how Aspose.Cells, IronXL, ClosedXML, EPPlus and NPOI will perform setting a date to a cell in a pre-created workbook. This design assumes, that each such class will contain equal number of methods marked with _Benchmark_ attribute. Names of methods should reflect the name of the library, that will perform benchmarked action in this method. The names of methods should be the same throughout the classes. To achieve that: it is recommended to use abstract class from which the benchmark classes will inherit the structure of methods. For example checkout the **IronBenchmarks.PdfLibs.Benchmarks.BenchmarkBase** abstract class and how it is used in **IronBenchmarks.PdfLibs.Benchmarks.SavingLargeFileBenchmark** class.
+ 2. In benchmark class override pre-defined in a base class methods and decorate them with _Benchmark_ attribute.
+ 3. To tell _BenchmarkDotNet_ that it needs to gather memory allocation info, decorate your class with _MemoryDiagnoser_ attribute.
+ 4. Decorate benchmark class with _ShortRunJob_ attribute, if you need the runs for the methods of this class to be shorter, which will hinder the precision of the data, but will speed up the execution.
+ 5. Create methods with _IterationSetup_ and _IterationCleanup_ to setup things before each call of the _Benchmark_ marked method of your class and to cleanup things after it was called. These methods will execute before and after EACH execution of the benchmark methods. For example of how it is used checkout **IronBenchmarks.ExcelLibs.Benchmarks.Bases.SheetOperationsBenchmarkBase** class.
+ 6. In **IronBenchmarks.App.Program** class add your class to the list of classes that will be run like so:
 ```csharp
-public abstract class BaseBenchmarksRunner : BenchmarksRunner
+...
+var barcodeSummaries = new List<Summary>
 {
-  public BaseBenchmarksRunner(string resultsFolder) : base(resultsFolder)
-  {
-    BenchmarkMethods = new Dictionary<string, string>()
-      {
-        { "Generate500QrCodes", "Generate 500 QR codes" },
-        { "Generate500QrCodesSaveFiles", "Generate 500 QR codes, save images" }
-      };
-  }
-        
-  public abstract void Generate500QrCodes();
-  public abstract void Generate500QrCodesSaveFiles();
-}
+    BenchmarkRunner.Run<CreateBarcodeBenchmark>(),
+    **BenchmarkRunner.Run<MyNewBenchmark>(),**
+};
+...
 ```
+ 7. Repeat steps from **How to use the repository** to see the results of the benchmarking of your new class.
 
- 7. Implement BenchmarksRunners that are inherited from your BaseBenchmarksRunner class for each Nuget package/assembly/project you are comparing.
- 8. Create a **MyPlayList** class, that inherits from IronBenchmarks.Core.**GenericPlayList**.
- 9. In the override for the *RunPlayList* method create instances of your benchmarks runners from **step 7**, initialize *<string, Dictionary<string, TimeSpan>>* dictionary which will contain a name and a version of the Nuget package/assembly/project you are comparing as *keys* and a *<string, TimeSpan>* dictionary that will contain benchmarks descriptions and times that took a Nuget package/assembly/project to complete those as *values*. Return the resulting dictionary as method output. An example of a very basic *RunPlayList*:
-```csharp
-public override Dictionary<string, Dictionary<string, TimeSpan>> RunPlayList
-  (string resultsFolder)
-{
-  var curBarcodeRunner = new CurrentIronBarCodeBenchmarksRunner(resultsFolder);
-  var prevBarcodeRunner = new PreviousIronBarCodeBenchmarksRunner(resultsFolder);
-
-  return new Dictionary<string, Dictionary<string, TimeSpan>>()
-    {
-      { curBarcodeRunner.NameAndVersion, curBarcodeRunner.RunBenchmarks() },
-      { prevBarcodeRunner.NameAndVersion, prevBarcodeRunner.RunBenchmarks() },
-    };
-}
-```	
- 10. Add your **MyBenchmarks** project as a reference to the **IronBenchmarks.App** project.
- 11. In the Program.cs add these lines at the end (or where appropriate):
-```csharp
-var timeTableData = new MyPlayList().RunPlayList(appConfig.ResultsFolderName);
-reportGenerator.GenerateReport(timeTableData, "MyBenchmarks");
-```
- 12. "MyBenchmarks" in the *reportGenerator.GenerateReport* call is the prefix that will be added to the report's file name after the app-run.
- 13. Make sure that *Benchmarks.App* project is selected as a startup project.
- 14. Run the debug.
- 15. Check *Results* and *Reports* folders for files created by the app.
+### Useful features
+ - The version 0.0.2 of IronBenchmarks allows to append the results of current benchmarking to the report created earlier. This is useful if you want to add new contenders to already created report or (which is more important) to **benchmark different versions of the same library**. For example, You can run benchmark for BarCode with IronBarCode v2022.11, downgrade in the IronBenchmarks.BarCodeLibs IronBarCode v2022.9, build solution again, and run IronBenchmarks.App.exe with a "-a" or "-append" command-line argument. This will run your benchmarks on an older version, but will append the results to the previous report, so you don't have to do it manually.
+ - You can tell ReportGenerator to add versions of libraries to the report. To do so checkout implementation of **IronBenchmarks.App.Program.GetLibNamesWithVersions** or pass the ReportGenerator a manually created Dictionary<string, string> where keys are the names of your benchmark contenders (!!!should be the same as the names of your benchmark methods!!!) and values are versions that you wish to see in the report. This will improve in future versions.
 
 ### Notes
-  * **PreviousIronXlBenchmarksRunner** is using the customized assembly of older version of *IronXL*. It was renamed to *IronXLOld.dll*, all of it's types' namespaces were renamed from IronXL to **IronXLOld**, and it is stored in an *..\IronBenchmarks\packages* folder. It is added to **IronBenchmarks.IronXL** project as an assembly, not a nuget package. To use another version of IronXL as IronXLOld perform similar renaming procedure and replace *..\IronBenchmarks\packages\IronXLOld.dll* with your version.
-  * Benchmarks in **IronBenchmarks.IronXL** are pretty slow, so be prepared for the app to run for several minutes, especially if you are benchmarking *Office Interop*.
-  * To run Office Interop benchmarks you will need Office installed on your computer.
+  * **IronBenchmarks.ExcelLibs** is using the customized assembly of older version of *IronXL*. It was renamed to *IronXLOld.dll*, all of it's types' namespaces were renamed from IronXL to **IronXLOld**, and it is stored in an *..\IronBenchmarks\packages* folder. It is added to **IronBenchmarks.IronXL** project as an assembly, not a NuGet package. To use another version of IronXL as IronXLOld perform similar renaming procedure and replace *..\IronBenchmarks\packages\IronXLOld.dll* with your version.
+  * Benchmarking process is really slow, so be prepared for the app to run for several minutes.
   * If you plan to commit any changes to this public repository, please be sure to not include any sensitive information in the commit, such as License keys and so on. To add License keys in a discreet manner, please use User secrets feature of Visual Studio.

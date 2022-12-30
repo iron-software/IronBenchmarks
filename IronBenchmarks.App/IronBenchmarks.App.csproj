@@ -7,20 +7,43 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>2b9a2db2-1dbc-4ecd-a706-4ee608efc81e</UserSecretsId>
 		<Company>Iron Software</Company>
-		<AssemblyVersion>0.0.1</AssemblyVersion>
-		<FileVersion>0.0.1</FileVersion>
+		<AssemblyVersion>0.0.2</AssemblyVersion>
+		<FileVersion>0.0.2</FileVersion>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/iron-software/IronBenchmarks</RepositoryUrl>
+		<Description>Benchmarking tool that generates reports using IronXL library.</Description>
+		<Title>IronBenchmarks</Title>
+		<Version>0.0.2</Version>
+		<Authors>https://ironsoftware.com/</Authors>
+		<Product>IronBenchmarks - Tool for benchmark reporting.</Product>
+		<Copyright>(C) 2022-2023 IronSoftware.com</Copyright>
+		<PackageReleaseNotes>* Changes benchmark runner to a BenchmarkDotNet
+* Reports now include Memory Allocation data
+* Reports now draw charts individually for each benchmark
+* Adds ability to append new data to previously generted report, allowing to easily benchmark the same library under different versions. Just change the version and run the application with "-a" or "-append" argument
+* Adds ability to chose wich sets of benchmarks to run using command-line arguments: "-xl" for Excel, "-pdf" for PDF, "-bc" for BarCode
+* Changes the way benchmarks and playlists are structured.
+* Adds BenchmarkData, BenchmrakDataEntry and BenchmarkDataPoint classes as a data structure for ReportGenerator.
+* Removes IronBenchmarks.Core, IronBenchmarks.IronXL, IronBenchmarks.IronPdf, IronBenchmarks.IronBarCode projects
+* Adds unit-tests for IronBenchmarks.Reporting
+* Adds two new benchmarks to Excel playlist: Accessing Range Properties and Sort Range</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
-		<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
-		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,18 +56,12 @@
 		<None Update="appsettings.Production.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="LoadingTestFiles\LoadingTest.xlsx">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="SortRangeFiles\SortRange.xlsx">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\IronBenchmarks.IronBarCode\IronBenchmarks.IronBarCode.csproj" />
-	  <ProjectReference Include="..\IronBenchmarks.IronPdf\IronBenchmarks.IronPdf.csproj" />
-	  <ProjectReference Include="..\IronBenchmarks.IronXL\IronBenchmarks.IronXL.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.BarCodeLibs\IronBenchmarks.BarCodeLibs.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.ExcelLibs\IronBenchmarks.ExcelLibs.csproj" />
+	  <ProjectReference Include="..\IronBenchmarks.PdfLibs\IronBenchmarks.PdfLibs.csproj" />
 	  <ProjectReference Include="..\IronBenchmarks.ReportsEngine\IronBenchmarks.Reporting.csproj" />
 	</ItemGroup>
 

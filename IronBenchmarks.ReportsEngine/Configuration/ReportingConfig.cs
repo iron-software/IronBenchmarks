@@ -3,9 +3,10 @@
     public class ReportingConfig : IReportingConfig
     {
         public string ReportsFolder { get; set; } = "Reports";
-        public int ChartWidth { get; set; } = 11;
-        public int ChartHeight { get; set; } = 24;
-        public int TimeTableStartingRow { get; set; } = 27;
-        public string ChartTitle { get; set; }
+        public int ChartWidth { get; set; } = 6;
+        public int ChartHeight { get; set; } = 18;
+        public int DataTableStartingRow { get; set; } = 1;
+        public int ChartsInRow { get; set; } = 4;
+        public bool AppendToLastReport { get; set; } = false;
     }
 }
