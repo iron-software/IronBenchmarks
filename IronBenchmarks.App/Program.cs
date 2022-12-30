@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Columns;
+﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
@@ -7,6 +8,7 @@ using BenchmarkDotNet.Validators;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.BarCodeLibs.Benchmarks;
 using IronBenchmarks.ExcelLibs.Benchmarks;
+using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using IronBenchmarks.PdfLibs.Benchmarks;
 using IronBenchmarks.Reporting;
 using IronBenchmarks.Reporting.Configuration;
@@ -84,6 +86,8 @@ static void RunExcelBenchmarks(
     {
         reportConfig.ReportsFolder = "Reports\\Excel";
 
+        var libsWithVersions = GetLibNamesWithVersions(typeof(RandomCellsBenchmark));
+
         var excelSummaries = new List<Summary>
         {
             BenchmarkRunner.Run<RandomCellsBenchmark>(),
@@ -96,8 +100,45 @@ static void RunExcelBenchmarks(
             BenchmarkRunner.Run<AccessingRangePropertiesBenchmark>(),
         };
 
-        reportGenerator.GenerateReport(excelSummaries, "ExcelLibs");
+        reportGenerator.GenerateReport(excelSummaries, "ExcelLibs", libsWithVersions);
     }
+}
+
+static Dictionary<string, string> GetLibNamesWithVersions(Type type)
+{
+    var libNames = new Dictionary<string, string>();
+    var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+        .Where(m => m.IsDefined(typeof(BenchmarkAttribute), false));
+    var fields = type.BaseType?.GetFields() ?? Array.Empty<FieldInfo>();
+
+    foreach (var property in fields)
+    {
+        var propertyType = property.FieldType;
+
+        foreach (var method in methods)
+        {
+            if(property.Name.ToLower().Contains(method.Name.ToLower()))
+            {
+                var methodName = method.Name;
+                var assembly = propertyType.Assembly;
+                var assemblyName = assembly.GetName();
+                var assemblyVersion = assemblyName.Version;
+
+                if(libNames.ContainsKey(methodName))
+                {
+                    libNames[methodName] = assemblyVersion?.ToString() ?? "";
+                }
+                else
+                {
+                    libNames.Add(methodName, assemblyVersion?.ToString() ?? "");
+                }
+
+                break;
+            }
+        }
+    }
+
+    return libNames;
 }
 
 static void ApplyIronXLLicenseKey(IHost host)

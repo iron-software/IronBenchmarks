@@ -52,7 +52,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            var range = IxlSheet[$"A2"];
+            var range = IronXlSheet[$"A2"];
             range.Value = cellValue;
 
             var style = range.Style;
@@ -63,9 +63,9 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
-            var range = IxlOldSheet[$"A2"];
+            var range = Iron_XlOldSheet[$"A2"];
             range.Value = cellValue;
 
             var style = range.Style;

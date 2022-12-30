@@ -16,8 +16,8 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
         public IXLWorksheet ClosedXmlSheet;
         public ExcelPackage EpplusExcelPackage;
         public ExcelWorksheet EpplusSheet;
-        public IronXLOld.WorkSheet IxlOldSheet;
-        public IronXL.WorkSheet IxlSheet;
+        public IronXLOld.WorkSheet Iron_XlOldSheet;
+        public IronXL.WorkSheet IronXlSheet;
         public ISheet NpoiSheet;
 
         [IterationSetup]
@@ -26,13 +26,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
             var cell1Val = rand.Next();
             var cell2Val = rand.Next();
 
-            IxlSheet = new IronXL.WorkBook().DefaultWorkSheet;
-            IxlSheet["A1"].Value = cell1Val;
-            IxlSheet["B1"].Value = cell2Val;
+            IronXlSheet = new IronXL.WorkBook().DefaultWorkSheet;
+            IronXlSheet["A1"].Value = cell1Val;
+            IronXlSheet["B1"].Value = cell2Val;
 
-            IxlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
-            IxlOldSheet["A1"].Value = cell1Val;
-            IxlOldSheet["B1"].Value = cell2Val;
+            Iron_XlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
+            Iron_XlOldSheet["A1"].Value = cell1Val;
+            Iron_XlOldSheet["B1"].Value = cell2Val;
 
             AsposeCells = new Workbook().Worksheets[0].Cells;
             AsposeCells["A1"].PutValue(cell1Val);
@@ -55,10 +55,10 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
         [IterationCleanup]
         public void IterationCleanup()
         {
-            IxlSheet.WorkBook.Close();
-            IxlSheet = null;
-            IxlOldSheet.WorkBook.Close();
-            IxlOldSheet = null;
+            IronXlSheet.WorkBook.Close();
+            IronXlSheet = null;
+            Iron_XlOldSheet.WorkBook.Close();
+            Iron_XlOldSheet = null;
             AsposeCells.Dispose();
             AsposeCells = null;
             NpoiSheet.Workbook.Close();

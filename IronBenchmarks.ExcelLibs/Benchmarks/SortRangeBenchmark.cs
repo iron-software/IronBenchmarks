@@ -102,7 +102,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
             ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
         }

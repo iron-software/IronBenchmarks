@@ -13,13 +13,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            IxlSheet[$"A2"].Value = guid;
+            IronXlSheet[$"A2"].Value = guid;
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
-            IxlOldSheet[$"A2"].Value = guid;
+            Iron_XlOldSheet[$"A2"].Value = guid;
         }
 
         [Benchmark(Baseline = true)]

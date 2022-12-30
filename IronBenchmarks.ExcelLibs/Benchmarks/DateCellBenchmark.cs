@@ -14,13 +14,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            IxlSheet[$"A2"].Value = date;
+            IronXlSheet[$"A2"].Value = date;
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
-            IxlOldSheet[$"A2"].Value = date;
+            Iron_XlOldSheet[$"A2"].Value = date;
         }
 
         [Benchmark(Baseline = true)]

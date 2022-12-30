@@ -54,7 +54,7 @@ namespace IronBenchmarks.Reporting
             _reportConfig = reportConfig;
         }
 
-        public string GenerateReport(List<Summary> summaries, string reportTag)
+        public string GenerateReport(List<Summary> summaries, string reportTag, Dictionary<string, string> contedersNamesAndVersions = null)
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
@@ -64,16 +64,18 @@ namespace IronBenchmarks.Reporting
                 new BenchmarkData(summaries, ReportDataType.MemoryAlloc)
             };
 
-            return GenerateReport(benchmarksData, reportTag);
+            return GenerateReport(benchmarksData, reportTag, contedersNamesAndVersions);
         }
 
-        public string GenerateReport(List<BenchmarkData> chartsData, string reportTag)
+        public string GenerateReport(List<BenchmarkData> chartsData, string reportTag, Dictionary<string, string> contedersNamesAndVersions = null)
         {
+            contedersNamesAndVersions = contedersNamesAndVersions ?? new Dictionary<string, string>();
+
             EnsureReportsFolderExists();
 
             var report = _reportConfig.AppendToLastReport ? GetLastReport() : WorkBook.Create();
 
-            FillReport(report, chartsData);
+            FillReport(report, chartsData, contedersNamesAndVersions);
 
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
@@ -94,7 +96,7 @@ namespace IronBenchmarks.Reporting
             return WorkBook.Load(mostRecentFile);
         }
 
-        private void FillReport(WorkBook report, List<BenchmarkData> tablesData)
+        private void FillReport(WorkBook report, List<BenchmarkData> tablesData, Dictionary<string, string> contedersNamesAndVersions)
         {
             foreach (var chartData in tablesData)
             {
@@ -127,7 +129,7 @@ namespace IronBenchmarks.Reporting
 
                 foreach (var contender in chartData.DataEntries)
                 {
-                    FillRow(sheet, i, contender, benchmarkTitles);
+                    FillRow(sheet, i, contender, benchmarkTitles, contedersNamesAndVersions);
 
                     i++;
                 }
@@ -193,7 +195,7 @@ namespace IronBenchmarks.Reporting
             return benchmarkTitle;
         }
 
-        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, Dictionary<string, Units> benchmarkTitles)
+        private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, Dictionary<string, Units> benchmarkTitles, Dictionary<string, string> contedersNamesAndVersions)
         {
             var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
             var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
@@ -209,7 +211,19 @@ namespace IronBenchmarks.Reporting
 
             PutInSeriesData(sheet, seriesRowAddress, times);
 
-            sheet[$"A{seriesRowNumber}"].Value = contender.Name;
+            var contederTitle = GetContenderTitle(contender, contedersNamesAndVersions);
+
+            sheet[$"A{seriesRowNumber}"].Value = contederTitle;
+        }
+
+        private string GetContenderTitle(BenchmarkDataEntry contender, Dictionary<string, string> contedersNamesAndVersions)
+        {
+            if (contedersNamesAndVersions == null || !contedersNamesAndVersions.ContainsKey(contender.Name))
+            {
+                return contender.Name;
+            }
+
+            return $"{contender.Name}, v.{contedersNamesAndVersions[contender.Name]}";
         }
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)

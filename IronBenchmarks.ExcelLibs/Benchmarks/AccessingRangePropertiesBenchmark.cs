@@ -33,13 +33,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            _ = IxlSheet["A1:CV100"].Style.Font;
+            _ = IronXlSheet["A1:CV100"].Style.Font;
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
-            _ = IxlOldSheet["A1:CV100"].Style.Font;
+            _ = Iron_XlOldSheet["A1:CV100"].Style.Font;
         }
 
         [Benchmark]

@@ -56,7 +56,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
             ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
         }

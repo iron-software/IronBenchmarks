@@ -38,7 +38,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
             _ = IronXLOld.WorkBook.Load(largeFileName);
         }

@@ -30,13 +30,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            IxlSheet[$"A2"].Formula = formula;
+            IronXlSheet[$"A2"].Formula = formula;
         }
 
         [Benchmark]
-        public override void IronXlOld()
+        public override void Iron_XlOld()
         {
-            IxlOldSheet[$"A2"].Formula = formula;
+            Iron_XlOldSheet[$"A2"].Formula = formula;
         }
 
         [Benchmark]

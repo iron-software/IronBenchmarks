@@ -39,7 +39,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 
         public abstract void IronXl();
 
-        public abstract void IronXlOld();
+        public abstract void Iron_XlOld();
 
         public abstract void Aspose();
 
