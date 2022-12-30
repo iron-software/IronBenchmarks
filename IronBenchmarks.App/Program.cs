@@ -41,6 +41,12 @@ var appConfig = ActivatorUtilities.GetServiceOrCreateInstance<IAppConfig>(host.S
 IronXL.License.LicenseKey = appConfig.LicenseKeyIronXl;
 
 var reportConfig = ActivatorUtilities.GetServiceOrCreateInstance<IReportingConfig>(host.Services);
+
+if (args.Contains("-a") || args.Contains("-append"))
+{
+    reportConfig.AppendToLastReport = true;
+}
+
 var reportGenerator = new ReportGenerator(reportConfig);
 
 var excelSummaries = new List<Summary>
