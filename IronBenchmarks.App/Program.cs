@@ -8,7 +8,6 @@ using BenchmarkDotNet.Validators;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.BarCodeLibs.Benchmarks;
 using IronBenchmarks.ExcelLibs.Benchmarks;
-using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using IronBenchmarks.PdfLibs.Benchmarks;
 using IronBenchmarks.Reporting;
 using IronBenchmarks.Reporting.Configuration;
@@ -40,7 +39,7 @@ static void RunBarCodeBenchmarks(
 {
     if (args.Contains("-bc"))
     {
-        reportConfig.ReportsFolder = "Reports\\BarCode";
+        reportConfig.ReportsFolder += "\\BarCode";
 
         var barcodeSummaries = new List<Summary>
         {
@@ -58,7 +57,7 @@ static void RunPdfBenchmarks(
 {
     if (args.Contains("-pdf"))
     {
-        reportConfig.ReportsFolder = "Reports\\PDF";
+        reportConfig.ReportsFolder += "\\PDF";
 
         var config = new ManualConfig()
             .WithOptions(ConfigOptions.DisableOptimizationsValidator)
@@ -84,7 +83,7 @@ static void RunExcelBenchmarks(
 {
     if (args.Contains("-xl"))
     {
-        reportConfig.ReportsFolder = "Reports\\Excel";
+        reportConfig.ReportsFolder += "\\Excel";
 
         var libsWithVersions = GetLibNamesWithVersions(typeof(RandomCellsBenchmark));
 
@@ -117,14 +116,14 @@ static Dictionary<string, string> GetLibNamesWithVersions(Type type)
 
         foreach (var method in methods)
         {
-            if(property.Name.ToLower().Contains(method.Name.ToLower()))
+            if (property.Name.ToLower().Contains(method.Name.ToLower()))
             {
                 var methodName = method.Name;
                 var assembly = propertyType.Assembly;
                 var assemblyName = assembly.GetName();
                 var assemblyVersion = assemblyName.Version;
 
-                if(libNames.ContainsKey(methodName))
+                if (libNames.ContainsKey(methodName))
                 {
                     libNames[methodName] = assemblyVersion?.ToString() ?? "";
                 }

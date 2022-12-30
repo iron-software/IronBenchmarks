@@ -7,8 +7,8 @@
 		<Nullable>enable</Nullable>
 		<UserSecretsId>2b9a2db2-1dbc-4ecd-a706-4ee608efc81e</UserSecretsId>
 		<Company>Iron Software</Company>
-		<AssemblyVersion>0.0.1</AssemblyVersion>
-		<FileVersion>0.0.1</FileVersion>
+		<AssemblyVersion>0.0.2</AssemblyVersion>
+		<FileVersion>0.0.2</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
