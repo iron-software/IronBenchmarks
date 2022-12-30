@@ -21,7 +21,6 @@ namespace IronBenchmarks.BarCodeLibs.Benchmarks
             var licenseKeyIronBarCode = appConfig["LicenseKeyIronBarCode"];
 
             IronBarCode.License.LicenseKey = licenseKeyIronBarCode;
-            IronBarCodeOld.License.LicenseKey = licenseKeyIronBarCode;
         }
 
         public static void EnsureResultsFolderExists()
@@ -36,7 +35,5 @@ namespace IronBenchmarks.BarCodeLibs.Benchmarks
         }
 
         public abstract void Iron_BarCode();
-
-        public abstract void Iron_BarCodeOld();
     }
 }

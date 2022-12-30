@@ -12,10 +12,4 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="IronBarCodeOld">
-			<HintPath>..\packages\IronBarCodeOld.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-
 </Project>

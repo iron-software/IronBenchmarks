@@ -49,7 +49,7 @@ if (args.Contains("-a") || args.Contains("-append"))
 
 var reportGenerator = new ReportGenerator(reportConfig);
 
-var excelSummaries = new List<Summary>
+/*var excelSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<RandomCellsBenchmark>(),
     BenchmarkRunner.Run<DateCellBenchmark>(),
@@ -79,13 +79,13 @@ var pdfSummaries = new List<Summary>
     BenchmarkRunner.Run<SavingLargeFileBenchmark>(config),
 };
 
-reportGenerator.GenerateReport(pdfSummaries, "IronPdf");
+reportGenerator.GenerateReport(pdfSummaries, "IronPdf");*/
 
-var pdfSummaries = new List<Summary>
+var barcodeSummaries = new List<Summary>
 {
     BenchmarkRunner.Run<CreateBarcodeBenchmark>()
 };
 
-reportGenerator.GenerateReport(pdfSummaries, "IronBarCode");*/
+reportGenerator.GenerateReport(barcodeSummaries, "IronBarCode");
 
 Console.ReadKey();
