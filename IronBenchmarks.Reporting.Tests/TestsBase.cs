@@ -7,11 +7,11 @@ namespace IronBenchmarks.Reporting.Tests
     {
         public TestsBase()
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-            var configuration = builder.Build();
-            var appConfig = configuration.GetSection("AppConfig");
-            var licenseKeyIronXl = appConfig["LicenseKeyIronXl"];
+            IConfigurationRoot configuration = builder.Build();
+            IConfigurationSection appConfig = configuration.GetSection("AppConfig");
+            string? licenseKeyIronXl = appConfig["LicenseKeyIronXl"];
 
             IronXL.License.LicenseKey = licenseKeyIronXl;
         }

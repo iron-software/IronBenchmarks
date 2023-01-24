@@ -17,18 +17,18 @@ namespace IronBenchmarks.Reporting.ReportData
         {
             DataType = dataType;
 
-            foreach (var summary in summaries)
+            foreach (Summary summary in summaries)
             {
-                var resultsColumn = GetColumn(summary, dataType);
-                var unitType = GetUnitType(resultsColumn);
-                var i = 0;
+                SummaryTableColumn resultsColumn = GetColumn(summary, dataType);
+                Units unitType = GetUnitType(resultsColumn);
+                int i = 0;
 
-                foreach (var benchmarkCase in summary.BenchmarksCases)
+                foreach (BenchmarkDotNet.Running.BenchmarkCase benchmarkCase in summary.BenchmarksCases)
                 {
-                    var value = GetValueFromColumn(resultsColumn, i);
-                    var methodName = benchmarkCase.Descriptor.WorkloadMethod.Name;
+                    double value = GetValueFromColumn(resultsColumn, i);
+                    string methodName = benchmarkCase.Descriptor.WorkloadMethod.Name;
 
-                    var dataEntry = GetDataEntry(methodName);
+                    BenchmarkDataEntry dataEntry = GetDataEntry(methodName);
                     dataEntry.Add(summary.Title, unitType, value);
 
                     i++;
@@ -58,9 +58,9 @@ namespace IronBenchmarks.Reporting.ReportData
 
         private Units GetUnitType(SummaryTableColumn resultsColumn)
         {
-            foreach (var dataPoint in resultsColumn.Content)
+            foreach (string dataPoint in resultsColumn.Content)
             {
-                var unitString = dataPoint.IndexOf(" ") < 0 ? "None" : dataPoint.Substring(dataPoint.IndexOf(" ") + 1);
+                string unitString = dataPoint.IndexOf(" ") < 0 ? "None" : dataPoint.Substring(dataPoint.IndexOf(" ") + 1);
                 unitString = Containsμ(unitString.Substring(0, 1)) ? "us" : unitString;
 
                 if (Enum.TryParse(unitString, out Units units) && units != Units.None)
@@ -74,8 +74,8 @@ namespace IronBenchmarks.Reporting.ReportData
 
         private bool Containsμ(string text)
         {
-            var μNormalized = "μ".ToString().Normalize(NormalizationForm.FormKD);
-            var textNormalized = text.ToString().Normalize(NormalizationForm.FormKD);
+            string μNormalized = "μ".ToString().Normalize(NormalizationForm.FormKD);
+            string textNormalized = text.ToString().Normalize(NormalizationForm.FormKD);
 
             return μNormalized.Equals(textNormalized);
         }
@@ -110,12 +110,12 @@ namespace IronBenchmarks.Reporting.ReportData
 
         private static double GetValueFromColumn(SummaryTableColumn resultsColumn, int i)
         {
-            var valueString = resultsColumn.Content[i];
+            string valueString = resultsColumn.Content[i];
             valueString = valueString.IndexOf(" ") < 0
                 ? valueString
                 : valueString.Substring(0, valueString.IndexOf(" "));
 
-            double.TryParse(valueString, out var value);
+            _ = double.TryParse(valueString, out double value);
             return value;
         }
     }

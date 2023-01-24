@@ -1,6 +1,7 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
@@ -10,7 +11,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            var range = AsposeCells.CreateRange("A1", "CV100");
+            Range range = AsposeCells.CreateRange("A1", "CV100");
 
             foreach (Cell cell in range)
             {
@@ -45,7 +46,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Npoi()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

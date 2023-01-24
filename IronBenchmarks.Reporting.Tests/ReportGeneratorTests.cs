@@ -43,11 +43,11 @@ namespace IronBenchmarks.Reporting.Tests
             // Arrange
             var reportConfig = new ReportingConfig();
             var reportGenerator = new ReportGenerator(reportConfig);
-            var contenders = new string[] { "IXL", "IXLO", "Asp", "ClXl", "Npoi", "Epp" };
-            var contendersToAppend = new string[] { "Interop" };
-            var finalListOfContenders = contenders.Concat(contendersToAppend).ToArray();
-            var benchNames = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9", "bench10", };
-            var benchNamesToAppend = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9" };
+            string[] contenders = new string[] { "IXL", "IXLO", "Asp", "ClXl", "Npoi", "Epp" };
+            string[] contendersToAppend = new string[] { "Interop" };
+            string[] finalListOfContenders = contenders.Concat(contendersToAppend).ToArray();
+            string[] benchNames = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9", "bench10", };
+            string[] benchNamesToAppend = new string[] { "bench0", "bench1", "bench2", "bench3", "bench4", "bench5", "bench6", "bench7", "bench8", "bench9" };
             var benchmarksData = new List<BenchmarkData>()
             {
                 CreateBenchmarkData(ReportDataType.MeanTime, contenders, benchNames),
@@ -60,9 +60,9 @@ namespace IronBenchmarks.Reporting.Tests
             };
 
             // Act
-            var reportName = reportGenerator.GenerateReport(benchmarksData, "ExcelLibsTests");
+            string reportName = reportGenerator.GenerateReport(benchmarksData, "ExcelLibsTests");
             reportConfig.AppendToLastReport = true;
-            var appendedReportName = reportGenerator.GenerateReport(benchmarksDataToAppend, "ExcelLibsTests");
+            string appendedReportName = reportGenerator.GenerateReport(benchmarksDataToAppend, "ExcelLibsTests");
 
             // Assert
             var report = WorkBook.Load(reportName);
@@ -76,7 +76,7 @@ namespace IronBenchmarks.Reporting.Tests
             Assert.Equal("Memory Allocation", appendedReport.WorkSheets[1].Name);
 
             reportConfig.AppendToLastReport = false;
-            foreach (var sheet in report.WorkSheets)
+            foreach (WorkSheet? sheet in report.WorkSheets)
             {
                 Assert.Equal(benchNames.Length, sheet.Charts.Count);
                 AssertDataPlacedFormattedCorrectly(sheet, reportConfig, contenders, benchNames);
@@ -84,7 +84,7 @@ namespace IronBenchmarks.Reporting.Tests
             }
 
             reportConfig.AppendToLastReport = true;
-            foreach (var sheet in appendedReport.WorkSheets)
+            foreach (WorkSheet? sheet in appendedReport.WorkSheets)
             {
                 Assert.Equal(benchNames.Length, sheet.Charts.Count);
                 AssertDataPlacedFormattedCorrectly(sheet, reportConfig, finalListOfContenders, benchNames);
@@ -96,11 +96,11 @@ namespace IronBenchmarks.Reporting.Tests
         {
             var data = new BenchmarkData(dataType);
 
-            for (var i = 0; i < contenders.Length; i++)
+            for (int i = 0; i < contenders.Length; i++)
             {
                 var entry = new BenchmarkDataEntry(contenders[i]);
 
-                for (var j = 0; j < benchNames.Length; j++)
+                for (int j = 0; j < benchNames.Length; j++)
                 {
                     entry.Add(benchNames[j], dataType == ReportDataType.MeanTime ? Units.us : Units.KB, j + 1);
                 }
@@ -113,35 +113,35 @@ namespace IronBenchmarks.Reporting.Tests
 
         private static void AssertDataPlacedFormattedCorrectly(WorkSheet sheet, ReportingConfig reportConfig, string[] contenders, string[] benchNames)
         {
-            for (var i = 0; i < contenders.Length; i++)
+            for (int i = 0; i < contenders.Length; i++)
             {
                 Assert.Equal(contenders[i], sheet[$"A{reportConfig.DataTableStartingRow + i + 1}"].Value);
             }
 
-            for (var i = 0; i < benchNames.Length; i++)
+            for (int i = 0; i < benchNames.Length; i++)
             {
-                var name = sheet.Name == "Performance"
+                string name = sheet.Name == "Performance"
                     ? $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.us)}"
                     : $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.KB)}";
 
                 Assert.Equal(name, sheet[$"{letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
             }
 
-            for (var i = 0; i < contenders.Length; i++)
+            for (int i = 0; i < contenders.Length; i++)
             {
-                for (var j = 0; j < benchNames.Length; j++)
+                for (int j = 0; j < benchNames.Length; j++)
                 {
-                    var cell = sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
+                    IronXL.Range cell = sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
 
                     if (reportConfig.AppendToLastReport && i == contenders.Length - 1 && j == benchNames.Length - 1)
                     {
                         Assert.Equal(0.0, cell.Value);
-                    } 
+                    }
                     else
                     {
                         Assert.Equal(j + 1.0, cell.Value);
                     }
-                    
+
                     Assert.Equal(BuiltinFormats.Thousands2, cell.FormatString);
                 }
             }
@@ -149,15 +149,15 @@ namespace IronBenchmarks.Reporting.Tests
 
         private static void AssertChartsPlacedCorrectly(WorkSheet sheet, IReportingConfig reportConfig, int contendersNum)
         {
-            var chartsInRow = 0;
-            var chartRow = 0;
+            int chartsInRow = 0;
+            int chartRow = 0;
 
-            foreach (var chart in sheet.Charts)
+            foreach (IronXL.Drawing.Charts.IChart? chart in sheet.Charts)
             {
-                var topRow = contendersNum + 1 + (reportConfig.ChartHeight * chartRow);
-                var bottomRow = topRow + reportConfig.ChartHeight;
-                var firstColumn = reportConfig.ChartWidth * chartsInRow;
-                var lastColumn = firstColumn + reportConfig.ChartWidth;
+                int topRow = contendersNum + 1 + (reportConfig.ChartHeight * chartRow);
+                int bottomRow = topRow + reportConfig.ChartHeight;
+                int firstColumn = reportConfig.ChartWidth * chartsInRow;
+                int lastColumn = firstColumn + reportConfig.ChartWidth;
 
                 Assert.Equal(topRow, chart.Position.TopRowIndex);
                 Assert.Equal(bottomRow, chart.Position.BottomRowIndex);

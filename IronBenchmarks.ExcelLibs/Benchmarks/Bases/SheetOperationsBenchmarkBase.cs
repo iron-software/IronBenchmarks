@@ -23,8 +23,8 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
         [IterationSetup]
         public void IterationSetup()
         {
-            var cell1Val = rand.Next();
-            var cell2Val = rand.Next();
+            int cell1Val = rand.Next();
+            int cell2Val = rand.Next();
 
             IronXlSheet = new IronXL.WorkBook().DefaultWorkSheet;
             IronXlSheet["A1"].Value = cell1Val;

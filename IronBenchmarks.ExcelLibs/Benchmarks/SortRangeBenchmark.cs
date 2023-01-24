@@ -4,6 +4,7 @@ using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
+using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
@@ -80,13 +81,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            asposeSorter.Sort(asposeCells, asposeCellArea);
+            _ = asposeSorter.Sort(asposeCells, asposeCellArea);
         }
 
         [Benchmark]
         public override void ClosedXml()
         {
-            closedXmlSortRange.Sort(1);
+            _ = closedXmlSortRange.Sort(1);
         }
 
         [Benchmark]
@@ -98,24 +99,24 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
+            _ = ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
         }
 
         [Benchmark]
         public override void Iron_XlOld()
         {
-            ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
+            _ = ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
         }
 
         [Benchmark]
         public override void Npoi()
         {
-
+            throw new NotImplementedException();
         }
 
         private DataSorter GetAsposeSorter()
         {
-            var sorter = asposeSortRangeWb.DataSorter;
+            DataSorter sorter = asposeSortRangeWb.DataSorter;
             sorter.Order1 = SortOrder.Ascending;
             sorter.Key1 = 0;
 

@@ -12,7 +12,7 @@ namespace IronBenchmarks.BarCodeLibs.Benchmarks
         [Benchmark]
         public override void Iron_BarCode()
         {
-            IronBarCode.QRCodeWriter.CreateQrCode(
+            _ = IronBarCode.QRCodeWriter.CreateQrCode(
                 text,
                 500,
                 IronBarCode.QRCodeWriter.QrErrorCorrectionLevel.Medium);

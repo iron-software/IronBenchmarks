@@ -26,10 +26,10 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            var style = new CellsFactory().CreateStyle();
+            Style style = new CellsFactory().CreateStyle();
             style.Number = 15;
 
-            var cell = AsposeCells[$"A1"];
+            Cell cell = AsposeCells[$"A1"];
             cell.PutValue(date);
             cell.SetStyle(style);
         }
@@ -37,12 +37,12 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Npoi()
         {
-            var npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
+            NPOI.SS.UserModel.ICellStyle npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
             npoiStyle.DataFormat = NpoiSheet.Workbook.CreateDataFormat().GetFormat("dd/MM/yyyy");
 
-            var row = NpoiSheet.CreateRow(1);
+            NPOI.SS.UserModel.IRow row = NpoiSheet.CreateRow(1);
 
-            var cell = row.CreateCell(0);
+            NPOI.SS.UserModel.ICell cell = row.CreateCell(0);
             cell.SetCellValue(date);
             cell.CellStyle = npoiStyle;
         }

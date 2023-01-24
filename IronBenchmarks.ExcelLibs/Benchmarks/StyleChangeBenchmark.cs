@@ -16,12 +16,12 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            var style = new CellsFactory().CreateStyle();
+            Style style = new CellsFactory().CreateStyle();
             style.Font.Size = 22;
             style.VerticalAlignment = TextAlignmentType.Top;
             style.HorizontalAlignment = TextAlignmentType.Right;
 
-            var cell = AsposeCells[$"A2"];
+            Cell cell = AsposeCells[$"A2"];
             cell.PutValue(cellValue);
             cell.SetStyle(style);
         }
@@ -29,14 +29,14 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void ClosedXml()
         {
-            var cell = ClosedXmlSheet.Cell($"A2");
+            IXLCell cell = ClosedXmlSheet.Cell($"A2");
             cell.Value = cellValue;
 
-            var style = cell.Style;
+            IXLStyle style = cell.Style;
 
             style.Font.FontSize = 22;
-            style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-            style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            _ = style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+            _ = style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
         }
 
         [Benchmark]
@@ -52,10 +52,10 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            var range = IronXlSheet[$"A2"];
+            IronXL.Range range = IronXlSheet[$"A2"];
             range.Value = cellValue;
 
-            var style = range.Style;
+            IronXL.Styles.IStyle style = range.Style;
 
             style.Font.Height = 22;
             style.VerticalAlignment = IronXL.Styles.VerticalAlignment.Top;
@@ -65,10 +65,10 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Iron_XlOld()
         {
-            var range = Iron_XlOldSheet[$"A2"];
+            IronXLOld.Range range = Iron_XlOldSheet[$"A2"];
             range.Value = cellValue;
 
-            var style = range.Style;
+            IronXLOld.Styles.IStyle style = range.Style;
 
             style.Font.Height = 22;
             style.VerticalAlignment = IronXLOld.Styles.VerticalAlignment.Top;
@@ -78,16 +78,16 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Npoi()
         {
-            var npoiFont = NpoiSheet.Workbook.CreateFont();
+            IFont npoiFont = NpoiSheet.Workbook.CreateFont();
             npoiFont.FontHeightInPoints = 22;
 
-            var npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
+            ICellStyle npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
             npoiStyle.SetFont(npoiFont);
             npoiStyle.VerticalAlignment = VerticalAlignment.Top;
             npoiStyle.Alignment = HorizontalAlignment.Right;
 
-            var row = NpoiSheet.CreateRow(1);
-            var cell = row.CreateCell(0);
+            IRow row = NpoiSheet.CreateRow(1);
+            ICell cell = row.CreateCell(0);
             cell.SetCellValue(cellValue);
             cell.CellStyle = npoiStyle;
         }

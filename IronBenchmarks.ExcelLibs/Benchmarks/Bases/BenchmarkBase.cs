@@ -15,11 +15,11 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 
         public static void SetupLicenses()
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-            var configuration = builder.Build();
-            var appConfig = configuration.GetSection("AppConfig");
-            var licenseKeyIronXl = appConfig["LicenseKeyIronXl"];
+            IConfigurationRoot configuration = builder.Build();
+            IConfigurationSection appConfig = configuration.GetSection("AppConfig");
+            string licenseKeyIronXl = appConfig["LicenseKeyIronXl"];
 
             IronXL.License.LicenseKey = licenseKeyIronXl;
             IronXLOld.License.LicenseKey = licenseKeyIronXl;
@@ -28,12 +28,12 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 
         public static void EnsureResultsFolderExists()
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", "Results");
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string reportsFolder = Path.Combine(path ?? "", "Results");
 
             if (!Directory.Exists(reportsFolder))
             {
-                Directory.CreateDirectory(reportsFolder);
+                _ = Directory.CreateDirectory(reportsFolder);
             }
         }
 

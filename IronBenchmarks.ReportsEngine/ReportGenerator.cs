@@ -73,34 +73,34 @@ namespace IronBenchmarks.Reporting
 
             EnsureReportsFolderExists();
 
-            var report = _reportConfig.AppendToLastReport ? GetLastReport() : WorkBook.Create();
+            WorkBook report = _reportConfig.AppendToLastReport ? GetLastReport() : WorkBook.Create();
 
             FillReport(report, chartsData, contedersNamesAndVersions);
 
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string reportName = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}\\{reportTag}_Report_{DateTime.Now:yyyy-MM-d_HH-mm-ss}.xlsx");
 
-            report.SaveAs(reportName);
+            _ = report.SaveAs(reportName);
 
             return reportName;
         }
 
         private WorkBook GetLastReport()
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}");
-            var files = Directory.GetFiles(reportsFolder);
-            var sortedFiles = files.OrderByDescending(f => File.GetLastWriteTime(f));
-            var mostRecentFile = sortedFiles.First();
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string reportsFolder = Path.Combine(path ?? "", $"{_reportConfig.ReportsFolder}");
+            string[] files = Directory.GetFiles(reportsFolder);
+            IOrderedEnumerable<string> sortedFiles = files.OrderByDescending(f => File.GetLastWriteTime(f));
+            string mostRecentFile = sortedFiles.First();
 
             return WorkBook.Load(mostRecentFile);
         }
 
         private void FillReport(WorkBook report, List<BenchmarkData> tablesData, Dictionary<string, string> contedersNamesAndVersions)
         {
-            foreach (var chartData in tablesData)
+            foreach (BenchmarkData chartData in tablesData)
             {
-                var sheet = _reportConfig.AppendToLastReport
+                WorkSheet sheet = _reportConfig.AppendToLastReport
                     ? report.GetWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}")
                     : report.CreateWorkSheet($"{EnumHelper.GetEnumDescription(chartData.DataType)}");
 
@@ -118,16 +118,16 @@ namespace IronBenchmarks.Reporting
                 _numberOfConteders = chartData.GetNumberOfContenders() + (_reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) - 1 : 0);
                 _headerRowAddress = $"B{_reportConfig.DataTableStartingRow}:{_letters[_numberOfBenchmarks + 1]}{_reportConfig.DataTableStartingRow}";
 
-                var benchmarkTitles = chartData.GetBenchmarkNames();
+                Dictionary<string, Units> benchmarkTitles = chartData.GetBenchmarkNames();
 
                 if (!_reportConfig.AppendToLastReport)
                 {
                     FillHeader(sheet, _headerRowAddress, benchmarkTitles);
                 }
 
-                var i = _reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) : 1;
+                int i = _reportConfig.AppendToLastReport ? GetLastRowInReport(sheet) : 1;
 
-                foreach (var contender in chartData.DataEntries)
+                foreach (BenchmarkDataEntry contender in chartData.DataEntries)
                 {
                     FillRow(sheet, i, contender, benchmarkTitles, contedersNamesAndVersions);
 
@@ -140,28 +140,28 @@ namespace IronBenchmarks.Reporting
 
         private int GetLastColumnInReport(WorkSheet sheet)
         {
-            var allColums = sheet.AllColumnsInRange;
-            var lastColumn = allColums[allColums.Length - 1];
+            RangeColumn[] allColums = sheet.AllColumnsInRange;
+            RangeColumn lastColumn = allColums[allColums.Length - 1];
 
             return lastColumn.RangeAddress.LastColumn;
         }
 
         private int GetLastRowInReport(WorkSheet sheet)
         {
-            var allRows = sheet.AllRowsInRange;
-            var lastRow = allRows[allRows.Length - 1];
+            RangeRow[] allRows = sheet.AllRowsInRange;
+            RangeRow lastRow = allRows[allRows.Length - 1];
 
             return lastRow.RangeAddress.LastRow;
         }
 
         private void EnsureReportsFolderExists()
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", _reportConfig.ReportsFolder);
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string reportsFolder = Path.Combine(path ?? "", _reportConfig.ReportsFolder);
 
             if (!Directory.Exists(reportsFolder))
             {
-                Directory.CreateDirectory(reportsFolder);
+                _ = Directory.CreateDirectory(reportsFolder);
             }
         }
 
@@ -169,10 +169,10 @@ namespace IronBenchmarks.Reporting
         {
             benchmarkList = benchmarkList ?? new Dictionary<string, Units>();
 
-            var i = 0;
-            var cells = sheet[headerRowAddress].ToArray();
+            int i = 0;
+            Cell[] cells = sheet[headerRowAddress].ToArray();
 
-            foreach (var benchmark in benchmarkList)
+            foreach (KeyValuePair<string, Units> benchmark in benchmarkList)
             {
                 cells[i].Value = $"{GetBenchmarkTitle(benchmark.Key)}, {EnumHelper.GetEnumDescription(benchmark.Value)}";
 
@@ -184,8 +184,8 @@ namespace IronBenchmarks.Reporting
         {
             if (benchmarkTitle.Length > 0)
             {
-                var lastDotIndex = benchmarkTitle.LastIndexOf(".");
-                var firstDashIndex = benchmarkTitle.IndexOf("-");
+                int lastDotIndex = benchmarkTitle.LastIndexOf(".");
+                int firstDashIndex = benchmarkTitle.IndexOf("-");
 
                 benchmarkTitle = lastDotIndex < 0 || firstDashIndex < 0
                     ? benchmarkTitle
@@ -197,12 +197,12 @@ namespace IronBenchmarks.Reporting
 
         private void FillRow(WorkSheet sheet, int i, BenchmarkDataEntry contender, Dictionary<string, Units> benchmarkTitles, Dictionary<string, string> contedersNamesAndVersions)
         {
-            var seriesRowNumber = _reportConfig.DataTableStartingRow + i;
-            var seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
-            var times = new double[benchmarkTitles.Count];
-            var j = 0;
+            int seriesRowNumber = _reportConfig.DataTableStartingRow + i;
+            string seriesRowAddress = $"B{seriesRowNumber}:{_letters[_numberOfBenchmarks + 1]}{seriesRowNumber}";
+            double[] times = new double[benchmarkTitles.Count];
+            int j = 0;
 
-            foreach (var benchmark in benchmarkTitles)
+            foreach (KeyValuePair<string, Units> benchmark in benchmarkTitles)
             {
                 times[j] = contender[benchmark.Key].Value;
 
@@ -211,7 +211,7 @@ namespace IronBenchmarks.Reporting
 
             PutInSeriesData(sheet, seriesRowAddress, times);
 
-            var contederTitle = GetContenderTitle(contender, contedersNamesAndVersions);
+            string contederTitle = GetContenderTitle(contender, contedersNamesAndVersions);
 
             sheet[$"A{seriesRowNumber}"].Value = contederTitle;
         }
@@ -228,16 +228,16 @@ namespace IronBenchmarks.Reporting
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)
         {
-            var seriesRowNumber = _reportConfig.DataTableStartingRow + 1;
-            var seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber + numberOfRowsToFormat}";
+            int seriesRowNumber = _reportConfig.DataTableStartingRow + 1;
+            string seriesRowAddress = $"B{seriesRowNumber}:{_letters[numberOfColumnsToFormat + 1]}{seriesRowNumber + numberOfRowsToFormat}";
             sheet[seriesRowAddress].FormatString = BuiltinFormats.Thousands2;
         }
 
         private static void PutInSeriesData(WorkSheet sheet, string seriesRowAddress, double[] times)
         {
-            var i = 0;
+            int i = 0;
 
-            foreach (var cell in sheet[seriesRowAddress])
+            foreach (Cell cell in sheet[seriesRowAddress])
             {
                 cell.Value = i >= times.Length ? 0 : times[i];
 
@@ -247,7 +247,7 @@ namespace IronBenchmarks.Reporting
 
         private static void FormatHeader(WorkSheet sheet, string headerAddress)
         {
-            foreach (var cell in sheet[headerAddress])
+            foreach (Cell cell in sheet[headerAddress])
             {
                 cell.Style.WrapText = true;
             }
@@ -255,29 +255,29 @@ namespace IronBenchmarks.Reporting
 
         private void AddCharts(WorkSheet sheet, int numberOfSeriesToAdd, int numberOfBenchmarks, string chartTitle)
         {
-            var chartRow = 0;
-            var chartsInRow = 0;
+            int chartRow = 0;
+            int chartsInRow = 0;
 
-            for (var i = 1; i <= numberOfBenchmarks; i++)
+            for (int i = 1; i <= numberOfBenchmarks; i++)
             {
-                var chart = CreateChart(sheet, numberOfSeriesToAdd, chartRow, chartsInRow);
-                var headerAddress = $"{_letters[i + 1]}{_reportConfig.DataTableStartingRow}:{_letters[i + 1]}{_reportConfig.DataTableStartingRow}";
+                IChart chart = CreateChart(sheet, numberOfSeriesToAdd, chartRow, chartsInRow);
+                string headerAddress = $"{_letters[i + 1]}{_reportConfig.DataTableStartingRow}:{_letters[i + 1]}{_reportConfig.DataTableStartingRow}";
 
-                for (var j = 1; j <= numberOfSeriesToAdd; j++)
+                for (int j = 1; j <= numberOfSeriesToAdd; j++)
                 {
-                    var seriesRowNumber = _reportConfig.DataTableStartingRow + j;
-                    var seriesRowAddress = $"{_letters[i + 1]}{seriesRowNumber}:{_letters[i + 1]}{seriesRowNumber}";
+                    int seriesRowNumber = _reportConfig.DataTableStartingRow + j;
+                    string seriesRowAddress = $"{_letters[i + 1]}{seriesRowNumber}:{_letters[i + 1]}{seriesRowNumber}";
 
                     if (!sheet[seriesRowAddress].First().IsNumeric)
                     {
                         continue;
                     }
 
-                    var series = chart.AddSeries(seriesRowAddress, headerAddress);
+                    IChartSeries series = chart.AddSeries(seriesRowAddress, headerAddress);
                     series.Title = sheet[$"A{seriesRowNumber}"].StringValue;
                 }
 
-                var benchmarkName = sheet[headerAddress].StringValue;
+                string benchmarkName = sheet[headerAddress].StringValue;
 
                 chart.SetTitle($"{chartTitle}\n{benchmarkName}");
                 chart.SetLegendPosition(LegendPosition.Bottom);
@@ -295,17 +295,17 @@ namespace IronBenchmarks.Reporting
 
         private IChart CreateChart(WorkSheet sheet, int chartsStartingRow, int chartRow, int chartsInRow)
         {
-            var topRow = chartsStartingRow + 1 + (_reportConfig.ChartHeight * chartRow);
-            var bottomRow = topRow + _reportConfig.ChartHeight;
-            var firstColumn = _reportConfig.ChartWidth * chartsInRow;
-            var lastColumn = firstColumn + _reportConfig.ChartWidth;
-            var chart = sheet.CreateChart(ChartType.Bar, topRow, firstColumn, bottomRow, lastColumn);
+            int topRow = chartsStartingRow + 1 + (_reportConfig.ChartHeight * chartRow);
+            int bottomRow = topRow + _reportConfig.ChartHeight;
+            int firstColumn = _reportConfig.ChartWidth * chartsInRow;
+            int lastColumn = firstColumn + _reportConfig.ChartWidth;
+            IChart chart = sheet.CreateChart(ChartType.Bar, topRow, firstColumn, bottomRow, lastColumn);
             return chart;
         }
 
         private static void RemoveCharts(WorkSheet sheet)
         {
-            foreach (var chart in sheet.Charts.ToArray())
+            foreach (IChart chart in sheet.Charts.ToArray())
             {
                 sheet.RemoveChart(chart);
             }

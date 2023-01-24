@@ -24,7 +24,7 @@ namespace IronBenchmarks.Reporting.ReportData
         {
             var names = new Dictionary<string, Units>();
 
-            foreach (var point in data)
+            foreach (BenchmarkDataPoint point in data)
             {
                 names.Add(point.Name, point.UnitType);
             }

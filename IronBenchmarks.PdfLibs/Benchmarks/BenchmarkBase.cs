@@ -14,23 +14,23 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
 
         public static void SetupLicenses()
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-            var configuration = builder.Build();
-            var appConfig = configuration.GetSection("AppConfig");
-            var LicenseKeyIronPdf = appConfig["LicenseKeyIronPdf"];
+            IConfigurationRoot configuration = builder.Build();
+            IConfigurationSection appConfig = configuration.GetSection("AppConfig");
+            string LicenseKeyIronPdf = appConfig["LicenseKeyIronPdf"];
 
             IronPdf.License.LicenseKey = LicenseKeyIronPdf;
         }
 
         public static void EnsureResultsFolderExists()
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var reportsFolder = Path.Combine(path ?? "", "Results");
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string reportsFolder = Path.Combine(path ?? "", "Results");
 
             if (!Directory.Exists(reportsFolder))
             {
-                Directory.CreateDirectory(reportsFolder);
+                _ = Directory.CreateDirectory(reportsFolder);
             }
         }
 

@@ -18,7 +18,7 @@ namespace IronBenchmarks
     {
         public static string GetEnumDescription(Enum value)
         {
-            var field = value.GetType().GetField(value.ToString());
+            System.Reflection.FieldInfo field = value.GetType().GetField(value.ToString());
             return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
                 ? value.ToString()
                 : attribute.Description;

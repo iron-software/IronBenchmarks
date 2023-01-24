@@ -52,13 +52,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void IronXl()
         {
-            ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
+            _ = ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
         }
 
         [Benchmark]
         public override void Iron_XlOld()
         {
-            ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
+            _ = ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
         }
 
         [Benchmark]
