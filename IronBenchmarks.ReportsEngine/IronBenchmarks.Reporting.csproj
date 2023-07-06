@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IronXL.Excel" Version="2023.1.10" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.4" />
+		<PackageReference Include="IronXL.Excel" Version="2023.6.4" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.5" />
 	</ItemGroup>
 
 </Project>
