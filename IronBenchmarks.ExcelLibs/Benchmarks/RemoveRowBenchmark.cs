@@ -12,7 +12,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class RemoveRowBenchmark : BenchmarkBase
     {
-        private readonly string _sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
+        private readonly string _removeRowFileName = "RemoveRowFiles\\RemoveRow.xlsx";
         private IronXL.WorkSheet _ixlSheet;
         private IronXLOld.WorkSheet _ixlOldSheet;
         private Workbook _asposeWb;
@@ -23,26 +23,26 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         private ExcelPackage _epplusWb;
         private ExcelWorksheet _epplusSheet;
 
-        [IterationSetup]
+        [GlobalSetup]
         public void IterationSetup()
         {
-            _asposeWb = new Workbook(_sortRangeFileName);
+            _asposeWb = new Workbook(_removeRowFileName);
             _asposeSheet = _asposeWb.Worksheets[0].Cells;
 
-            _ixlSheet = IronXL.WorkBook.Load(_sortRangeFileName).DefaultWorkSheet;
+            _ixlSheet = IronXL.WorkBook.Load(_removeRowFileName).DefaultWorkSheet;
 
-            _ixlOldSheet = IronXLOld.WorkBook.Load(_sortRangeFileName).DefaultWorkSheet;
+            _ixlOldSheet = IronXLOld.WorkBook.Load(_removeRowFileName).DefaultWorkSheet;
 
-            _npoiSheet = (XSSFSheet)new XSSFWorkbook(_sortRangeFileName).GetSheetAt(0);
+            _npoiSheet = (XSSFSheet)new XSSFWorkbook(_removeRowFileName).GetSheetAt(0);
             _npoiRow = (XSSFRow)_npoiSheet.GetRow(1);
 
-            _closedXmlSheet = new XLWorkbook(_sortRangeFileName).Worksheet("ToSort");
+            _closedXmlSheet = new XLWorkbook(_removeRowFileName).Worksheet("Remove");
 
-            _epplusWb = new ExcelPackage(_sortRangeFileName);
+            _epplusWb = new ExcelPackage(_removeRowFileName);
             _epplusSheet = _epplusWb.Workbook.Worksheets[0];
         }
 
-        [IterationCleanup]
+        [GlobalCleanup]
         public void IterationCleanup()
         {
             _ixlSheet.WorkBook.Close();
@@ -65,6 +65,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             _epplusWb = null;
 
         }
+
         [Benchmark]
         public override void Aspose()
         {
