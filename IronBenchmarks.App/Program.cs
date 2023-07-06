@@ -37,17 +37,19 @@ static void RunBarCodeBenchmarks(
     IReportingConfig reportConfig,
     ReportGenerator reportGenerator)
 {
-    if (args.Contains("-bc"))
+    if (!args.Contains("-bc"))
     {
-        reportConfig.ReportsFolder += "\\BarCode";
+        return;
+    }
 
-        var barcodeSummaries = new List<Summary>
+    reportConfig.ReportsFolder += "\\BarCode";
+
+    var barcodeSummaries = new List<Summary>
         {
             BenchmarkRunner.Run<CreateBarcodeBenchmark>()
         };
 
-        _ = reportGenerator.GenerateReport(barcodeSummaries, "BarCodeLibs");
-    }
+    _ = reportGenerator.GenerateReport(barcodeSummaries, "BarCodeLibs");
 }
 
 static void RunPdfBenchmarks(
@@ -55,25 +57,27 @@ static void RunPdfBenchmarks(
     IReportingConfig reportConfig,
     ReportGenerator reportGenerator)
 {
-    if (args.Contains("-pdf"))
+    if (!args.Contains("-pdf"))
     {
-        reportConfig.ReportsFolder += "\\PDF";
+        return;
+    }
 
-        ManualConfig config = new ManualConfig()
-            .WithOptions(ConfigOptions.DisableOptimizationsValidator)
-            .AddValidator(JitOptimizationsValidator.DontFailOnError)
-            .AddLogger(ConsoleLogger.Default)
-            .AddColumnProvider(DefaultColumnProviders.Instance);
+    reportConfig.ReportsFolder += "\\PDF";
 
-        var pdfSummaries = new List<Summary>
+    ManualConfig config = new ManualConfig()
+        .WithOptions(ConfigOptions.DisableOptimizationsValidator)
+        .AddValidator(JitOptimizationsValidator.DontFailOnError)
+        .AddLogger(ConsoleLogger.Default)
+        .AddColumnProvider(DefaultColumnProviders.Instance);
+
+    var pdfSummaries = new List<Summary>
         {
             BenchmarkRunner.Run<RenderHtmlToPdfBenchmark>(config),
             BenchmarkRunner.Run<LoadingLargeFileBenchmark>(config),
             BenchmarkRunner.Run<SavingLargeFileBenchmark>(config),
         };
 
-        _ = reportGenerator.GenerateReport(pdfSummaries, "PDFLibs");
-    }
+    _ = reportGenerator.GenerateReport(pdfSummaries, "PDFLibs");
 }
 
 static void RunExcelBenchmarks(
@@ -81,13 +85,16 @@ static void RunExcelBenchmarks(
     IReportingConfig reportConfig,
     ReportGenerator reportGenerator)
 {
-    if (args.Contains("-xl"))
+    if (!args.Contains("-xl"))
     {
-        reportConfig.ReportsFolder += "\\Excel";
+        return;
+    }
 
-        Dictionary<string, string> libsWithVersions = GetLibNamesWithVersions(typeof(RandomCellsBenchmark));
+    reportConfig.ReportsFolder += "\\Excel";
 
-        var excelSummaries = new List<Summary>
+    Dictionary<string, string> libsWithVersions = GetLibNamesWithVersions(typeof(RandomCellsBenchmark));
+
+    var excelSummaries = new List<Summary>
         {
             BenchmarkRunner.Run<RandomCellsBenchmark>(),
             BenchmarkRunner.Run<DateCellBenchmark>(),
@@ -97,10 +104,10 @@ static void RunExcelBenchmarks(
             BenchmarkRunner.Run<SaveLargeFileBenchmark>(),
             BenchmarkRunner.Run<SortRangeBenchmark>(),
             BenchmarkRunner.Run<AccessingRangePropertiesBenchmark>(),
+            BenchmarkRunner.Run<RemoveRowBenchmark>(),
         };
 
-        _ = reportGenerator.GenerateReport(excelSummaries, "ExcelLibs", libsWithVersions);
-    }
+    _ = reportGenerator.GenerateReport(excelSummaries, "ExcelLibs", libsWithVersions);
 }
 
 static Dictionary<string, string> GetLibNamesWithVersions(Type type)

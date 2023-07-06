@@ -6,8 +6,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.4" />
-		<PackageReference Include="BarCode" Version="2023.1.11395" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.5" />
+		<PackageReference Include="BarCode" Version="2023.7.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 	</ItemGroup>
