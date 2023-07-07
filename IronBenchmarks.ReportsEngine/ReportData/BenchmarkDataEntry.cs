@@ -32,12 +32,6 @@ namespace IronBenchmarks.Reporting.ReportData
             return names;
         }
 
-        public BenchmarkDataPoint this[string key]
-        {
-            get
-            {
-                return _data.FirstOrDefault(d => d.Name == key);
-            }
-        }
+        public BenchmarkDataPoint this[string key] => _data.FirstOrDefault(d => d.Name == key);
     }
 }

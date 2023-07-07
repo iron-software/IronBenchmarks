@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.App", "IronB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4DCF5F6E-75E5-4F9A-9512-2729C8031193}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -18,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.Reporting.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.PdfLibs", "IronBenchmarks.PdfLibs\IronBenchmarks.PdfLibs.csproj", "{173A0D82-99A0-434F-ABA7-087BB67D8607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronBenchmarks.BarCodeLibs", "IronBenchmarks.BarCodeLibs\IronBenchmarks.BarCodeLibs.csproj", "{D9DC7796-1BEC-4914-BFBB-974EA19443D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronBenchmarks.BarCodeLibs", "IronBenchmarks.BarCodeLibs\IronBenchmarks.BarCodeLibs.csproj", "{D9DC7796-1BEC-4914-BFBB-974EA19443D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
