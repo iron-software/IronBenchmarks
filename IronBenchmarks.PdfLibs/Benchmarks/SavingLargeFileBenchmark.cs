@@ -8,39 +8,39 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
     [MemoryDiagnoser]
     public class SavingLargeFileBenchmark : BenchmarkBase
     {
-        private readonly string largeFileName = "LoadingTestFiles\\largeFile.pdf";
-        private IronPdf.PdfDocument ironPdfDocument;
-        private iTextSharp.text.pdf.PdfReader itsReader;
-        private PdfSharp.Pdf.PdfDocument pdfSharpDocument;
+        private readonly string _largeFileName = "LoadingTestFiles\\largeFile.pdf";
+        private IronPdf.PdfDocument _ironPdfDocument;
+        private iTextSharp.text.pdf.PdfReader _itsReader;
+        private PdfSharp.Pdf.PdfDocument _pdfSharpDocument;
 
         [IterationSetup]
         public void IterationSetup()
         {
-            ironPdfDocument = IronPdf.PdfDocument.FromFile(largeFileName);
+            _ironPdfDocument = IronPdf.PdfDocument.FromFile(_largeFileName);
 
-            itsReader = new iTextSharp.text.pdf.PdfReader(largeFileName);
+            _itsReader = new iTextSharp.text.pdf.PdfReader(_largeFileName);
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            pdfSharpDocument = PdfSharp.Pdf.IO.PdfReader.Open(largeFileName);
+            _pdfSharpDocument = PdfSharp.Pdf.IO.PdfReader.Open(_largeFileName);
         }
 
         [Benchmark]
         public override void Iron_Pdf()
         {
-            _ = ironPdfDocument.SaveAs("Results\\IronPdfLargeFile.pdf");
+            _ = _ironPdfDocument.SaveAs("Results\\IronPdfLargeFile.pdf");
         }
 
         [Benchmark]
         public override void Pdf_Sharp()
         {
-            pdfSharpDocument.Save("Results\\PdfSharpLargeFile.pdf");
+            _pdfSharpDocument.Save("Results\\PdfSharpLargeFile.pdf");
         }
 
         [Benchmark]
         public override void ITextSharp()
         {
             var stamper = new iTextSharp.text.pdf.PdfStamper(
-                itsReader,
+                _itsReader,
                 new FileStream(
                     "Results\\ITextSharpLargeFile.pdf",
                     FileMode.Create));
@@ -50,14 +50,14 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
         [IterationCleanup]
         public void IterationCleanup()
         {
-            ironPdfDocument.Dispose();
-            ironPdfDocument = null;
+            _ironPdfDocument.Dispose();
+            _ironPdfDocument = null;
 
-            itsReader.Close();
-            itsReader = null;
+            _itsReader.Close();
+            _itsReader = null;
 
-            pdfSharpDocument.Close();
-            pdfSharpDocument = null;
+            _pdfSharpDocument.Close();
+            _pdfSharpDocument = null;
         }
     }
 }

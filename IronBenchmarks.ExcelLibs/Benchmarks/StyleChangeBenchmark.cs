@@ -11,7 +11,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class StyleChangeBenchmark : SheetOperationsBenchmarkBase
     {
-        private readonly string cellValue = "Cell";
+        private readonly string _cellValue = "Cell";
 
         [Benchmark(Baseline = true)]
         public override void Aspose()
@@ -22,7 +22,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             style.HorizontalAlignment = TextAlignmentType.Right;
 
             Cell cell = AsposeCells[$"A2"];
-            cell.PutValue(cellValue);
+            cell.PutValue(_cellValue);
             cell.SetStyle(style);
         }
 
@@ -30,7 +30,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         public override void ClosedXml()
         {
             IXLCell cell = ClosedXmlSheet.Cell($"A2");
-            cell.Value = cellValue;
+            cell.Value = _cellValue;
 
             IXLStyle style = cell.Style;
 
@@ -42,7 +42,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [Benchmark]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Value = cellValue;
+            EpplusSheet.Cells[$"A2"].Value = _cellValue;
 
             EpplusSheet.Cells[$"A2"].Style.Font.Size = 22;
             EpplusSheet.Cells[$"A2"].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
@@ -53,7 +53,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         public override void IronXl()
         {
             IronXL.Range range = IronXlSheet[$"A2"];
-            range.Value = cellValue;
+            range.Value = _cellValue;
 
             IronXL.Styles.IStyle style = range.Style;
 
@@ -66,7 +66,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         public override void Iron_XlOld()
         {
             IronXLOld.Range range = Iron_XlOldSheet[$"A2"];
-            range.Value = cellValue;
+            range.Value = _cellValue;
 
             IronXLOld.Styles.IStyle style = range.Style;
 
@@ -88,7 +88,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 
             IRow row = NpoiSheet.CreateRow(1);
             ICell cell = row.CreateCell(0);
-            cell.SetCellValue(cellValue);
+            cell.SetCellValue(_cellValue);
             cell.CellStyle = npoiStyle;
         }
     }

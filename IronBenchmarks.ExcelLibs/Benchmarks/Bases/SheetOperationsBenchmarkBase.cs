@@ -10,7 +10,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 {
     public abstract class SheetOperationsBenchmarkBase : BenchmarkBase
     {
-        private readonly Random rand = new Random();
+        private readonly Random _rand = new Random();
 
         public Cells AsposeCells;
         public IXLWorksheet ClosedXmlSheet;
@@ -23,8 +23,8 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
         [IterationSetup]
         public void IterationSetup()
         {
-            int cell1Val = rand.Next();
-            int cell2Val = rand.Next();
+            int cell1Val = _rand.Next();
+            int cell2Val = _rand.Next();
 
             IronXlSheet = new IronXL.WorkBook().DefaultWorkSheet;
             IronXlSheet["A1"].Value = cell1Val;

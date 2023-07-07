@@ -7,42 +7,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class FormulaCellBenchmark : SheetOperationsBenchmarkBase
     {
-        private readonly string formula = "=A1/B1";
+        private readonly string _formula = "=A1/B1";
 
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            AsposeCells[$"A2"].Formula = formula;
+            AsposeCells[$"A2"].Formula = _formula;
         }
 
         [Benchmark]
         public override void ClosedXml()
         {
-            ClosedXmlSheet.Cell($"A2").FormulaA1 = formula;
+            ClosedXmlSheet.Cell($"A2").FormulaA1 = _formula;
         }
 
         [Benchmark]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Formula = formula;
+            EpplusSheet.Cells[$"A2"].Formula = _formula;
         }
 
         [Benchmark]
         public override void IronXl()
         {
-            IronXlSheet[$"A2"].Formula = formula;
+            IronXlSheet[$"A2"].Formula = _formula;
         }
 
         [Benchmark]
         public override void Iron_XlOld()
         {
-            Iron_XlOldSheet[$"A2"].Formula = formula;
+            Iron_XlOldSheet[$"A2"].Formula = _formula;
         }
 
         [Benchmark]
         public override void Npoi()
         {
-            NpoiSheet.CreateRow(1).CreateCell(0).SetCellFormula(formula.Replace("=", ""));
+            NpoiSheet.CreateRow(1).CreateCell(0).SetCellFormula(_formula.Replace("=", ""));
         }
     }
 }

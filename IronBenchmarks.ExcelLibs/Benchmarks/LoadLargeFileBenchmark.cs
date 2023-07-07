@@ -11,42 +11,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class LoadLargeFileBenchmark : BenchmarkBase
     {
-        private readonly string largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
+        private readonly string _largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
 
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            _ = new Workbook(largeFileName);
+            _ = new Workbook(_largeFileName);
         }
 
         [Benchmark]
         public override void ClosedXml()
         {
-            _ = new XLWorkbook(largeFileName);
+            _ = new XLWorkbook(_largeFileName);
         }
 
         [Benchmark]
         public override void Epplus()
         {
-            _ = new ExcelPackage(largeFileName);
+            _ = new ExcelPackage(_largeFileName);
         }
 
         [Benchmark]
         public override void IronXl()
         {
-            _ = IronXL.WorkBook.Load(largeFileName);
+            _ = IronXL.WorkBook.Load(_largeFileName);
         }
 
         [Benchmark]
         public override void Iron_XlOld()
         {
-            _ = IronXLOld.WorkBook.Load(largeFileName);
+            _ = IronXLOld.WorkBook.Load(_largeFileName);
         }
 
         [Benchmark]
         public override void Npoi()
         {
-            _ = new XSSFWorkbook(largeFileName);
+            _ = new XSSFWorkbook(_largeFileName);
         }
     }
 }

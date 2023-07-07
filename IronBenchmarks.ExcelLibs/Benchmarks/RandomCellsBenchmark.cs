@@ -8,42 +8,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [MemoryDiagnoser]
     public class RandomCellsBenchmark : SheetOperationsBenchmarkBase
     {
-        private readonly string guid = Guid.NewGuid().ToString();
+        private readonly string _guid = Guid.NewGuid().ToString();
 
         [Benchmark]
         public override void IronXl()
         {
-            IronXlSheet[$"A2"].Value = guid;
+            IronXlSheet[$"A2"].Value = _guid;
         }
 
         [Benchmark]
         public override void Iron_XlOld()
         {
-            Iron_XlOldSheet[$"A2"].Value = guid;
+            Iron_XlOldSheet[$"A2"].Value = _guid;
         }
 
         [Benchmark(Baseline = true)]
         public override void Aspose()
         {
-            AsposeCells[$"A2"].Value = guid;
+            AsposeCells[$"A2"].Value = _guid;
         }
 
         [Benchmark]
         public override void Npoi()
         {
-            NpoiSheet.CreateRow(1).CreateCell(0).SetCellValue(guid);
+            NpoiSheet.CreateRow(1).CreateCell(0).SetCellValue(_guid);
         }
 
         [Benchmark]
         public override void ClosedXml()
         {
-            ClosedXmlSheet.Cell($"A2").Value = guid;
+            ClosedXmlSheet.Cell($"A2").Value = _guid;
         }
 
         [Benchmark]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Value = guid;
+            EpplusSheet.Cells[$"A2"].Value = _guid;
         }
     }
 }

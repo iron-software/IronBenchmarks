@@ -7,7 +7,7 @@ namespace IronBenchmarks.Reporting.Tests
 {
     public class ReportGeneratorTests : TestsBase
     {
-        private static readonly Dictionary<int, string> letters = new()
+        private static readonly Dictionary<int, string> _letters = new()
         {
             {1, "A"},
             {2, "B"},
@@ -124,14 +124,14 @@ namespace IronBenchmarks.Reporting.Tests
                     ? $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.us)}"
                     : $"{benchNames[i]}, {EnumHelper.GetEnumDescription(Units.KB)}";
 
-                Assert.Equal(name, sheet[$"{letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
+                Assert.Equal(name, sheet[$"{_letters[i + 2]}{reportConfig.DataTableStartingRow}"].Value);
             }
 
             for (int i = 0; i < contenders.Length; i++)
             {
                 for (int j = 0; j < benchNames.Length; j++)
                 {
-                    IronXL.Range cell = sheet[$"{letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
+                    IronXL.Range cell = sheet[$"{_letters[j + 2]}{reportConfig.DataTableStartingRow + i + 1}"];
 
                     if (reportConfig.AppendToLastReport && i == contenders.Length - 1 && j == benchNames.Length - 1)
                     {

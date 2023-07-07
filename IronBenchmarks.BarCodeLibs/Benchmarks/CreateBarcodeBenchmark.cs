@@ -7,13 +7,13 @@ namespace IronBenchmarks.BarCodeLibs.Benchmarks
     [MemoryDiagnoser]
     public class CreateBarcodeBenchmark : BenchmarkBase
     {
-        private readonly string text = Guid.NewGuid().ToString();
+        private readonly string _text = Guid.NewGuid().ToString();
 
         [Benchmark]
         public override void Iron_BarCode()
         {
             _ = IronBarCode.QRCodeWriter.CreateQrCode(
-                text,
+                _text,
                 500,
                 IronBarCode.QRCodeWriter.QrErrorCorrectionLevel.Medium);
         }

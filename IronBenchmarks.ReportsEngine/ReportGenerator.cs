@@ -218,12 +218,9 @@ namespace IronBenchmarks.Reporting
 
         private string GetContenderTitle(BenchmarkDataEntry contender, Dictionary<string, string> contedersNamesAndVersions)
         {
-            if (contedersNamesAndVersions == null || !contedersNamesAndVersions.ContainsKey(contender.Name))
-            {
-                return contender.Name;
-            }
-
-            return $"{contender.Name}, v.{contedersNamesAndVersions[contender.Name]}";
+            return contedersNamesAndVersions == null || !contedersNamesAndVersions.ContainsKey(contender.Name)
+                ? contender.Name
+                : $"{contender.Name}, v.{contedersNamesAndVersions[contender.Name]}";
         }
 
         private void FormatTimeTable(WorkSheet sheet, int numberOfRowsToFormat, int numberOfColumnsToFormat)

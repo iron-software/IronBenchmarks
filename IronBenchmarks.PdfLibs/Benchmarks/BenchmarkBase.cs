@@ -18,9 +18,9 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
                 .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
             IConfigurationRoot configuration = builder.Build();
             IConfigurationSection appConfig = configuration.GetSection("AppConfig");
-            string LicenseKeyIronPdf = appConfig["LicenseKeyIronPdf"];
+            string licenseKeyIronPdf = appConfig["LicenseKeyIronPdf"];
 
-            IronPdf.License.LicenseKey = LicenseKeyIronPdf;
+            IronPdf.License.LicenseKey = licenseKeyIronPdf;
         }
 
         public static void EnsureResultsFolderExists()
