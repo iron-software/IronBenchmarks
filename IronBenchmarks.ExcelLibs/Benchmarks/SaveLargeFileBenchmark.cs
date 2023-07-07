@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System.IO;
@@ -10,61 +11,68 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class SaveLargeFileBenchmark : BenchmarkBase
     {
-        private readonly string largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
-        private IronXL.WorkBook ixlLargeFile;
-        private IronXLOld.WorkBook ixlOldLargeFile;
-        private Workbook asposeLargeFile;
-        private XLWorkbook closedXmlLargeFile;
-        private XSSFWorkbook npoiLargeFile;
-        private ExcelPackage epplusLargeFile;
+        private readonly string _largeFileName = "LoadingTestFiles\\LoadingTest.xlsx";
+        private IronXL.WorkBook _ixlLargeFile;
+        private IronXLOld.WorkBook _ixlOldLargeFile;
+        private Workbook _asposeLargeFile;
+        private XLWorkbook _closedXmlLargeFile;
+        private XSSFWorkbook _npoiLargeFile;
+        private ExcelPackage _epplusLargeFile;
 
         [GlobalSetup]
         public void Setup()
         {
-            ixlLargeFile = IronXL.WorkBook.Load(largeFileName);
-            ixlOldLargeFile = IronXLOld.WorkBook.Load(largeFileName);
-            asposeLargeFile = new Workbook(largeFileName);
-            closedXmlLargeFile = new XLWorkbook(largeFileName);
-            npoiLargeFile = new XSSFWorkbook(largeFileName);
-            epplusLargeFile = new ExcelPackage(largeFileName);
+            _ixlLargeFile = IronXL.WorkBook.Load(_largeFileName);
+            _ixlOldLargeFile = IronXLOld.WorkBook.Load(_largeFileName);
+            _asposeLargeFile = new Workbook(_largeFileName);
+            _closedXmlLargeFile = new XLWorkbook(_largeFileName);
+            _npoiLargeFile = new XSSFWorkbook(_largeFileName);
+            _epplusLargeFile = new ExcelPackage(_largeFileName);
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
-            asposeLargeFile.Save("Results\\Aspose_large.xlsx");
+            _asposeLargeFile.Save("Results\\Aspose_large.xlsx");
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
-            closedXmlLargeFile.SaveAs("Results\\ClosedXML_large.xlsx");
+            _closedXmlLargeFile.SaveAs("Results\\ClosedXML_large.xlsx");
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
-            epplusLargeFile.SaveAs("Results\\Epplus_large.xlsx");
+            _epplusLargeFile.SaveAs("Results\\Epplus_large.xlsx");
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
-            _ = ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
+            _ = _ixlLargeFile.SaveAs("Results\\IronXL_large.xlsx");
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
-            _ = ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
+            _ = _ixlOldLargeFile.SaveAs("Results\\IronXLOld_large.xlsx");
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
-            npoiLargeFile.Write(File.Create("Results\\Npoi_large.xlsx"));
+            _npoiLargeFile.Write(File.Create("Results\\Npoi_large.xlsx"));
         }
     }
 }

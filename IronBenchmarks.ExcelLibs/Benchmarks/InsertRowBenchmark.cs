@@ -7,50 +7,49 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [ShortRunJob]
     [MemoryDiagnoser]
     [Config(typeof(ExcelConfig))]
-    public class FormulaCellBenchmark : SheetOperationsBenchmarkBase
+    public class InsertRowBenchmark : SheetOperationsBenchmarkBase
     {
-        private readonly string _formula = "=A1/B1";
-
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
-            AsposeCells[$"A2"].Formula = _formula;
+            AsposeCells.InsertRow(0);
         }
 
         [Benchmark]
         [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
-            ClosedXmlSheet.Cell($"A2").FormulaA1 = _formula;
+            _ = ClosedXmlSheet.Row(1).InsertRowsBelow(1);
         }
 
         [Benchmark]
         [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Formula = _formula;
+            EpplusSheet.InsertRow(1, 1);
         }
 
         [Benchmark]
         [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
-            IronXlSheet[$"A2"].Formula = _formula;
+            _ = IronXlSheet.InsertRow(0);
         }
 
         [Benchmark]
         [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
-            Iron_XlOldSheet[$"A2"].Formula = _formula;
+            Iron_XlOldSheet.InsertRow(0);
         }
 
         [Benchmark]
         [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
-            NpoiSheet.CreateRow(1).CreateCell(0).SetCellFormula(_formula.Replace("=", ""));
+            NpoiSheet.ShiftRows(0, NpoiSheet.LastRowNum, 1);
+            _ = NpoiSheet.CreateRow(0);
         }
     }
 }

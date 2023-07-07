@@ -10,7 +10,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
 {
     public abstract class SheetOperationsBenchmarkBase : BenchmarkBase
     {
-        private readonly Random rand = new Random();
+        private readonly Random _rand = new Random();
 
         public Cells AsposeCells;
         public IXLWorksheet ClosedXmlSheet;
@@ -23,33 +23,45 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks.Bases
         [IterationSetup]
         public void IterationSetup()
         {
-            int cell1Val = rand.Next();
-            int cell2Val = rand.Next();
+            int cell1Val = _rand.Next();
+            int cell2Val = _rand.Next();
 
             IronXlSheet = new IronXL.WorkBook().DefaultWorkSheet;
             IronXlSheet["A1"].Value = cell1Val;
             IronXlSheet["B1"].Value = cell2Val;
+            IronXlSheet["B2"].Value = cell1Val;
+            IronXlSheet["A2"].Value = cell2Val;
 
             Iron_XlOldSheet = new IronXLOld.WorkBook().DefaultWorkSheet;
             Iron_XlOldSheet["A1"].Value = cell1Val;
             Iron_XlOldSheet["B1"].Value = cell2Val;
+            Iron_XlOldSheet["B2"].Value = cell1Val;
+            Iron_XlOldSheet["A2"].Value = cell2Val;
 
             AsposeCells = new Workbook().Worksheets[0].Cells;
             AsposeCells["A1"].PutValue(cell1Val);
             AsposeCells["B1"].PutValue(cell2Val);
+            AsposeCells["B2"].PutValue(cell1Val);
+            AsposeCells["A2"].PutValue(cell2Val);
 
             NpoiSheet = new XSSFWorkbook().CreateSheet();
             NpoiSheet.CreateRow(0).CreateCell(0).SetCellValue(cell1Val);
             NpoiSheet.GetRow(0).CreateCell(1).SetCellValue(cell2Val);
+            NpoiSheet.CreateRow(1).CreateCell(1).SetCellValue(cell1Val);
+            NpoiSheet.GetRow(1).CreateCell(0).SetCellValue(cell2Val);
 
             ClosedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
             ClosedXmlSheet.Cell("A1").Value = cell1Val;
             ClosedXmlSheet.Cell("B1").Value = cell2Val;
+            ClosedXmlSheet.Cell("B2").Value = cell1Val;
+            ClosedXmlSheet.Cell("A2").Value = cell2Val;
 
             EpplusExcelPackage = new ExcelPackage();
             EpplusSheet = EpplusExcelPackage.Workbook.Worksheets.Add("Sheet1");
             EpplusSheet.Cells["A1"].Value = cell1Val;
             EpplusSheet.Cells["B1"].Value = cell2Val;
+            EpplusSheet.Cells["B2"].Value = cell1Val;
+            EpplusSheet.Cells["A2"].Value = cell2Val;
         }
 
         [IterationCleanup]

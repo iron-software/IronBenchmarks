@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
@@ -10,105 +11,132 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class SortRangeBenchmark : BenchmarkBase
     {
-        private readonly string sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
-        private IronXL.WorkSheet ixlSortRange;
-        private IronXLOld.WorkSheet ixlOldSortRange;
-        private Workbook asposeSortRangeWb;
-        private DataSorter asposeSorter;
-        private Cells asposeCells;
-        private readonly CellArea asposeCellArea = new CellArea
+        private readonly Random _rand = new Random();
+
+        private IXLWorksheet _closedXmlSheet;
+        private IronXL.WorkSheet _ixlSortRange;
+        private IronXLOld.WorkSheet _ixlOldSortRange;
+        private Workbook _asposeSortRangeWb;
+        private DataSorter _asposeSorter;
+        private Cells _asposeCells;
+        private readonly CellArea _asposeCellArea = new CellArea
         {
             StartRow = 0,
             StartColumn = 0,
             EndRow = 999,
-            EndColumn = 100
+            EndColumn = 1
         };
-        private IXLRange closedXmlSortRange;
-        private XSSFSheet npoiSortRange;
-        private ExcelPackage epplusSortRangeWb;
-        private ExcelWorksheet epplusSortRangeSheet;
-        private ExcelRange epplusSortRange;
+        private IXLRange _closedXmlSortRange;
+        private XSSFSheet _npoiSortRange;
+        private ExcelPackage _epplusSortRangeWb;
+        private ExcelWorksheet _epplusSortRangeSheet;
+        private ExcelRange _epplusSortRange;
 
         [IterationSetup]
         public void IterationSetup()
         {
-            asposeSortRangeWb = new Workbook(sortRangeFileName);
-            asposeCells = asposeSortRangeWb.Worksheets[0].Cells;
-            asposeSorter = GetAsposeSorter();
+            _asposeSortRangeWb = new Workbook();
+            _asposeCells = _asposeSortRangeWb.Worksheets[0].Cells;
+            _asposeSorter = GetAsposeSorter();
 
-            ixlSortRange = IronXL.WorkBook.Load(sortRangeFileName).DefaultWorkSheet;
+            _ixlSortRange = new IronXL.WorkBook().DefaultWorkSheet;
 
-            ixlOldSortRange = IronXLOld.WorkBook.Load(sortRangeFileName).DefaultWorkSheet;
+            _ixlOldSortRange = new IronXLOld.WorkBook().DefaultWorkSheet;
 
-            npoiSortRange = (XSSFSheet)new XSSFWorkbook(sortRangeFileName).GetSheetAt(0);
+            _npoiSortRange = (XSSFSheet)new XSSFWorkbook().CreateSheet();
+            _ = _npoiSortRange.GetRow(0);
 
-            closedXmlSortRange = new XLWorkbook(sortRangeFileName).Worksheet("ToSort").Range("A1:CV1000");
+            _closedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
+            _closedXmlSortRange = _closedXmlSheet.Range("A1:B1000");
 
-            epplusSortRangeWb = new ExcelPackage(sortRangeFileName);
-            epplusSortRangeSheet = epplusSortRangeWb.Workbook.Worksheets[0];
-            epplusSortRange = epplusSortRangeSheet.Cells["A1:CV1000"];
+            _epplusSortRangeWb = new ExcelPackage();
+            _epplusSortRangeSheet = _epplusSortRangeWb.Workbook.Worksheets.Add("Sheet1");
+            _epplusSortRange = _epplusSortRangeSheet.Cells["A1:B1000"];
+
+            for (int i = 1; i <= 1000; i++)
+            {
+                int cell1Val = _rand.Next();
+                int cell2Val = _rand.Next();
+                _asposeCells[$"A{i}"].PutValue(cell1Val);
+                _asposeCells[$"B{i}"].PutValue(cell2Val);
+                _ixlSortRange[$"A{i}"].Value = cell1Val;
+                _ixlSortRange[$"B{i}"].Value = cell2Val;
+                _ixlOldSortRange[$"A{i}"].Value = cell1Val;
+                _ixlOldSortRange[$"B{i}"].Value = cell2Val;
+                _closedXmlSheet.Cell($"A{i}").Value = cell1Val;
+                _closedXmlSheet.Cell($"B{i}").Value = cell2Val;
+                _epplusSortRangeSheet.Cells[$"A{i}"].Value = cell1Val;
+                _epplusSortRangeSheet.Cells[$"B{i}"].Value = cell2Val;
+            }
         }
 
         [IterationCleanup]
         public void IterationCleanup()
         {
-            ixlSortRange.WorkBook.Close();
-            ixlSortRange = null;
+            _ixlSortRange.WorkBook.Close();
+            _ixlSortRange = null;
 
-            ixlOldSortRange.WorkBook.Close();
-            ixlOldSortRange = null;
+            _ixlOldSortRange.WorkBook.Close();
+            _ixlOldSortRange = null;
 
-            asposeSortRangeWb.Dispose();
-            asposeCells.Dispose();
-            asposeSortRangeWb = null;
-            asposeCells = null;
-            asposeSorter = null;
+            _asposeSortRangeWb.Dispose();
+            _asposeCells.Dispose();
+            _asposeSortRangeWb = null;
+            _asposeCells = null;
+            _asposeSorter = null;
 
-            closedXmlSortRange.Worksheet.Workbook.Dispose();
-            closedXmlSortRange = null;
+            _closedXmlSortRange.Worksheet.Workbook.Dispose();
+            _closedXmlSortRange = null;
 
-            epplusSortRange.Dispose();
-            epplusSortRange = null;
-            epplusSortRangeSheet.Dispose();
-            epplusSortRangeSheet = null;
-            epplusSortRangeWb.Dispose();
-            epplusSortRangeWb = null;
+            _epplusSortRange.Dispose();
+            _epplusSortRange = null;
+            _epplusSortRangeSheet.Dispose();
+            _epplusSortRangeSheet = null;
+            _epplusSortRangeWb.Dispose();
+            _epplusSortRangeWb = null;
 
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
-            _ = asposeSorter.Sort(asposeCells, asposeCellArea);
+            _ = _asposeSorter.Sort(_asposeCells, _asposeCellArea);
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
-            _ = closedXmlSortRange.Sort(1);
+            _ = _closedXmlSortRange.Sort(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
-            epplusSortRange.Sort(x => x.SortBy.Column(0));
+            _epplusSortRange.Sort(x => x.SortBy.Column(0));
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
-            _ = ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
+            _ = _ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
-            _ = ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
+            _ = _ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             throw new NotImplementedException();
@@ -116,7 +144,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 
         private DataSorter GetAsposeSorter()
         {
-            DataSorter sorter = asposeSortRangeWb.DataSorter;
+            DataSorter sorter = _asposeSortRangeWb.DataSorter;
             sorter.Order1 = SortOrder.Ascending;
             sorter.Key1 = 0;
 

@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using NPOI.SS.UserModel;
 using OfficeOpenXml.Style;
 
@@ -9,11 +10,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class StyleChangeBenchmark : SheetOperationsBenchmarkBase
     {
-        private readonly string cellValue = "Cell";
+        private readonly string _cellValue = "Cell";
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             Style style = new CellsFactory().CreateStyle();
@@ -22,15 +25,16 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             style.HorizontalAlignment = TextAlignmentType.Right;
 
             Cell cell = AsposeCells[$"A2"];
-            cell.PutValue(cellValue);
+            cell.PutValue(_cellValue);
             cell.SetStyle(style);
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             IXLCell cell = ClosedXmlSheet.Cell($"A2");
-            cell.Value = cellValue;
+            cell.Value = _cellValue;
 
             IXLStyle style = cell.Style;
 
@@ -40,9 +44,10 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
-            EpplusSheet.Cells[$"A2"].Value = cellValue;
+            EpplusSheet.Cells[$"A2"].Value = _cellValue;
 
             EpplusSheet.Cells[$"A2"].Style.Font.Size = 22;
             EpplusSheet.Cells[$"A2"].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
@@ -50,10 +55,11 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             IronXL.Range range = IronXlSheet[$"A2"];
-            range.Value = cellValue;
+            range.Value = _cellValue;
 
             IronXL.Styles.IStyle style = range.Style;
 
@@ -63,10 +69,11 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             IronXLOld.Range range = Iron_XlOldSheet[$"A2"];
-            range.Value = cellValue;
+            range.Value = _cellValue;
 
             IronXLOld.Styles.IStyle style = range.Style;
 
@@ -76,6 +83,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             IFont npoiFont = NpoiSheet.Workbook.CreateFont();
@@ -88,7 +96,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 
             IRow row = NpoiSheet.CreateRow(1);
             ICell cell = row.CreateCell(0);
-            cell.SetCellValue(cellValue);
+            cell.SetCellValue(_cellValue);
             cell.CellStyle = npoiStyle;
         }
     }

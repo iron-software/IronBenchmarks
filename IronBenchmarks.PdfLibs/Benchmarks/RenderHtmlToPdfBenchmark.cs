@@ -11,7 +11,7 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
     [MemoryDiagnoser]
     public class RenderHtmlToPdfBenchmark : BenchmarkBase
     {
-        private readonly string html = "<h1> ~Hello World~ </h1> Made with IronPDF!";
+        private readonly string _html = "<h1> ~Hello World~ </h1> Made with IronPDF!";
 
         [IterationSetup]
         public void IterationSetup()
@@ -23,13 +23,13 @@ namespace IronBenchmarks.PdfLibs.Benchmarks
         public override void Iron_Pdf()
         {
             var pdfRenderer = new IronPdf.ChromePdfRenderer();
-            _ = pdfRenderer.RenderHtmlAsPdf(html);
+            _ = pdfRenderer.RenderHtmlAsPdf(_html);
         }
 
         [Benchmark]
         public override void ITextSharp()
         {
-            var stringReader = new StringReader(html);
+            var stringReader = new StringReader(_html);
             var document = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
             var pdfWriter = PdfWriter.GetInstance(document, new MemoryStream());
             document.Open();
