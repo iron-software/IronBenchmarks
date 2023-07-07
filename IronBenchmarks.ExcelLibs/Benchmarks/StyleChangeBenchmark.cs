@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using NPOI.SS.UserModel;
 using OfficeOpenXml.Style;
 
@@ -9,11 +10,13 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class StyleChangeBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly string _cellValue = "Cell";
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             Style style = new CellsFactory().CreateStyle();
@@ -27,6 +30,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             IXLCell cell = ClosedXmlSheet.Cell($"A2");
@@ -40,6 +44,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
             EpplusSheet.Cells[$"A2"].Value = _cellValue;
@@ -50,6 +55,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             IronXL.Range range = IronXlSheet[$"A2"];
@@ -63,6 +69,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             IronXLOld.Range range = Iron_XlOldSheet[$"A2"];
@@ -76,6 +83,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             IFont npoiFont = NpoiSheet.Workbook.CreateFont();

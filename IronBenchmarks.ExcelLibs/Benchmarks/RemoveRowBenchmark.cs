@@ -5,12 +5,13 @@ using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
+using IronBenchmarks.ExcelLibs.Config;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class RemoveRowBenchmark : BenchmarkBase
+    [Config(typeof(ExcelConfig))]
     {
         private readonly string _removeRowFileName = "RemoveRowFiles\\RemoveRow.xlsx";
         private IronXL.WorkSheet _ixlSheet;
@@ -67,36 +68,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             _ = _asposeSheet.DeleteRows(0, 1, true);
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             _closedXmlSheet.Rows(1, 1).Delete();
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
             _epplusSheet.DeleteRow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             _ixlSheet.RemoveRow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             _ixlOldSheet.Rows[1].RemoveRow();
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             _npoiSheet.RemoveRow(_npoiRow);

@@ -4,12 +4,13 @@ using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
+using IronBenchmarks.ExcelLibs.Config;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
-    public class InsertRowBenchmark : BenchmarkBase
+    [Config(typeof(ExcelConfig))]
     {
         private readonly string _insertRowFileName = "InsertRowFiles\\InsertRow.xlsx";
         private IronXL.WorkSheet _ixlSheet;
@@ -66,36 +67,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             _asposeSheet.InsertRow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             _ = _closedXmlSheet.Row(1).InsertRowsBelow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
             _epplusSheet.InsertRow(1, 1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             _ = _ixlSheet.InsertRow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             _ixlOldSheet.InsertRow(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             _npoiSheet.ShiftRows(1, _npoiSheet.LastRowNum, 1);

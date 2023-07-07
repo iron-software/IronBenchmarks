@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using ClosedXML.Excel;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using NPOI.XSSF.UserModel;
 using OfficeOpenXml;
 using System;
@@ -10,6 +11,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class SortRangeBenchmark : BenchmarkBase
     {
         private readonly string _sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
@@ -80,36 +82,42 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             _ = _asposeSorter.Sort(_asposeCells, _asposeCellArea);
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             _ = _closedXmlSortRange.Sort(1);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
             _epplusSortRange.Sort(x => x.SortBy.Column(0));
         }
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             _ = _ixlSortRange.SortByColumn(0, IronXL.SortOrder.Ascending);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             _ = _ixlOldSortRange.SortByColumn(0, IronXLOld.SortOrder.Ascending);
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             throw new NotImplementedException();

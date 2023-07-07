@@ -1,29 +1,34 @@
 ﻿using Aspose.Cells;
 using BenchmarkDotNet.Attributes;
 using IronBenchmarks.ExcelLibs.Benchmarks.Bases;
+using IronBenchmarks.ExcelLibs.Config;
 using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
     [ShortRunJob]
     [MemoryDiagnoser]
+    [Config(typeof(ExcelConfig))]
     public class DateCellBenchmark : SheetOperationsBenchmarkBase
     {
         private readonly DateTime _date = DateTime.Now;
 
         [Benchmark]
+        [BenchmarkCategory("IronXl")]
         public override void IronXl()
         {
             IronXlSheet[$"A2"].Value = _date;
         }
 
         [Benchmark]
+        [BenchmarkCategory("Iron_XlOld")]
         public override void Iron_XlOld()
         {
             Iron_XlOldSheet[$"A2"].Value = _date;
         }
 
         [Benchmark(Baseline = true)]
+        [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
             Style style = new CellsFactory().CreateStyle();
@@ -35,6 +40,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("Npoi")]
         public override void Npoi()
         {
             NPOI.SS.UserModel.ICellStyle npoiStyle = NpoiSheet.Workbook.CreateCellStyle();
@@ -48,12 +54,14 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         }
 
         [Benchmark]
+        [BenchmarkCategory("ClosedXml")]
         public override void ClosedXml()
         {
             ClosedXmlSheet.Cell($"A2").Value = _date;
         }
 
         [Benchmark]
+        [BenchmarkCategory("Epplus")]
         public override void Epplus()
         {
             EpplusSheet.Cells[$"A2"].Value = _date;
