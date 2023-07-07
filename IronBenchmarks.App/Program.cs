@@ -105,6 +105,7 @@ static void RunExcelBenchmarks(
             BenchmarkRunner.Run<SortRangeBenchmark>(),
             BenchmarkRunner.Run<AccessingRangePropertiesBenchmark>(),
             BenchmarkRunner.Run<RemoveRowBenchmark>(),
+            BenchmarkRunner.Run<InsertRowBenchmark>(),
         };
 
     _ = reportGenerator.GenerateReport(excelSummaries, "ExcelLibs", libsWithVersions);
