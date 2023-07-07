@@ -23,7 +23,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             StartRow = 0,
             StartColumn = 0,
             EndRow = 999,
-            EndColumn = 100
+            EndColumn = 1
         };
         private IXLRange _closedXmlSortRange;
         private XSSFSheet _npoiSortRange;
@@ -45,11 +45,11 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
             _npoiSortRange = (XSSFSheet)new XSSFWorkbook(_sortRangeFileName).GetSheetAt(0);
             _ = _npoiSortRange.GetRow(0);
 
-            _closedXmlSortRange = new XLWorkbook(_sortRangeFileName).Worksheet("ToSort").Range("A1:CV1000");
+            _closedXmlSortRange = new XLWorkbook(_sortRangeFileName).Worksheet("ToSort").Range("A1:B1000");
 
             _epplusSortRangeWb = new ExcelPackage(_sortRangeFileName);
             _epplusSortRangeSheet = _epplusSortRangeWb.Workbook.Worksheets[0];
-            _epplusSortRange = _epplusSortRangeSheet.Cells["A1:CV1000"];
+            _epplusSortRange = _epplusSortRangeSheet.Cells["A1:B1000"];
         }
 
         [IterationCleanup]
