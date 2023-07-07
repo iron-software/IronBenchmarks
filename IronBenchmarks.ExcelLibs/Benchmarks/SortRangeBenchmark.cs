@@ -14,7 +14,9 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
     [Config(typeof(ExcelConfig))]
     public class SortRangeBenchmark : BenchmarkBase
     {
-        private readonly string _sortRangeFileName = "SortRangeFiles\\SortRange.xlsx";
+        private readonly Random _rand = new Random();
+
+        private IXLWorksheet _closedXmlSheet;
         private IronXL.WorkSheet _ixlSortRange;
         private IronXLOld.WorkSheet _ixlOldSortRange;
         private Workbook _asposeSortRangeWb;
@@ -36,22 +38,39 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [IterationSetup]
         public void IterationSetup()
         {
-            _asposeSortRangeWb = new Workbook(_sortRangeFileName);
+            _asposeSortRangeWb = new Workbook();
             _asposeCells = _asposeSortRangeWb.Worksheets[0].Cells;
             _asposeSorter = GetAsposeSorter();
 
-            _ixlSortRange = IronXL.WorkBook.Load(_sortRangeFileName).DefaultWorkSheet;
+            _ixlSortRange = new IronXL.WorkBook().DefaultWorkSheet;
 
-            _ixlOldSortRange = IronXLOld.WorkBook.Load(_sortRangeFileName).DefaultWorkSheet;
+            _ixlOldSortRange = new IronXLOld.WorkBook().DefaultWorkSheet;
 
-            _npoiSortRange = (XSSFSheet)new XSSFWorkbook(_sortRangeFileName).GetSheetAt(0);
+            _npoiSortRange = (XSSFSheet)new XSSFWorkbook().CreateSheet();
             _ = _npoiSortRange.GetRow(0);
 
-            _closedXmlSortRange = new XLWorkbook(_sortRangeFileName).Worksheet("ToSort").Range("A1:B1000");
+            _closedXmlSheet = new XLWorkbook().Worksheets.Add("Sheet1");
+            _closedXmlSortRange = _closedXmlSheet.Range("A1:B1000");
 
-            _epplusSortRangeWb = new ExcelPackage(_sortRangeFileName);
-            _epplusSortRangeSheet = _epplusSortRangeWb.Workbook.Worksheets[0];
+            _epplusSortRangeWb = new ExcelPackage();
+            _epplusSortRangeSheet = _epplusSortRangeWb.Workbook.Worksheets.Add("Sheet1");
             _epplusSortRange = _epplusSortRangeSheet.Cells["A1:B1000"];
+
+            for (int i = 1; i <= 1000; i++)
+            {
+                int cell1Val = _rand.Next();
+                int cell2Val = _rand.Next();
+                _asposeCells[$"A{i}"].PutValue(cell1Val);
+                _asposeCells[$"B{i}"].PutValue(cell2Val);
+                _ixlSortRange[$"A{i}"].Value = cell1Val;
+                _ixlSortRange[$"B{i}"].Value = cell2Val;
+                _ixlOldSortRange[$"A{i}"].Value = cell1Val;
+                _ixlOldSortRange[$"B{i}"].Value = cell2Val;
+                _closedXmlSheet.Cell($"A{i}").Value = cell1Val;
+                _closedXmlSheet.Cell($"B{i}").Value = cell2Val;
+                _epplusSortRangeSheet.Cells[$"A{i}"].Value = cell1Val;
+                _epplusSortRangeSheet.Cells[$"B{i}"].Value = cell2Val;
+            }
         }
 
         [IterationCleanup]
