@@ -6,7 +6,6 @@ using System;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
-    [ShortRunJob]
     [MemoryDiagnoser]
     [Config(typeof(ExcelConfig))]
     public class DateCellBenchmark : SheetOperationsBenchmarkBase

@@ -7,7 +7,7 @@ namespace IronBenchmarks.ExcelLibs.Config
     {
         public ExcelConfig()
         {
-            _ = AddFilter(new NameFilter(name => name.Contains("IronXl") || name.Contains("Npoi")));
+            _ = AddFilter(new NameFilter(name => name.Contains("IronXl")));
         }
     }
 }

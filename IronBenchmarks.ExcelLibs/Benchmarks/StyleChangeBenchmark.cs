@@ -8,7 +8,6 @@ using OfficeOpenXml.Style;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
-    [ShortRunJob]
     [MemoryDiagnoser]
     [Config(typeof(ExcelConfig))]
     public class StyleChangeBenchmark : SheetOperationsBenchmarkBase

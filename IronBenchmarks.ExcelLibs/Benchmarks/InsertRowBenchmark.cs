@@ -4,7 +4,6 @@ using IronBenchmarks.ExcelLibs.Config;
 
 namespace IronBenchmarks.ExcelLibs.Benchmarks
 {
-    [ShortRunJob]
     [MemoryDiagnoser]
     [Config(typeof(ExcelConfig))]
     public class InsertRowBenchmark : SheetOperationsBenchmarkBase
