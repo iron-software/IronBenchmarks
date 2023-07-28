@@ -10,7 +10,7 @@
 		<PackageReference Include="BenchmarkDotNet" Version="0.13.6" />
 		<PackageReference Include="ClosedXML" Version="0.102.0" />
 		<PackageReference Include="EPPlus" Version="6.2.6" />
-		<PackageReference Include="IronXL.Excel" Version="2023.8.6" />
+		<PackageReference Include="IronXL.Excel" Version="2023.8.19" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="NPOI" Version="2.6.1" />
