@@ -140,18 +140,18 @@ namespace IronBenchmarks.Reporting
 
         private int GetLastColumnInReport(WorkSheet sheet)
         {
-            RangeColumn[] allColums = sheet.AllColumnsInRange;
+            RangeColumn[] allColums = sheet.Columns;
             RangeColumn lastColumn = allColums[allColums.Length - 1];
 
-            return lastColumn.RangeAddress.LastColumn;
+            return lastColumn.ColumnNumber;
         }
 
         private int GetLastRowInReport(WorkSheet sheet)
         {
-            RangeRow[] allRows = sheet.AllRowsInRange;
+            RangeRow[] allRows = sheet.Rows;
             RangeRow lastRow = allRows[allRows.Length - 1];
 
-            return lastRow.RangeAddress.LastRow;
+            return lastRow.RowNumber;
         }
 
         private void EnsureReportsFolderExists()
@@ -170,6 +170,7 @@ namespace IronBenchmarks.Reporting
             benchmarkList = benchmarkList ?? new Dictionary<string, Units>();
 
             int i = 0;
+            sheet[headerRowAddress].Value = 0;
             Cell[] cells = sheet[headerRowAddress].ToArray();
 
             foreach (KeyValuePair<string, Units> benchmark in benchmarkList)
