@@ -14,7 +14,7 @@ namespace IronBenchmarks.ExcelLibs.Benchmarks
         [BenchmarkCategory("Aspose")]
         public override void Aspose()
         {
-            Range range = AsposeCells.CreateRange("A1", "CV100");
+            Aspose.Cells.Range range = AsposeCells.CreateRange("A1", "CV100");
 
             foreach (Cell cell in range)
             {
