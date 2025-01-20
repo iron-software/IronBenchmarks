@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;
@@ -8,6 +8,7 @@ using BenchmarkDotNet.Validators;
 using IronBenchmarks.App.Configuration;
 using IronBenchmarks.BarCodeLibs.Benchmarks;
 using IronBenchmarks.ExcelLibs.Benchmarks;
+using IronBenchmarks.OcrLibs.Benchmarks;
 using IronBenchmarks.PdfLibs.Benchmarks;
 using IronBenchmarks.Reporting;
 using IronBenchmarks.Reporting.Configuration;
@@ -27,6 +28,7 @@ var reportGenerator = new ReportGenerator(reportConfig);
 RunExcelBenchmarks(args, reportConfig, reportGenerator);
 RunPdfBenchmarks(args, reportConfig, reportGenerator);
 RunBarCodeBenchmarks(args, reportConfig, reportGenerator);
+RunOcrBenchmarks(args, reportConfig, reportGenerator);
 
 Console.ReadKey();
 
@@ -109,6 +111,26 @@ static void RunExcelBenchmarks(
         };
 
     _ = reportGenerator.GenerateReport(excelSummaries, "ExcelLibs", libsWithVersions);
+}
+
+static void RunOcrBenchmarks(
+    string[] args,
+    IReportingConfig reportConfig,
+    ReportGenerator reportGenerator)
+{
+    if (!args.Contains("-ocr"))
+    {
+        return;
+    }
+    reportConfig.ReportsFolder += "\\OCR";
+    var ocrSummaries = new List<Summary>
+        {
+            BenchmarkRunner.Run<ReadImage>(),
+            BenchmarkRunner.Run<Read12MBPdf>(),
+            BenchmarkRunner.Run<ReadMultipleDocuments>(),
+            BenchmarkRunner.Run<ReadAndRenderSearchablePdf>(),
+        };
+    _ = reportGenerator.GenerateReport(ocrSummaries, "OCR");
 }
 
 static Dictionary<string, string> GetLibNamesWithVersions(Type type)

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="IronPdf" Version="2024.1.20" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.3" />
 		<PackageReference Include="itextsharp.xmlworker" Version="5.5.13.3" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
